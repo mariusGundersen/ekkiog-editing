@@ -1,0 +1,49 @@
+{
+  "name": "ekkiog-editing",
+  "version": "0.0.1",
+  "description": "Editor for ekkiog",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "clean": "rm -rf ./lib ./dist",
+    "test": "ava",
+    "typescript": "tsc",
+    "compile": "npm run typescript && npm run babel",
+    "babel": "babel --source-maps --copy-files -d dist lib",
+    "watch": "tsc -w & ava -w",
+    "prepublish": "npm run clean && npm run compile && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mariusGundersen/ekkiog-editing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mariusGundersen/ekkiog-editing/issues"
+  },
+  "homepage": "https://github.com/mariusGundersen/ekkiog-editing#readme",
+  "devDependencies": {
+    "@types/node": "^7.0.5",
+    "ava": "^0.16.0",
+    "babel-cli": "^6.22.2",
+    "babel-preset-es2015": "^6.22.0",
+    "typescript": "^2.1.5"
+  },
+  "ava": {
+    "files": [
+      "lib/*.test.js"
+    ],
+    "source": [
+      "lib/*.js"
+    ]
+  },
+  "peerDependencies": {
+    "babel-runtime": "^6.22.0"
+  },
+  "dependencies": {
+    "buddy-tree": "^2.0.0",
+    "ennea-tree": "^2.0.0"
+  }
+}

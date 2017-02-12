@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "allowJs": false,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "declaration": true
+  },
+  "include": [
+    "./src/*.ts"
+  ],
+  "compileOnSave": true
+}
