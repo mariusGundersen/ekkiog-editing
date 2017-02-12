@@ -22,7 +22,7 @@ export default function drawWire(forest : Forest, x : number, y : number){
   const data = {
     type: WIRE,
     net
-  } as Wire;
+  };
   const box = {left:x, top:y};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
 

@@ -55,7 +55,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, s
     inputs,
     outputs,
     gates: source.gates.map((gate, index) => makeGate(gate, index, nets))
-  } as Component;
+  };
   const box = {left:x, top:y, width:source.width, height:source.height};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
 
@@ -70,7 +70,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, s
     dy: output.dy,
     type: COMPONENT,
     net: output.net
-  } as FloodSourceComponent)));
+  })));
 
   return {
     enneaTree,

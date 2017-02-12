@@ -11,6 +11,7 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
+  DRAIN,
   GROUND
 } from '../constants';
 import makePos from './makePos';
@@ -20,6 +21,7 @@ import gate from './gate';
 import underpass from './underpass';
 import button from './button';
 import component from './component';
+import drain from './drain';
 
 import {
   TreeNode
@@ -50,6 +52,8 @@ export default function floodFill(enneaTree : TreeNode, ...floodSources : FloodS
         return button(old, pos, ctx, queue);
       case COMPONENT:
         return component(old, pos, ctx, queue);
+      case DRAIN:
+        return drain(old, pos, ctx, queue);
       default:
         return old;
     }

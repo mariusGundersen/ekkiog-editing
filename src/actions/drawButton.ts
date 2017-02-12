@@ -22,7 +22,7 @@ export default function drawButton(forest : Forest, x : number, y : number){
     type: BUTTON,
     net,
     state: false
-  } as Button;
+  };
   const box = {left:x-2, top:y-1, width:3, height:3};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
 

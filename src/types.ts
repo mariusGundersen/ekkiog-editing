@@ -48,8 +48,9 @@ export interface Source{
   type : 'source'
 }
 
-export interface Drain{
-  type : 'drain'
+export interface Drain extends IHaveDirection{
+  type : 'drain',
+  net : number
 }
 
 export type Item = Wire

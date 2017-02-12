@@ -22,7 +22,7 @@ export default function drawUnderpass(forest : Forest, x : number, y : number){
   const data = {
     type: UNDERPASS,
     net
-  } as Underpass;
+  };
   const box = {left:x, top:y};
 
   let enneaTree = ennea.set(forest.enneaTree, data, box);
