@@ -3,7 +3,10 @@ import * as ennea from 'ennea-tree';
 import {
   Forest,
   Gate,
+  IHaveDirection,
   CompiledComponent,
+  CompiledComponentInput,
+  CompiledComponentOutput,
   CompiledComponentGateInputFromGate,
   CompiledComponentGateInputFromGround
 } from './types';
@@ -21,15 +24,14 @@ export default function compile(forest : Forest) : CompiledComponent {
       inputB: makeInput(node.data.inputB)
     }));
 
+  const inputs : CompiledComponentInput[] = [];
+  const outputs : CompiledComponentOutput[] = [];
+
   return {
-    width: 3,
-    height: 3,
-    inputs: [
-
-    ],
-    outputs: [
-
-    ],
+    width: Math.max(3, inDirection(inputs, 'dx'), inDirection(outputs, 'dx')),
+    height: Math.max(3, inDirection(inputs, 'dy'), inDirection(outputs, 'dy')),
+    inputs,
+    outputs,
     gates
   }
 }
@@ -53,4 +55,8 @@ export function makeGroundInput() : CompiledComponentGateInputFromGround {
   return {
     type: 'ground'
   };
+}
+
+export function inDirection(list : IHaveDirection[], dir : keyof IHaveDirection) : number{
+  return list.filter(item => item[dir] !== 0).length*2 + 1;
 }

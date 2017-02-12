@@ -76,19 +76,25 @@ export interface CompiledComponent {
   width : number,
   height : number,
   gates : CompiledComponentGate[],
-  inputs : {
-    x : number,
-    y : number,
-    dx : number,
-    dy : number
-  }[]
-  outputs : {
-    x : number,
-    y : number,
-    dx : number,
-    dy : number,
-    gate : number
-  }[]
+  inputs : CompiledComponentInput[],
+  outputs : CompiledComponentOutput[]
+}
+
+export interface IHaveDirection {
+  dx : number,
+  dy : number
+}
+
+export interface IHavePosition {
+  x : number,
+  y : number
+}
+
+export interface CompiledComponentInput extends IHaveDirection, IHavePosition {
+}
+
+export interface CompiledComponentOutput extends IHaveDirection, IHavePosition {
+  gate : number
 }
 
 export interface CompiledComponentGate {
