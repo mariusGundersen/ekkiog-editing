@@ -15,14 +15,10 @@ import {
 export default function compile(forest : Forest) : CompiledComponent {
   const gates = ennea.getAll(forest.enneaTree, {top: 0, left: 0, width: forest.enneaTree.size, height: forest.enneaTree.size})
     .filter((node) : node is ennea.AreaData<Gate> => node.data.type === GATE)
+    .sort((a, b) => a.data.net - b.data.net)
     .map(node => ({
-      net: 0,
-      inputA: node.data.inputA == 0
-        ? makeGroundGateInput()
-        : makeGateInput(0),
-      inputB: node.data.inputB == 0
-        ? makeGroundGateInput()
-        : makeGateInput(0)
+      inputA: makeInput(node.data.inputA),
+      inputB: makeInput(node.data.inputB)
     }));
 
   return {
@@ -38,6 +34,14 @@ export default function compile(forest : Forest) : CompiledComponent {
   }
 }
 
+export function makeInput(input : number){
+  if(input === 0){
+    return makeGroundInput();
+  }else{
+    return makeGateInput(input - 2)
+  }
+}
+
 export function makeGateInput(index : number) : CompiledComponentGateInputFromGate{
   return {
     type: GATE,
@@ -45,7 +49,7 @@ export function makeGateInput(index : number) : CompiledComponentGateInputFromGa
   };
 }
 
-export function makeGroundGateInput() : CompiledComponentGateInputFromGround {
+export function makeGroundInput() : CompiledComponentGateInputFromGround {
   return {
     type: 'ground'
   };

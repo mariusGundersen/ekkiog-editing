@@ -20,6 +20,10 @@ import {
 
 import { FloodSourceComponent } from '../flooding/types';
 
+export interface MappedCompiledComponentGate extends CompiledComponentGate {
+  net : number
+}
+
 export default function drawComponent(forest : Forest, x : number, y : number, source : CompiledComponent){
   x -= source.width>>1;
   y -= source.height>>1;
@@ -78,7 +82,7 @@ export function getNetAtPos(tree : TreeNode, sx : number, sy : number, x : numbe
   return getNetAt(tree, sx+x+dx, sy+y+dy, dx, dy);
 }
 
-export function* makePointsTo(gates : CompiledComponentGate[], index : number){
+export function* makePointsTo(gates : MappedCompiledComponentGate[], index : number){
   yield* gates
     .filter(g => g.inputA.type === 'input' && g.inputA.index === index)
     .map(g => ({net: g.net, input: 'A'} as ComponentInputPointer));

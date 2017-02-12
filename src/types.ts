@@ -44,12 +44,12 @@ export interface ComponentInputPointer {
   net : number
 }
 
-export interface Input{
-  type : 'input'
+export interface Source{
+  type : 'source'
 }
 
-export interface Output{
-  type : 'output'
+export interface Drain{
+  type : 'drain'
 }
 
 export type Item = Wire
@@ -57,8 +57,8 @@ export type Item = Wire
   | Underpass
   | Button
   | Component
-  | Input
-  | Output;
+  | Source
+  | Drain;
 
 
 export interface Context{
@@ -92,7 +92,6 @@ export interface CompiledComponent {
 }
 
 export interface CompiledComponentGate {
-  net : number,
   inputA : CompiledComponentGateInput,
   inputB : CompiledComponentGateInput
 }
