@@ -62,18 +62,14 @@ export type Item = Wire
 
 
 export interface Context{
-  mapTexture : {
-    get(x : number, y : number) : number,
-    set(x : number, y : number, tile : number) : void
-  },
-  netMapTexture : {
-    get(x : number, y : number) : number,
-    set(x : number, y : number, net : number) : void
-  },
-  gatesTexture : {
-    get(x : number, y : number) : number,
-    set(x : number, y : number, net : number) : void
-  }
+  mapTexture : Texture,
+  netMapTexture : Texture,
+  gatesTexture : Texture
+}
+
+export interface Texture {
+  get(x : number, y : number) : number,
+  set(x : number, y : number, net : number) : void
 }
 
 export interface ComponentSource {
