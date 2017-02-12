@@ -7,4 +7,7 @@ export const COMPONENT : 'component' = 'component';
 export const SOURCE : 'source' = 'source';
 export const DRAIN : 'drain' = 'drain';
 
+export const INPUT : 'input' = 'input';
+export const OUTPUT : 'output' = 'output';
+
 export const GROUND = 0;

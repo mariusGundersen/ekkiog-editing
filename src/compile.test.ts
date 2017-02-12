@@ -1,12 +1,21 @@
 import test from 'ava';
 
 import {
-  CompiledComponent
+  CompiledComponent,
+  CompiledComponentInput,
+  CompiledComponentOutput
 } from './types';
+
+import {
+  GATE,
+  INPUT
+ } from './constants';
 
 import createForest from './actions/createForest';
 import drawGate from './actions/drawGate';
 import drawWire from './actions/drawWire';
+import drawSource from './actions/drawSource';
+import drawDrain from './actions/drawDrain';
 
 import compile from './compile';
 
@@ -16,8 +25,8 @@ test('compile single gate', t => {
   t.deepEqual(compiled, {
     width: 3,
     height: 3,
-    inputs: [],
-    outputs: [],
+    inputs: [] as CompiledComponentInput[],
+    outputs: [] as CompiledComponentOutput[],
     gates: [
       {
         inputA: {
@@ -28,7 +37,7 @@ test('compile single gate', t => {
         }
       }
     ]
-  } as CompiledComponent);
+  });
 });
 
 
@@ -43,7 +52,7 @@ test('compile two gates', t => {
         type: 'ground'
       },
       inputB: {
-        type: 'gate',
+        type: GATE,
         index: 1
       }
     },
@@ -71,11 +80,11 @@ test('compile three gates', t => {
   t.deepEqual(compiled.gates, [
       {
         inputA: {
-          type: 'gate',
+          type: GATE,
           index: 1
         },
         inputB: {
-          type: 'gate',
+          type: GATE,
           index: 2
         }
       },
@@ -97,4 +106,49 @@ test('compile three gates', t => {
       }
     ]
   );
+});
+
+
+test.only('compile NOT gate', t => {
+  let forest = createForest();
+  forest = drawGate(forest, 64, 64);
+  forest = drawWire(forest, 60, 63);
+  forest = drawWire(forest, 60, 64);
+  forest = drawWire(forest, 60, 65);
+  forest = drawSource(forest, 59, 64, 1, 0);
+  forest = drawDrain(forest, 65, 64, 1, 0);
+  const compiled = compile(forest);
+  t.deepEqual(compiled, {
+    width: 3,
+    height: 3,
+    inputs: [
+      {
+        dx: 1,
+        dy: 0,
+        x: 0,
+        y: 0
+      }
+    ],
+    outputs: [
+      {
+        dx: 1,
+        dy: 0,
+        x: 0,
+        y: 0,
+        gate: 0
+      }
+    ],
+    gates: [
+      {
+        inputA: {
+          type: INPUT,
+          index: 0
+        },
+        inputB: {
+          type: INPUT,
+          index: 0
+        }
+      }
+    ]
+  });
 });
