@@ -8,6 +8,8 @@ export { default as drawComponent } from './actions/drawComponent';
 export { default as drawGate } from './actions/drawGate';
 export { default as drawUnderpass } from './actions/drawUnderpass';
 export { default as drawWire } from './actions/drawWire';
+export { default as drawSource } from './actions/drawSource';
+export { default as drawDrain } from './actions/drawDrain';
 export { default as toggleButton } from './actions/toggleButton';
 
 export { default as floodFill } from './flooding/floodFill';

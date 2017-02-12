@@ -35,8 +35,16 @@ export interface FloodSourceComponent extends Pos {
   dy : number
 }
 
+export interface FloodSourceSource extends Pos {
+  type : 'source',
+  net : number,
+  dx : number,
+  dy : number
+}
+
 export type FloodSource = FloodSourceWire
   | FloodSourceGate
   | FloodSourceUnderpass
   | FloodSourceButton
-  | FloodSourceComponent;
+  | FloodSourceComponent
+  | FloodSourceSource;

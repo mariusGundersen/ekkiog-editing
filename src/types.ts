@@ -44,8 +44,9 @@ export interface ComponentInputPointer {
   net : number
 }
 
-export interface Source{
-  type : 'source'
+export interface Source extends IHaveDirection{
+  type : 'source',
+  net : number
 }
 
 export interface Drain extends IHaveDirection{

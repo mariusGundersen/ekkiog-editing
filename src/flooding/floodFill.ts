@@ -11,6 +11,7 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
+  SOURCE,
   DRAIN,
   GROUND
 } from '../constants';
@@ -21,6 +22,7 @@ import gate from './gate';
 import underpass from './underpass';
 import button from './button';
 import component from './component';
+import source from './source';
 import drain from './drain';
 
 import {
@@ -84,6 +86,9 @@ export function* make(floodSources : FloodSource[]) : IterableIterator<BoxContex
         yield makePos({top: floodSource.top+1, left: floodSource.left+2}, floodSource.net, 1, 0);
         break;
       case COMPONENT:
+        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);
+        break;
+      case SOURCE:
         yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);
         break;
     }
