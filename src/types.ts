@@ -72,10 +72,10 @@ export interface Texture {
   set(x : number, y : number, net : number) : void
 }
 
-export interface ComponentSource {
+export interface CompiledComponent {
   width : number,
   height : number,
-  gates : ComponentSourceGate[],
+  gates : CompiledComponentGate[],
   inputs : {
     x : number,
     y : number,
@@ -91,13 +91,33 @@ export interface ComponentSource {
   }[]
 }
 
-export interface ComponentSourceGate {
+export interface CompiledComponentGate {
   net : number,
-  inputA : ComponentSourceGateInput,
-  inputB : ComponentSourceGateInput
+  inputA : CompiledComponentGateInput,
+  inputB : CompiledComponentGateInput
 }
 
-export interface ComponentSourceGateInput{
-  type : 'gate' | 'input',
+export type CompiledComponentGateInput =
+  CompiledComponentGateInputFromGate
+  | CompiledComponentGateInputFromInput
+  | CompiledComponentGateInputFromGround;
+
+export interface CompiledComponentGateInputFromGate{
+  type : 'gate',
   index : number
+}
+
+export interface CompiledComponentGateInputFromInput{
+  type : 'input',
+  index : number
+}
+
+export interface CompiledComponentGateInputFromGround{
+  type : 'ground'
+}
+
+declare global{
+  interface Array<T> {
+    filter<U extends T>(pred: (a: T) => a is U): U[];
+  }
 }

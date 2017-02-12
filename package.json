@@ -44,6 +44,6 @@
   },
   "dependencies": {
     "buddy-tree": "^2.0.0",
-    "ennea-tree": "^2.0.0"
+    "ennea-tree": "^2.0.1"
   }
 }

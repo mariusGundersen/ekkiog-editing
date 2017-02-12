@@ -9,11 +9,18 @@ import {
 import getNetAt from '../query/getNetAt';
 import floodFill from '../flooding/floodFill';
 
-import { Forest, TreeNode, Component, ComponentSource, ComponentSourceGate, ComponentInputPointer } from '../types';
+import {
+  Forest,
+  TreeNode,
+  Component,
+  CompiledComponent,
+  CompiledComponentGate,
+  ComponentInputPointer
+} from '../types';
 
 import { FloodSourceComponent } from '../flooding/types';
 
-export default function drawComponent(forest : Forest, x : number, y : number, source : ComponentSource){
+export default function drawComponent(forest : Forest, x : number, y : number, source : CompiledComponent){
   x -= source.width>>1;
   y -= source.height>>1;
   const {tree: buddyTree, ...addresses} = buddy.allocate(forest.buddyTree, source.gates.length);
@@ -71,7 +78,7 @@ export function getNetAtPos(tree : TreeNode, sx : number, sy : number, x : numbe
   return getNetAt(tree, sx+x+dx, sy+y+dy, dx, dy);
 }
 
-export function* makePointsTo(gates : ComponentSourceGate[], index : number){
+export function* makePointsTo(gates : CompiledComponentGate[], index : number){
   yield* gates
     .filter(g => g.inputA.type === 'input' && g.inputA.index === index)
     .map(g => ({net: g.net, input: 'A'} as ComponentInputPointer));
@@ -80,7 +87,7 @@ export function* makePointsTo(gates : ComponentSourceGate[], index : number){
     .map(g => ({net: g.net, input: 'B'} as ComponentInputPointer));
 }
 
-export function makeGate(gate : ComponentSourceGate, index : number, nets : number[]){
+export function makeGate(gate : CompiledComponentGate, index : number, nets : number[]){
   return {
     net: nets[index],
     inputA: gate.inputA.type === 'gate'

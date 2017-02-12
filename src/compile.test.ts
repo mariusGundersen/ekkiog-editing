@@ -1,8 +1,13 @@
 import test from 'ava';
-import createForest from './actions/createForest.js';
-import drawGate from './actions/drawGate.js';
 
-import compile from './compile.js';
+import {
+  CompiledComponent
+} from './types';
+
+import createForest from './actions/createForest';
+import drawGate from './actions/drawGate';
+
+import compile from './compile';
 
 test('compile single gate', t => {
   const forest = drawGate(createForest(), 64, 64);
@@ -14,6 +19,7 @@ test('compile single gate', t => {
     outputs: [],
     gates: [
       {
+        net: 0,
         inputA: {
           type: 'ground'
         },
@@ -22,5 +28,5 @@ test('compile single gate', t => {
         }
       }
     ]
-  });
+  } as CompiledComponent);
 });
