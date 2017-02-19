@@ -26,13 +26,13 @@ export default function getNetAt(enneaTree : TreeNode, x : number, y : number, d
     case WIRE:
       return tile.data.net;
     case GATE:
-      return getGateNet(tile.data, tile.left, tile.top, dx, dy);
+      return getGateNet(tile.data, x-tile.left, y-tile.top, dx, dy);
     case UNDERPASS:
       return getUnderpassNet(tile.data, dx, dy, enneaTree, x, y);
     case BUTTON:
-      return getButtonNet(tile.data, tile.left, tile.top, dx, dy);
+      return getButtonNet(tile.data, x-tile.left, y-tile.top, dx, dy);
     case COMPONENT:
-      return getComponentNet(tile.data, tile.left, tile.top, dx, dy);
+      return getComponentNet(tile.data, x-tile.left, y-tile.top, dx, dy);
     default:
       return GROUND;
   }
