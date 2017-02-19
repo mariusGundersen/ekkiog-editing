@@ -9,17 +9,18 @@ import {
   CompiledComponent,
   CompiledComponentInput,
   CompiledComponentOutput,
+  CompiledComponentGateInput,
   CompiledComponentGateInputFromGate,
   CompiledComponentGateInputFromInput,
   CompiledComponentGateInputFromGround
-} from './types';
+} from '../types';
 
 import {
  GATE,
- DRAIN,
  SOURCE,
+ DRAIN,
  INPUT
-} from './constants';
+} from '../constants';
 
 export default function compile(forest : Forest) : CompiledComponent {
   const enneaTree = forest.enneaTree;
@@ -31,18 +32,18 @@ export default function compile(forest : Forest) : CompiledComponent {
   });
 
   const forestInputs = forestContet
-    .filter((node) : node is ennea.AreaData<Source> => node.data.type === SOURCE)
-    .sort((a, b) => a.data.net - b.data.net);
+    .filter((node) : node is ennea.AreaData<Source> => node.data.type === SOURCE);
 
   const forestGates = forestContet
-    .filter((node) : node is ennea.AreaData<Gate> => node.data.type === GATE)
-    .sort((a, b) => a.data.net - b.data.net);
+    .filter((node) : node is ennea.AreaData<Gate> => node.data.type === GATE);
 
   const forestOutputs = forestContet
-    .filter((node) : node is ennea.AreaData<Drain> => node.data.type === DRAIN)
-    .sort((a, b) => a.data.net - b.data.net);
+    .filter((node) : node is ennea.AreaData<Drain> => node.data.type === DRAIN);
 
-  const inputNets = forestInputs.map(input => input.data.net);
+  const inputNets = forestInputs.map((input, index) => [input.data.net, makeInputInput(index)] as [number, CompiledComponentGateInputFromInput]);
+  const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as [number, CompiledComponentGateInputFromGate]);
+
+  const netToIndexMap = new Map<number, CompiledComponentGateInput>([...inputNets, ...gateNets, [0, makeGroundInput()]]);
 
   const inputs = forestInputs
     .map(node => ({
@@ -54,13 +55,13 @@ export default function compile(forest : Forest) : CompiledComponent {
 
   const gates = forestGates
     .map(node => ({
-      inputA: makeInput(node.data.inputA, inputNets),
-      inputB: makeInput(node.data.inputB, inputNets)
+      inputA: netToIndexMap.get(node.data.inputA) || makeGroundInput(),
+      inputB: netToIndexMap.get(node.data.inputB) || makeGroundInput()
     }));
 
   const outputs = forestOutputs
     .map(node => ({
-      gate: 0,
+      gate: getGateNet(netToIndexMap.get(node.data.net)),
       dx: node.data.dx,
       dy: node.data.dy,
       x: 0,
@@ -77,17 +78,16 @@ export default function compile(forest : Forest) : CompiledComponent {
   }
 }
 
-export function makeInput(input : number, inputNets : number[]){
-  if(input === 0){
-    return makeGroundInput();
-  }else{
-    const inputIndex = inputNets.indexOf(input);
-    if(inputIndex === -1){
-      return makeGateInput(input -2);
-    }else{
-      return makeInputInput(inputIndex);
-    }
+export function getGateNet(input? : CompiledComponentGateInput){
+  if(input == undefined){
+    throw new Error("could not find any net");
   }
+
+  if(input.type === GATE){
+    return input.index;
+  }
+
+  throw new Error(`something wrong here ${input.type}`);
 }
 
 export function makeGateInput(index : number) : CompiledComponentGateInputFromGate{

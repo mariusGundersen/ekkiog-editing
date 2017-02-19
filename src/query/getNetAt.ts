@@ -6,6 +6,8 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
+  SOURCE,
+  DRAIN,
   GROUND
 } from '../constants';
 
@@ -15,7 +17,9 @@ import {
   Gate,
   Underpass,
   Button,
-  Component
+  Component,
+  Source,
+  Drain
 } from '../types';
 
 export default function getNetAt(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
@@ -33,6 +37,8 @@ export default function getNetAt(enneaTree : TreeNode, x : number, y : number, d
       return getButtonNet(tile.data, x-tile.left, y-tile.top, dx, dy);
     case COMPONENT:
       return getComponentNet(tile.data, x-tile.left, y-tile.top, dx, dy);
+    case SOURCE:
+      return getSourceNet(tile.data, dx, dy);
     default:
       return GROUND;
   }
@@ -66,6 +72,14 @@ export function getComponentNet(component : Component, x : number, y : number, d
   const output = component.outputs.filter(output => output.x === x && output.y === y)[0];
   if(output && output.dx === -dx && output.dy === -dy){
     return output.net;
+  }else{
+    return GROUND;
+  }
+}
+
+export function getSourceNet(source : Source, dx : number, dy : number){
+  if(source.dx === -dx && source.dy === -dy){
+    return source.net;
   }else{
     return GROUND;
   }

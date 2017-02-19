@@ -4,20 +4,20 @@ import {
   CompiledComponent,
   CompiledComponentInput,
   CompiledComponentOutput
-} from './types';
+} from '../types';
 
 import {
   GATE,
   INPUT
- } from './constants';
+ } from '../constants';
 
-import createForest from './actions/createForest';
-import drawGate from './actions/drawGate';
-import drawWire from './actions/drawWire';
-import drawSource from './actions/drawSource';
-import drawDrain from './actions/drawDrain';
+import createForest from '../actions/createForest';
+import drawGate from '../actions/drawGate';
+import drawWire from '../actions/drawWire';
+import drawSource from '../actions/drawSource';
+import drawDrain from '../actions/drawDrain';
 
-import compile from './compile';
+import compile from './index';
 
 test('compile single gate', t => {
   const forest = drawGate(createForest(), 64, 64);
@@ -52,8 +52,7 @@ test('compile two gates', t => {
         type: 'ground'
       },
       inputB: {
-        type: GATE,
-        index: 1
+        type: 'ground'
       }
     },
     {
@@ -61,7 +60,8 @@ test('compile two gates', t => {
         type: 'ground'
       },
       inputB: {
-        type: 'ground'
+        type: GATE,
+        index: 0
       }
     }
   ]);
@@ -78,44 +78,43 @@ test('compile three gates', t => {
   forest = drawWire(forest, 60, 66);
   const compiled = compile(forest);
   t.deepEqual(compiled.gates, [
-      {
-        inputA: {
-          type: GATE,
-          index: 1
-        },
-        inputB: {
-          type: GATE,
-          index: 2
-        }
+    {
+      inputA: {
+        type: 'ground'
       },
-      {
-        inputA: {
-          type: 'ground'
-        },
-        inputB: {
-          type: 'ground'
-        }
-      },
-      {
-        inputA: {
-          type: 'ground'
-        },
-        inputB: {
-          type: 'ground'
-        }
+      inputB: {
+        type: 'ground'
       }
-    ]
-  );
+    },
+    {
+      inputA: {
+        type: 'ground'
+      },
+      inputB: {
+        type: 'ground'
+      }
+    },
+    {
+      inputA: {
+        type: GATE,
+        index: 0
+      },
+      inputB: {
+        type: GATE,
+        index: 1
+      }
+    }
+  ]);
 });
 
 
-test.only('compile NOT gate', t => {
+test('compile NOT gate', t => {
   let forest = createForest();
+  forest = drawSource(forest, 59, 64, 1, 0);
   forest = drawGate(forest, 64, 64);
   forest = drawWire(forest, 60, 63);
   forest = drawWire(forest, 60, 64);
   forest = drawWire(forest, 60, 65);
-  forest = drawSource(forest, 59, 64, 1, 0);
   forest = drawDrain(forest, 65, 64, 1, 0);
   const compiled = compile(forest);
   t.deepEqual(compiled, {
@@ -151,4 +150,40 @@ test.only('compile NOT gate', t => {
       }
     ]
   });
+});
+
+test('compile AND gate', t => {
+  let forest = createForest();
+  forest = drawSource(forest, 60, 63, 1, 0);
+  forest = drawSource(forest, 60, 65, 1, 0);
+  forest = drawGate(forest, 64, 64);
+  forest = drawWire(forest, 65, 63);
+  forest = drawWire(forest, 65, 64);
+  forest = drawWire(forest, 65, 65);
+  forest = drawGate(forest, 69, 64);
+  forest = drawDrain(forest, 70, 64, 1, 0);
+  const compiled = compile(forest);
+  t.deepEqual(compiled.gates, [
+      {
+        inputA: {
+          type: INPUT,
+          index: 0
+        },
+        inputB: {
+          type: INPUT,
+          index: 1
+        }
+      },
+      {
+        inputA: {
+          type: GATE,
+          index: 0
+        },
+        inputB: {
+          type: GATE,
+          index: 0
+        }
+      }
+    ]
+  );
 });

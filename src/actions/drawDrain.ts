@@ -14,7 +14,7 @@ import { getDrainNeighbouringNet } from '../query/getNeighbouringNets';
 
 export default function drawDrain(forest : Forest, x : number, y : number, dx : number, dy : number) : Forest {
   const buddyTree = forest.buddyTree;
-  const neighbouringNet = getDrainNeighbouringNet(forest.enneaTree, x, y, dx, dy);
+  const neighbouringNet = getDrainNeighbouringNet(forest.enneaTree, x, y, -dx, -dy);
 
   const net = neighbouringNet || GROUND;
   const data = {
