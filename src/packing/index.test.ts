@@ -125,15 +125,15 @@ test('compile NOT gate', t => {
         dx: 1,
         dy: 0,
         x: 0,
-        y: 0
+        y: 1
       }
     ],
     outputs: [
       {
         dx: 1,
         dy: 0,
-        x: 0,
-        y: 0,
+        x: 2,
+        y: 1,
         gate: 0
       }
     ],
@@ -163,7 +163,33 @@ test('compile AND gate', t => {
   forest = drawGate(forest, 69, 64);
   forest = drawDrain(forest, 70, 64, 1, 0);
   const compiled = compile(forest);
-  t.deepEqual(compiled.gates, [
+  t.deepEqual(compiled, {
+    width: 3,
+    height: 5,
+    inputs: [
+      {
+        dx: 1,
+        dy: 0,
+        x: 0,
+        y: 1
+      },
+      {
+        dx: 1,
+        dy: 0,
+        x: 0,
+        y: 3
+      }
+    ],
+    outputs: [
+      {
+        dx: 1,
+        dy: 0,
+        x: 2,
+        y: 1,
+        gate: 1
+      }
+    ],
+    gates: [
       {
         inputA: {
           type: INPUT,
@@ -185,5 +211,5 @@ test('compile AND gate', t => {
         }
       }
     ]
-  );
+  });
 });

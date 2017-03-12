@@ -22,6 +22,8 @@ import {
  INPUT
 } from '../constants';
 
+import layoutPins from './layoutPins';
+
 export default function compile(forest : Forest) : CompiledComponent {
   const enneaTree = forest.enneaTree;
   const forestContet = ennea.getAll(enneaTree, {
@@ -31,27 +33,23 @@ export default function compile(forest : Forest) : CompiledComponent {
     height: enneaTree.size
   });
 
-  const forestInputs = forestContet
+  const forestSources = forestContet
     .filter((node) : node is ennea.AreaData<Source> => node.data.type === SOURCE);
 
   const forestGates = forestContet
     .filter((node) : node is ennea.AreaData<Gate> => node.data.type === GATE);
 
-  const forestOutputs = forestContet
+  const forestDrains = forestContet
     .filter((node) : node is ennea.AreaData<Drain> => node.data.type === DRAIN);
 
-  const inputNets = forestInputs.map((input, index) => [input.data.net, makeInputInput(index)] as [number, CompiledComponentGateInputFromInput]);
+  const inputNets = forestSources.map((input, index) => [input.data.net, makeInputInput(index)] as [number, CompiledComponentGateInputFromInput]);
   const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as [number, CompiledComponentGateInputFromGate]);
 
   const netToIndexMap = new Map<number, CompiledComponentGateInput>([...inputNets, ...gateNets, [0, makeGroundInput()]]);
 
-  const inputs = forestInputs
-    .map(node => ({
-      dx: node.data.dx,
-      dy: node.data.dy,
-      x: 0,
-      y: 0
-    }));
+  const layout = layoutPins(
+    forestSources.map(({top: y, left: x, data: {dx, dy}}) => ({x, y, dx, dy})),
+    forestDrains.map(({top: y, left: x, data: {dx, dy}}) => ({x, y, dx, dy})));
 
   const gates = forestGates
     .map(node => ({
@@ -59,23 +57,22 @@ export default function compile(forest : Forest) : CompiledComponent {
       inputB: netToIndexMap.get(node.data.inputB) || makeGroundInput()
     }));
 
-  const outputs = forestOutputs
-    .map(node => ({
-      gate: getGateNet(netToIndexMap.get(node.data.net)),
-      dx: node.data.dx,
-      dy: node.data.dy,
-      x: 0,
-      y: 0
+  const outputs = layout.outputs
+    .map((node, index) => ({
+      gate: getGateNet(netToIndexMap.get(forestDrains[index].data.net)),
+      x: node.x,
+      y: node.y,
+      dx: node.dx,
+      dy: node.dy
     }));
 
-
   return {
-    width: Math.max(3, inDirection(inputs, 'dx'), inDirection(outputs, 'dx')),
-    height: Math.max(3, inDirection(inputs, 'dy'), inDirection(outputs, 'dy')),
-    inputs,
+    width: layout.width,
+    height: layout.height,
+    inputs: layout.inputs,
     outputs,
     gates
-  }
+  };
 }
 
 export function getGateNet(input? : CompiledComponentGateInput){
