@@ -92,10 +92,13 @@ export interface IHavePosition {
   y : number
 }
 
-export interface CompiledComponentInput extends IHaveDirection, IHavePosition {
+export interface CompiledComponentPin extends IHaveDirection, IHavePosition {
 }
 
-export interface CompiledComponentOutput extends IHaveDirection, IHavePosition {
+export interface CompiledComponentInput extends CompiledComponentPin {
+}
+
+export interface CompiledComponentOutput extends CompiledComponentPin {
   gate : number
 }
 
