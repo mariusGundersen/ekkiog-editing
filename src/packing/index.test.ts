@@ -124,7 +124,7 @@ test('compile NOT gate', t => {
     height: 3,
     inputs: [
       {
-        dx: 1,
+        dx: -1,
         dy: 0,
         x: 0,
         y: 1
@@ -162,13 +162,13 @@ test('compile AND gate', t => {
     height: 5,
     inputs: [
       {
-        dx: 1,
+        dx: -1,
         dy: 0,
         x: 0,
         y: 1
       },
       {
-        dx: 1,
+        dx: -1,
         dy: 0,
         x: 0,
         y: 3
@@ -216,13 +216,13 @@ test('compile XOR gate', t => {
     height: 5,
     inputs: [
       {
-        dx: 1,
+        dx: -1,
         dy: 0,
         x: 0,
         y: 1
       },
       {
-        dx: 1,
+        dx: -1,
         dy: 0,
         x: 0,
         y: 3
@@ -289,30 +289,68 @@ test('half adder', t => {
   forest = drawSource(forest, 59, 60, 1, 0);
   forest = drawWire(forest, 60, 60);
   forest = drawWire(forest, 61, 60);
-  forest = drawWire(forest, 62, 60);
+  forest = drawWire(forest, 62, 60);//and inputA
   forest = drawWire(forest, 62, 61);
   forest = drawUnderpass(forest, 62, 62);
   forest = drawWire(forest, 62, 63);
   forest = drawWire(forest, 62, 64);
-  forest = drawWire(forest, 62, 65);
+  forest = drawWire(forest, 62, 65);//xor inputA
 
   forest = drawSource(forest, 59, 62, 1, 0);
   forest = drawWire(forest, 60, 62);
   forest = drawWire(forest, 61, 62);
+  //forest = drawWire(forest, 62, 62);//and inputB
   forest = drawWire(forest, 60, 63);
   forest = drawWire(forest, 60, 64);
   forest = drawWire(forest, 60, 65);
   forest = drawWire(forest, 60, 66);
   forest = drawWire(forest, 60, 67);
   forest = drawWire(forest, 61, 67);
-  forest = drawWire(forest, 62, 67);
+  forest = drawWire(forest, 62, 67);//xor inputB
 
-  forest = drawComponent(forest, 64, 60, andComponent);
+  forest = drawComponent(forest, 64, 61, andComponent);
   forest = drawComponent(forest, 64, 66, xorComponent);
   forest = drawDrain(forest, 66, 60, 1, 0);
-  forest = drawDrain(forest, 66, 66, 1, 0);
+  forest = drawDrain(forest, 66, 65, 1, 0);
   const compiled = compile(forest);
-  console.log(compiled);
+  t.deepEqual(compiled, {
+    width: 3,
+    height: 5,
+    inputs: [
+      { x: 0, y: 1, dx: -1, dy: 0 },
+      { x: 0, y: 3, dx: -1, dy: 0 }
+    ],
+    outputs: [
+      { gate: 1, x: 2, y: 1, dx: 1, dy: 0 },
+      { gate: 5, x: 2, y: 3, dx: 1, dy: 0 }
+    ],
+    gates: [
+      {
+        inputA: { type: INPUT, index: 0 },
+        inputB: { type: INPUT, index: 1 }
+      },
+      {
+        inputA: { type: GATE, index: 0 },
+        inputB: { type: GATE, index: 0 }
+      },
+      {
+        inputA: { type: INPUT, index: 0 },
+        inputB: { type: GATE, index: 4 }
+      },
+      {
+        inputA: { type: GATE, index: 4 },
+        inputB: { type: INPUT, index: 1 }
+      },
+      {
+        inputA: { type: INPUT, index: 0 },
+        inputB: { type: INPUT, index: 1 }
+      },
+      {
+        inputA: { type: GATE, index: 2 },
+        inputB: { type: GATE, index: 3 }
+      }
+    ]
+  });
 })
 
 function andForest(forest = createForest()){

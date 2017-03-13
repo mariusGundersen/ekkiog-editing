@@ -35,8 +35,14 @@ export interface Component{
   type : 'component',
   inputs : {x : number, y : number, net : number, pointsTo : ComponentInputPointer[]}[],
   outputs : {x : number, y : number, net : number, dx : number, dy : number}[],
-  gates : {net : number, inputA : number, inputB : number}[],
+  gates : ComponentGate[],
   nets : number[]
+}
+
+export interface ComponentGate{
+  net : number,
+  inputA : number,
+  inputB : number
 }
 
 export interface ComponentInputPointer {

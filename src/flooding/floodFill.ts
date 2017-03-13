@@ -54,6 +54,8 @@ export default function floodFill(enneaTree : TreeNode, ...floodSources : FloodS
         return button(old, pos, ctx, queue);
       case COMPONENT:
         return component(old, pos, ctx, queue);
+      case SOURCE:
+        return source(old, pos, ctx, queue);
       case DRAIN:
         return drain(old, pos, ctx, queue);
       default:

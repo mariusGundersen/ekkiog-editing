@@ -54,8 +54,9 @@ export default function drawComponent(forest : Forest, x : number, y : number, s
     nets,
     inputs,
     outputs,
-    gates: source.gates.map((gate, index) => makeGate(gate, index, nets))
+    gates: source.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net)))
   };
+
   const box = {left:x, top:y, width:source.width, height:source.height};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
 
@@ -91,14 +92,18 @@ export function* makePointsTo(gates : MappedCompiledComponentGate[], index : num
     .map(g => ({net: g.net, input: 'B'} as ComponentInputPointer));
 }
 
-export function makeGate(gate : CompiledComponentGate, index : number, nets : number[]){
+export function makeGate(gate : CompiledComponentGate, index : number, gateNets : number[], inputNets : number[]){
   return {
-    net: nets[index],
+    net: gateNets[index],
     inputA: gate.inputA.type === 'gate'
-      ? nets[gate.inputA.index]
+      ? gateNets[gate.inputA.index]
+      : gate.inputA.type === 'input'
+      ? inputNets[gate.inputA.index]
       : GROUND,
     inputB: gate.inputB.type === 'gate'
-      ? nets[gate.inputB.index]
+      ? gateNets[gate.inputB.index]
+      : gate.inputB.type === 'input'
+      ? inputNets[gate.inputB.index]
       : GROUND
   };
 }
