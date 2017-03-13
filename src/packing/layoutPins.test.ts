@@ -89,7 +89,7 @@ test('two input left, one output right', t => {
   t.deepEqual(layout.outputs, [
     {
       x: 2,
-      y: 1,
+      y: 2,
       dx: 1,
       dy: 0
     }
@@ -156,7 +156,7 @@ test('full adder', t => {
   t.deepEqual(layout.outputs, [
     {
       x: 2,
-      y: 1,
+      y: 2,
       dx: 1,
       dy: 0
     },

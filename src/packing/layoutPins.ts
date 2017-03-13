@@ -66,14 +66,14 @@ export default function layoutPins(
     let index = ups.indexOf(pin);
     if(index >= 0){
       return {
-        x: index*2 + 1,
+        x: (width>>1) - (ups.length>>1) + index*2,
         y: 0
       };
     }
     index = downs.indexOf(pin);
     if(index >= 0){
       return {
-        x: index*2 + 1,
+        x: (width>>1) - (downs.length>>1) + index*2,
         y: height - 1
       };
     }
@@ -81,14 +81,14 @@ export default function layoutPins(
     if(index >= 0){
       return {
         x: 0,
-        y: index*2 + 1
+        y: (height>>1) - (lefts.length>>1) + index*2
       };
     }
     index = rights.indexOf(pin);
     if(index >= 0){
       return {
         x: width - 1,
-        y: index*2 + 1
+        y: (height>>1) - (rights.length>>1) + index*2
       };
     }
 

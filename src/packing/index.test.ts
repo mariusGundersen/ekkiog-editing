@@ -179,7 +179,7 @@ test('compile AND gate', t => {
         dx: 1,
         dy: 0,
         x: 2,
-        y: 1,
+        y: 2,
         gate: 1
       }
     ],
@@ -233,7 +233,7 @@ test('compile XOR gate', t => {
         dx: 1,
         dy: 0,
         x: 2,
-        y: 1,
+        y: 2,
         gate: 3
       }
     ],
@@ -310,8 +310,8 @@ test('half adder', t => {
 
   forest = drawComponent(forest, 64, 61, andComponent);
   forest = drawComponent(forest, 64, 66, xorComponent);
-  forest = drawDrain(forest, 66, 60, 1, 0);
-  forest = drawDrain(forest, 66, 65, 1, 0);
+  forest = drawDrain(forest, 66, 61, 1, 0);
+  forest = drawDrain(forest, 66, 66, 1, 0);
   const compiled = compile(forest);
   t.deepEqual(compiled, {
     width: 3,
