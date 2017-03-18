@@ -30,7 +30,7 @@ export default function drawButton(forest : Forest, x : number, y : number, dire
   const data = {
     type: BUTTON,
     net,
-    direction: direction,
+    direction,
     name: '',
     state: false
   };

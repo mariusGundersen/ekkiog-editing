@@ -14,9 +14,10 @@ import {
   UNDERPASS_TILE,
   GATE_TILE,
   BUTTON_TILE,
-  COMPONENT_TILE,
   BUTTON_OUTPUT_TILE,
-  DRAIN_TILE,
+  COMPONENT_TILE,
+  LIGHT_TILE,
+  LIGHT_INPUT_TILE,
   tile
 } from './tileConstants';
 
@@ -27,7 +28,7 @@ import {
   BUTTON,
   GROUND,
   COMPONENT,
-  DRAIN,
+  LIGHT,
   UPWARDS,
   LEFTWARDS,
   RIGHTWARDS,
@@ -41,7 +42,7 @@ import {
   Underpass,
   Button,
   Component,
-  Drain,
+  Light,
   Context,
   Direction
 } from '../types';
@@ -63,8 +64,8 @@ export default function set(context : Context, change : ChangeSet<Item>){
       return button(context, change, change.after);
     case COMPONENT:
       return component(context, change, change.after);
-    case DRAIN:
-      return drain(context, change, change.after);
+    case LIGHT:
+      return light(context, change, change.after);
   }
 }
 
@@ -136,9 +137,19 @@ export function component(context : Context, {top:y, left:x, width, height} : Ar
   }
 }
 
-export function drain(context : Context, {top:y, left:x} : Area, drain : Drain){
-  setMap(context, x, y, drainTile(drain.dx, drain.dy));
-  setNetMap(context, x, y, drain.net);
+export function light(context : Context, {top:y, left:x, width, height} : Area, light : Light){
+  const dx = directionToDx(light.direction);
+  const dy = directionToDy(light.direction);
+  for(let ty=0; ty<height; ty++){
+    for(let tx=0; tx<width; tx++){
+      if(tx-1 === -dx && ty-1 === -dy){
+        setMap(context, tx+x, ty+y, lightInputTile(dx, dy));
+      }else{
+        setMap(context, tx+x, ty+y, lightTile(tx, ty));
+      }
+      setNetMap(context, tx+x, ty+y, light.net);
+    }
+  }
 }
 
 export function gateTile(x : number, y : number){
@@ -147,6 +158,10 @@ export function gateTile(x : number, y : number){
 
 export function buttonTile(x : number, y : number){
   return BUTTON_TILE + tile(x, y);
+}
+
+export function lightTile(x : number, y : number){
+  return LIGHT_TILE + tile(x, y);
 }
 
 export function componentTile(x : number, y : number, w : number, h : number, ports : {x : number, y : number}[]){
@@ -205,18 +220,18 @@ function buttonOutputTile(dx : number, dy : number){
   }
 }
 
-function drainTile(dx : number, dy : number){
+function lightInputTile(dx : number, dy : number){
   if(dx === 0){
     if(dy === 1){
-      return DRAIN_TILE + tile(1, 0);
+      return LIGHT_INPUT_TILE + tile(1, 0);
     }else{
-      return DRAIN_TILE + tile(3, 0);
+      return LIGHT_INPUT_TILE + tile(3, 0);
     }
   }else{
     if(dx === 1){
-      return DRAIN_TILE + tile(2, 0);
+      return LIGHT_INPUT_TILE + tile(2, 0);
     }else{
-      return DRAIN_TILE + tile(0, 0);
+      return LIGHT_INPUT_TILE + tile(0, 0);
     }
   }
 }

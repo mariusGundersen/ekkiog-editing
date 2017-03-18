@@ -27,8 +27,8 @@ export function getButtonNeighbouringNets(enneaTree : TreeNode, x : number, y : 
   return getNetAt(enneaTree, x+dx*2, y+dy*2, dx, dy);
 }
 
-export function getDrainNeighbouringNet(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
-  return getNetAt(enneaTree, x+dx, y+dy, dx, dy);
+export function getLightNeighbouringNet(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
+  return getNetAt(enneaTree, x-dx*2, y-dy*2, -dx, -dy);
 }
 
 function unique(...iteratorA : IterableIterator<number>[]){

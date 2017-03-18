@@ -1,5 +1,5 @@
 import {
-  Drain,
+  Light,
   CompiledComponentPin,
   IHavePosition
 } from '../types';

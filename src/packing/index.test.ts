@@ -16,7 +16,7 @@ import drawGate from '../actions/drawGate';
 import drawWire from '../actions/drawWire';
 import drawUnderpass from '../actions/drawUnderpass';
 import drawButton from '../actions/drawButton';
-import drawDrain from '../actions/drawDrain';
+import drawLight from '../actions/drawLight';
 import drawComponent from '../actions/drawComponent';
 
 import compile from './index';
@@ -117,7 +117,7 @@ test('compile NOT gate', t => {
   forest = drawWire(forest, 60, 63);
   forest = drawWire(forest, 60, 64);
   forest = drawWire(forest, 60, 65);
-  forest = drawDrain(forest, 65, 64, 1, 0);
+  forest = drawLight(forest, 66, 64);
   const compiled = compile(forest);
   t.deepEqual(compiled, {
     width: 3,
@@ -310,8 +310,8 @@ test('half adder', t => {
 
   forest = drawComponent(forest, 64, 61, andComponent);
   forest = drawComponent(forest, 64, 66, xorComponent);
-  forest = drawDrain(forest, 66, 61, 1, 0);
-  forest = drawDrain(forest, 66, 66, 1, 0);
+  forest = drawLight(forest, 67, 61);
+  forest = drawLight(forest, 67, 66);
   const compiled = compile(forest);
   t.deepEqual(compiled, {
     width: 3,
@@ -370,7 +370,7 @@ function andForest(forest = createForest()){
 
   forest = drawGate(forest, 69, 64);
 
-  forest = drawDrain(forest, 70, 64, 1, 0);
+  forest = drawLight(forest, 71, 64);
   return forest;
 }
 
@@ -410,7 +410,7 @@ function xorForest(forest = createForest()){
   forest = drawWire(forest ,70, 66);
 
   forest = drawGate(forest, 74, 64);
-  forest = drawDrain(forest, 75, 64, 1, 0);
+  forest = drawLight(forest, 76, 64);
 
   return forest;
 }

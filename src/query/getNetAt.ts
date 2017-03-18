@@ -6,7 +6,7 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
-  DRAIN,
+  LIGHT,
   GROUND
 } from '../constants';
 
@@ -17,7 +17,7 @@ import {
   Underpass,
   Button,
   Component,
-  Drain
+  Light
 } from '../types';
 
 export default function getNetAt(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){

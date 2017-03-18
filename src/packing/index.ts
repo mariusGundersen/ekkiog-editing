@@ -5,7 +5,7 @@ import {
   Gate,
   Component,
   Button,
-  Drain,
+  Light,
   CompiledComponent,
   CompiledComponentGateInput,
   CompiledComponentGateInputFromGate,
@@ -18,7 +18,7 @@ import {
  GATE,
  COMPONENT,
  BUTTON,
- DRAIN,
+ LIGHT,
  INPUT
 } from '../constants';
 
@@ -47,8 +47,8 @@ export default function compile(forest : Forest) : CompiledComponent {
   const forestComponents = forestContet
     .filter((node) : node is ennea.AreaData<Component> => node.data.type === COMPONENT);
 
-  const forestDrains = forestContet
-    .filter((node) : node is ennea.AreaData<Drain> => node.data.type === DRAIN);
+  const forestLights = forestContet
+    .filter((node) : node is ennea.AreaData<Light> => node.data.type === LIGHT);
 
   const gatesInputs = forestGates
     .map(node => ({
@@ -66,7 +66,7 @@ export default function compile(forest : Forest) : CompiledComponent {
 
   const layout = layoutPins(
     forestButtons.map(({top: y, left: x, data: {direction}}) => ({x, y, dx: directionToDx(direction), dy: directionToDy(direction)})),
-    forestDrains.map(({top: y, left: x, data: {dx, dy}}) => ({x, y, dx, dy})));
+    forestLights.map(({top: y, left: x, data: {direction}}) => ({x, y, dx: directionToDx(direction), dy: directionToDy(direction)})));
 
   const inputs = layout.inputs
     .map(input => ({
@@ -84,7 +84,7 @@ export default function compile(forest : Forest) : CompiledComponent {
 
   const outputs = layout.outputs
     .map((node, index) => ({
-      gate: getGateNet(netToIndexMap.get(forestDrains[index].data.net), index),
+      gate: getGateNet(netToIndexMap.get(forestLights[index].data.net), index),
       x: node.x,
       y: node.y,
       dx: node.dx,

@@ -69,10 +69,11 @@ export interface ComponentInputPointer {
   net : number
 }
 
-export interface Drain extends IHaveDirection{
-  type : 'drain',
+export interface Light {
+  type : 'light',
   net : number,
-  name? : string
+  name? : string,
+  direction : Direction
 }
 
 export type Item = Wire
@@ -80,7 +81,7 @@ export type Item = Wire
   | Underpass
   | Button
   | Component
-  | Drain;
+  | Light;
 
 
 export interface Context{
