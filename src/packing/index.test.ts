@@ -2,6 +2,7 @@ import test from 'ava';
 
 import {
   CompiledComponent,
+  CompiledComponentGate,
   CompiledComponentInput,
   CompiledComponentOutput
 } from '../types';
@@ -42,6 +43,17 @@ test('compile single gate', t => {
   });
 });
 
+test('compile lightbulb with ground net', t => {
+  const forest = drawLight(createForest(), 64, 64);
+  const compiled = compile(forest);
+  t.deepEqual(compiled, {
+    width: 3,
+    height: 3,
+    inputs: [] as CompiledComponentInput[],
+    outputs: [] as CompiledComponentOutput[],
+    gates: [] as CompiledComponentGate[]
+  });
+});
 
 test('compile two gates', t => {
   let forest = createForest();
@@ -154,7 +166,7 @@ test('compile NOT gate', t => {
   });
 });
 
-test.only('compile AND gate', t => {
+test('compile AND gate', t => {
   const forest = andForest();
   const compiled = compile(forest);
   t.deepEqual(compiled, {
@@ -296,7 +308,7 @@ test('half adder', t => {
   forest = drawWire(forest, 62, 64);
   forest = drawWire(forest, 62, 65);//xor inputA
 
-  forest = drawButton(forest, 58, 62);
+  forest = drawButton(forest, 58, 63);
   forest = drawWire(forest, 60, 62);
   forest = drawWire(forest, 61, 62);
   //forest = drawWire(forest, 62, 62);//and inputB
@@ -351,7 +363,29 @@ test('half adder', t => {
       }
     ]
   });
-})
+});
+
+
+test('xor inside xor', t => {
+  let forest = xorForest();
+  const xorComponent = compile(forest);
+  forest = drawButton(forest, 58, 40);
+  forest = drawWire(forest, 60, 40);
+  forest = drawWire(forest, 60, 41);
+
+  forest = drawButton(forest, 58, 44);
+  forest = drawWire(forest, 60, 44);
+  forest = drawWire(forest, 60, 43);
+
+  forest = drawComponent(forest, 64, 42, xorComponent);
+  forest = drawLight(forest, 67, 42);
+
+  const compiled = compile(forest);
+
+  t.is(compiled.gates.length, 8);
+  t.is(compiled.inputs.length, 4);
+  t.is(compiled.outputs.length, 2);
+});
 
 function andForest(forest = createForest()){
   forest = drawButton(forest, 58, 62);

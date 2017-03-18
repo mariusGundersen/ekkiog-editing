@@ -19,7 +19,8 @@ import {
  COMPONENT,
  BUTTON,
  LIGHT,
- INPUT
+ INPUT,
+ GROUND
 } from '../constants';
 
 import {
@@ -48,7 +49,7 @@ export default function compile(forest : Forest) : CompiledComponent {
     .filter((node) : node is ennea.AreaData<Component> => node.data.type === COMPONENT);
 
   const forestLights = forestContet
-    .filter((node) : node is ennea.AreaData<Light> => node.data.type === LIGHT);
+    .filter((node) : node is ennea.AreaData<Light> => node.data.type === LIGHT && node.data.net !== GROUND);
 
   const gatesInputs = forestGates
     .map(node => ({
