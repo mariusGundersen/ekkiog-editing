@@ -15,6 +15,8 @@ import {
   GATE_TILE,
   BUTTON_TILE,
   COMPONENT_TILE,
+  SOURCE_TILE,
+  DRAIN_TILE,
   tile
 } from './tileConstants';
 
@@ -24,10 +26,22 @@ import {
   UNDERPASS,
   BUTTON,
   GROUND,
-  COMPONENT
+  COMPONENT,
+  SOURCE,
+  DRAIN,
 } from '../constants';
 
-import { Item, Wire, Gate, Underpass, Button, Component, Context } from '../types';
+import {
+  Item,
+  Wire,
+  Gate,
+  Underpass,
+  Button,
+  Component,
+  Source,
+  Drain,
+  Context
+} from '../types';
 
 export default function set(context : Context, change : ChangeSet<Item>){
   switch(change.after.type){
@@ -41,6 +55,10 @@ export default function set(context : Context, change : ChangeSet<Item>){
       return button(context, change, change.after);
     case COMPONENT:
       return component(context, change, change.after);
+    case SOURCE:
+      return source(context, change, change.after);
+    case DRAIN:
+      return drain(context, change, change.after);
   }
 }
 
@@ -107,6 +125,17 @@ export function component(context : Context, {top:y, left:x, width, height} : Ar
   }
 }
 
+export function source(context : Context, {top:y, left:x} : Area, source : Source){
+  setMap(context, x, y, sourceTile(source.dx, source.dy));
+  setNetMap(context, x, y, source.net);
+  setGate(context, source.net, 0, 0);
+}
+
+export function drain(context : Context, {top:y, left:x} : Area, drain : Drain){
+  setMap(context, x, y, drainTile(drain.dx, drain.dy));
+  setNetMap(context, x, y, drain.net);
+}
+
 export function gateTile(x : number, y : number){
   return GATE_TILE + tile(x, y);
 }
@@ -151,6 +180,38 @@ export function componentTile(x : number, y : number, w : number, h : number, po
       }
     }else{
       return COMPONENT_TILE + tile(1, 1);
+    }
+  }
+}
+
+function sourceTile(dx : number, dy : number){
+  if(dx === 0){
+    if(dy === 1){
+      return SOURCE_TILE + tile(3, 0);
+    }else{
+      return SOURCE_TILE + tile(1, 0);
+    }
+  }else{
+    if(dx === 1){
+      return SOURCE_TILE + tile(0, 0);
+    }else{
+      return SOURCE_TILE + tile(2, 0);
+    }
+  }
+}
+
+function drainTile(dx : number, dy : number){
+  if(dx === 0){
+    if(dy === 1){
+      return DRAIN_TILE + tile(1, 0);
+    }else{
+      return DRAIN_TILE + tile(3, 0);
+    }
+  }else{
+    if(dx === 1){
+      return DRAIN_TILE + tile(2, 0);
+    }else{
+      return DRAIN_TILE + tile(0, 0);
     }
   }
 }
