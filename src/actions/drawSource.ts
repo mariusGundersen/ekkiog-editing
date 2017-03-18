@@ -26,7 +26,8 @@ export default function drawSource(forest : Forest, x : number, y : number, dx :
     type: SOURCE,
     dx,
     dy,
-    net
+    net,
+    name: ''
   };
   const box = {left:x, top:y};
   let enneaTree = ennea.set(forest.enneaTree, data, box);

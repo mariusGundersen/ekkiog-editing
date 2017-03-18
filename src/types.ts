@@ -33,10 +33,25 @@ export interface Button{
 
 export interface Component{
   type : 'component',
-  inputs : {x : number, y : number, net : number, pointsTo : ComponentInputPointer[]}[],
-  outputs : {x : number, y : number, net : number, dx : number, dy : number}[],
+  inputs : ComponentInput[],
+  outputs : ComponentOutput[],
   gates : ComponentGate[],
   nets : number[]
+}
+
+export interface ComponentInput{
+  x : number,
+  y : number,
+  net : number,
+  pointsTo : ComponentInputPointer[]
+}
+
+export interface ComponentOutput{
+  x : number,
+  y : number,
+  net : number,
+  dx : number,
+  dy : number
 }
 
 export interface ComponentGate{
@@ -52,12 +67,14 @@ export interface ComponentInputPointer {
 
 export interface Source extends IHaveDirection{
   type : 'source',
-  net : number
+  net : number,
+  name? : string
 }
 
 export interface Drain extends IHaveDirection{
   type : 'drain',
-  net : number
+  net : number,
+  name? : string
 }
 
 export type Item = Wire
@@ -80,14 +97,6 @@ export interface Texture {
   set(x : number, y : number, net : number) : void
 }
 
-export interface CompiledComponent {
-  width : number,
-  height : number,
-  gates : CompiledComponentGate[],
-  inputs : CompiledComponentInput[],
-  outputs : CompiledComponentOutput[]
-}
-
 export interface IHaveDirection {
   dx : number,
   dy : number
@@ -98,7 +107,17 @@ export interface IHavePosition {
   y : number
 }
 
+export interface CompiledComponent {
+  width : number,
+  height : number,
+  gates : CompiledComponentGate[],
+  inputs : CompiledComponentInput[],
+  outputs : CompiledComponentOutput[],
+  name? : string
+}
+
 export interface CompiledComponentPin extends IHaveDirection, IHavePosition {
+  name? : string
 }
 
 export interface CompiledComponentInput extends CompiledComponentPin {

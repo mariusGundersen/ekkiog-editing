@@ -21,7 +21,8 @@ export default function drawDrain(forest : Forest, x : number, y : number, dx : 
     type: DRAIN,
     dx,
     dy,
-    net
+    net,
+    name: ''
   };
   const box = {left:x, top:y};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
