@@ -11,7 +11,6 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
-  SOURCE,
   DRAIN,
   GROUND
 } from '../constants';
@@ -22,7 +21,6 @@ import gate from './gate';
 import underpass from './underpass';
 import button from './button';
 import component from './component';
-import source from './source';
 import drain from './drain';
 
 import {
@@ -54,8 +52,6 @@ export default function floodFill(enneaTree : TreeNode, ...floodSources : FloodS
         return button(old, pos, ctx, queue);
       case COMPONENT:
         return component(old, pos, ctx, queue);
-      case SOURCE:
-        return source(old, pos, ctx, queue);
       case DRAIN:
         return drain(old, pos, ctx, queue);
       default:
@@ -85,12 +81,9 @@ export function* make(floodSources : FloodSource[]) : IterableIterator<BoxContex
         yield makePos({top: floodSource.top, left: floodSource.left}, GROUND, 0, -1);
         break;
       case BUTTON:
-        yield makePos({top: floodSource.top+1, left: floodSource.left+2}, floodSource.net, 1, 0);
-        break;
-      case COMPONENT:
         yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);
         break;
-      case SOURCE:
+      case COMPONENT:
         yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);
         break;
     }

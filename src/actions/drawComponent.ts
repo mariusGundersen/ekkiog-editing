@@ -24,15 +24,15 @@ export interface MappedCompiledComponentGate extends CompiledComponentGate {
   net : number
 }
 
-export default function drawComponent(forest : Forest, x : number, y : number, source : CompiledComponent){
-  x -= source.width>>1;
-  y -= source.height>>1;
-  const {tree: buddyTree, ...addresses} = buddy.allocate(forest.buddyTree, source.gates.length);
+export default function drawComponent(forest : Forest, x : number, y : number, packagedComponent : CompiledComponent){
+  x -= packagedComponent.width>>1;
+  y -= packagedComponent.height>>1;
+  const {tree: buddyTree, ...addresses} = buddy.allocate(forest.buddyTree, packagedComponent.gates.length);
   const nets = [...buddy.range(addresses)];
 
-  const gates = source.gates.map((gate, index) => ({...gate, net: nets[index]}));
+  const gates = packagedComponent.gates.map((gate, index) => ({...gate, net: nets[index]}));
 
-  const inputs = source.inputs.map((input, index) => ({
+  const inputs = packagedComponent.inputs.map((input, index) => ({
     x: input.x,
     y: input.y,
     dx: input.dx,
@@ -41,7 +41,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, s
     pointsTo: [...makePointsTo(gates, index)]
   }));
 
-  const outputs = source.outputs.map(output => ({
+  const outputs = packagedComponent.outputs.map(output => ({
     x: output.x,
     y: output.y,
     dx: output.dx,
@@ -54,10 +54,10 @@ export default function drawComponent(forest : Forest, x : number, y : number, s
     nets,
     inputs,
     outputs,
-    gates: source.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net)))
+    gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net)))
   };
 
-  const box = {left:x, top:y, width:source.width, height:source.height};
+  const box = {left:x, top:y, width:packagedComponent.width, height:packagedComponent.height};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
 
   if(forest.enneaTree === enneaTree){

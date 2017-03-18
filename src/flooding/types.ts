@@ -2,6 +2,10 @@ import {
   Pos
 } from 'ennea-tree';
 
+import {
+  Direction
+} from '../types';
+
 export interface Context {
   net : number,
   pos : Pos,
@@ -25,7 +29,9 @@ export interface FloodSourceUnderpass extends Pos {
 
 export interface FloodSourceButton extends Pos {
   type : 'button',
-  net : number
+  net : number,
+  dx : number,
+  dy : number
 }
 
 export interface FloodSourceComponent extends Pos {
@@ -35,16 +41,8 @@ export interface FloodSourceComponent extends Pos {
   dy : number
 }
 
-export interface FloodSourceSource extends Pos {
-  type : 'source',
-  net : number,
-  dx : number,
-  dy : number
-}
-
 export type FloodSource = FloodSourceWire
   | FloodSourceGate
   | FloodSourceUnderpass
   | FloodSourceButton
-  | FloodSourceComponent
-  | FloodSourceSource;
+  | FloodSourceComponent;

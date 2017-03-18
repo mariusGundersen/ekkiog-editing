@@ -6,7 +6,6 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
-  SOURCE,
   DRAIN,
   GROUND
 } from '../constants';
@@ -18,7 +17,6 @@ import {
   Underpass,
   Button,
   Component,
-  Source,
   Drain
 } from '../types';
 
@@ -37,8 +35,6 @@ export default function getNetAt(enneaTree : TreeNode, x : number, y : number, d
       return getButtonNet(tile.data, x-tile.left, y-tile.top, dx, dy);
     case COMPONENT:
       return getComponentNet(tile.data, x-tile.left, y-tile.top, dx, dy);
-    case SOURCE:
-      return getSourceNet(tile.data, dx, dy);
     default:
       return GROUND;
   }
@@ -61,10 +57,24 @@ export function getUnderpassNet(underpass : Underpass, dx : number, dy : number,
 }
 
 export function getButtonNet(button : Button, x : number, y : number, dx : number, dy : number){
-  if(x === 2 && y === 1 && dx === -1 && dy === 0){
-    return button.net;
-  }else{
-    return GROUND;
+  switch(button.direction){
+    case 'upwards':
+      return (x === 1 && y === 0 && dx === 0 && dy === 1)
+        ? button.net
+        : GROUND;
+    case 'downwards':
+      return (x === 1 && y === 2 && dx === 0 && dy === -1)
+        ? button.net
+        : GROUND;
+    case 'leftwards':
+      return (x === 0 && y === 1 && dx === 1 && dy === 0)
+        ? button.net
+        : GROUND;
+    case 'rightwards':
+    default:
+      return (x === 2 && y === 1 && dx === -1 && dy === 0)
+        ? button.net
+        : GROUND;
   }
 }
 
@@ -72,14 +82,6 @@ export function getComponentNet(component : Component, x : number, y : number, d
   const output = component.outputs.filter(output => output.x === x && output.y === y)[0];
   if(output && output.dx === -dx && output.dy === -dy){
     return output.net;
-  }else{
-    return GROUND;
-  }
-}
-
-export function getSourceNet(source : Source, dx : number, dy : number){
-  if(source.dx === -dx && source.dy === -dy){
-    return source.net;
   }else{
     return GROUND;
   }

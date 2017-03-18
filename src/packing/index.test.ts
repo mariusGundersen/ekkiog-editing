@@ -15,7 +15,7 @@ import createForest from '../actions/createForest';
 import drawGate from '../actions/drawGate';
 import drawWire from '../actions/drawWire';
 import drawUnderpass from '../actions/drawUnderpass';
-import drawSource from '../actions/drawSource';
+import drawButton from '../actions/drawButton';
 import drawDrain from '../actions/drawDrain';
 import drawComponent from '../actions/drawComponent';
 
@@ -112,7 +112,7 @@ test('compile three gates', t => {
 
 test('compile NOT gate', t => {
   let forest = createForest();
-  forest = drawSource(forest, 59, 64, 1, 0);
+  forest = drawButton(forest, 58, 64);
   forest = drawGate(forest, 64, 64);
   forest = drawWire(forest, 60, 63);
   forest = drawWire(forest, 60, 64);
@@ -154,7 +154,7 @@ test('compile NOT gate', t => {
   });
 });
 
-test('compile AND gate', t => {
+test.only('compile AND gate', t => {
   const forest = andForest();
   const compiled = compile(forest);
   t.deepEqual(compiled, {
@@ -286,7 +286,7 @@ test('half adder', t => {
   const andComponent = compile(andForest());
   const xorComponent = compile(xorForest());
   let forest = createForest();
-  forest = drawSource(forest, 59, 60, 1, 0);
+  forest = drawButton(forest, 58, 60);
   forest = drawWire(forest, 60, 60);
   forest = drawWire(forest, 61, 60);
   forest = drawWire(forest, 62, 60);//and inputA
@@ -296,7 +296,7 @@ test('half adder', t => {
   forest = drawWire(forest, 62, 64);
   forest = drawWire(forest, 62, 65);//xor inputA
 
-  forest = drawSource(forest, 59, 62, 1, 0);
+  forest = drawButton(forest, 58, 62);
   forest = drawWire(forest, 60, 62);
   forest = drawWire(forest, 61, 62);
   //forest = drawWire(forest, 62, 62);//and inputB
@@ -354,20 +354,29 @@ test('half adder', t => {
 })
 
 function andForest(forest = createForest()){
-  forest = drawSource(forest, 60, 63, 1, 0);
-  forest = drawSource(forest, 60, 65, 1, 0);
+  forest = drawButton(forest, 58, 62);
+  forest = drawWire(forest, 60, 62);
+  forest = drawWire(forest, 60, 63);
+
+  forest = drawButton(forest, 58, 66);
+  forest = drawWire(forest, 60, 66);
+  forest = drawWire(forest, 60, 65);
+
   forest = drawGate(forest, 64, 64);
+
   forest = drawWire(forest, 65, 63);
   forest = drawWire(forest, 65, 64);
   forest = drawWire(forest, 65, 65);
+
   forest = drawGate(forest, 69, 64);
+
   forest = drawDrain(forest, 70, 64, 1, 0);
   return forest;
 }
 
 function xorForest(forest = createForest()){
-  forest = drawSource(forest, 59, 62, 1, 0);
-  forest = drawSource(forest, 59, 67, 1, 0);
+  forest = drawButton(forest, 58, 62);
+  forest = drawButton(forest, 58, 66);
   forest = drawWire(forest, 60, 63);
   forest = drawWire(forest, 60, 62);
   forest = drawWire(forest, 60, 61);

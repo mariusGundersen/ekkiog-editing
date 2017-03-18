@@ -1,6 +1,8 @@
 import { Node } from 'ennea-tree';
 import { Node as BuddyNode } from 'buddy-tree';
 
+export type Direction = 'rightwards' | 'downwards' | 'leftwards' | 'upwards';
+
 export interface Forest {
   buddyTree : BuddyNode,
   enneaTree : TreeNode
@@ -28,6 +30,8 @@ export interface Underpass{
 export interface Button{
   type : 'button',
   net : number,
+  name? : string,
+  direction : Direction,
   state : boolean
 }
 
@@ -65,12 +69,6 @@ export interface ComponentInputPointer {
   net : number
 }
 
-export interface Source extends IHaveDirection{
-  type : 'source',
-  net : number,
-  name? : string
-}
-
 export interface Drain extends IHaveDirection{
   type : 'drain',
   net : number,
@@ -82,7 +80,6 @@ export type Item = Wire
   | Underpass
   | Button
   | Component
-  | Source
   | Drain;
 
 

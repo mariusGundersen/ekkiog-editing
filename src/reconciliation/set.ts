@@ -15,7 +15,7 @@ import {
   GATE_TILE,
   BUTTON_TILE,
   COMPONENT_TILE,
-  SOURCE_TILE,
+  BUTTON_OUTPUT_TILE,
   DRAIN_TILE,
   tile
 } from './tileConstants';
@@ -27,8 +27,11 @@ import {
   BUTTON,
   GROUND,
   COMPONENT,
-  SOURCE,
   DRAIN,
+  UPWARDS,
+  LEFTWARDS,
+  RIGHTWARDS,
+  DOWNWARDS
 } from '../constants';
 
 import {
@@ -38,10 +41,15 @@ import {
   Underpass,
   Button,
   Component,
-  Source,
   Drain,
-  Context
+  Context,
+  Direction
 } from '../types';
+
+import {
+  directionToDx,
+  directionToDy
+} from '../utils';
 
 export default function set(context : Context, change : ChangeSet<Item>){
   switch(change.after.type){
@@ -55,8 +63,6 @@ export default function set(context : Context, change : ChangeSet<Item>){
       return button(context, change, change.after);
     case COMPONENT:
       return component(context, change, change.after);
-    case SOURCE:
-      return source(context, change, change.after);
     case DRAIN:
       return drain(context, change, change.after);
   }
@@ -85,13 +91,18 @@ export function underpass(context : Context, {top:y, left:x} : Area, underpass :
 }
 
 export function button(context : Context, {top:y, left:x, width, height} : Area, button : Button){
+  const dx = directionToDx(button.direction);
+  const dy = directionToDy(button.direction);
   for(let ty=0; ty<height; ty++){
     for(let tx=0; tx<width; tx++){
-      setMap(context, tx+x, ty+y, buttonTile(tx, ty));
+      if(tx-1 === dx && ty-1 === dy){
+        setMap(context, tx+x, ty+y, buttonOutputTile(dx, dy));
+      }else{
+        setMap(context, tx+x, ty+y, buttonTile(tx, ty));
+      }
+      setNetMap(context, tx+x, ty+y, button.net);
     }
   }
-  setNetMap(context, x+2, y+1, button.net);
-  setNetMap(context, x+1, y+1, button.net);
   const state = button.state ? 0 : 1;
   setGate(context, button.net, state, state);
 }
@@ -123,12 +134,6 @@ export function component(context : Context, {top:y, left:x, width, height} : Ar
   for(const output of component.outputs){
     setNetMap(context, x+output.x, y+output.y, output.net);
   }
-}
-
-export function source(context : Context, {top:y, left:x} : Area, source : Source){
-  setMap(context, x, y, sourceTile(source.dx, source.dy));
-  setNetMap(context, x, y, source.net);
-  setGate(context, source.net, 0, 0);
 }
 
 export function drain(context : Context, {top:y, left:x} : Area, drain : Drain){
@@ -184,18 +189,18 @@ export function componentTile(x : number, y : number, w : number, h : number, po
   }
 }
 
-function sourceTile(dx : number, dy : number){
+function buttonOutputTile(dx : number, dy : number){
   if(dx === 0){
     if(dy === 1){
-      return SOURCE_TILE + tile(3, 0);
+      return BUTTON_OUTPUT_TILE + tile(3, 0);
     }else{
-      return SOURCE_TILE + tile(1, 0);
+      return BUTTON_OUTPUT_TILE + tile(1, 0);
     }
   }else{
     if(dx === 1){
-      return SOURCE_TILE + tile(0, 0);
+      return BUTTON_OUTPUT_TILE + tile(0, 0);
     }else{
-      return SOURCE_TILE + tile(2, 0);
+      return BUTTON_OUTPUT_TILE + tile(2, 0);
     }
   }
 }

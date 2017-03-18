@@ -4,7 +4,7 @@ import {
   Forest,
   Gate,
   Component,
-  Source,
+  Button,
   Drain,
   CompiledComponent,
   CompiledComponentGateInput,
@@ -17,10 +17,15 @@ import {
 import {
  GATE,
  COMPONENT,
- SOURCE,
+ BUTTON,
  DRAIN,
  INPUT
 } from '../constants';
+
+import {
+  directionToDx,
+  directionToDy
+} from '../utils';
 
 import layoutPins from './layoutPins';
 
@@ -33,8 +38,8 @@ export default function compile(forest : Forest) : CompiledComponent {
     height: enneaTree.size
   });
 
-  const forestSources = forestContet
-    .filter((node) : node is ennea.AreaData<Source> => node.data.type === SOURCE);
+  const forestButtons = forestContet
+    .filter((node) : node is ennea.AreaData<Button> => node.data.type === BUTTON);
 
   const forestGates = forestContet
     .filter((node) : node is ennea.AreaData<Gate> => node.data.type === GATE);
@@ -53,14 +58,14 @@ export default function compile(forest : Forest) : CompiledComponent {
 
   const componentsInputs = forestComponents.reduce((inputs, component) => inputs.concat(component.data.gates), [] as ComponentGate[]);
 
-  const inputNets = forestSources.map((input, index) => [input.data.net, makeInputInput(index)] as [number, CompiledComponentGateInputFromInput]);
+  const inputNets = forestButtons.map((input, index) => [input.data.net, makeInputInput(index)] as [number, CompiledComponentGateInputFromInput]);
   const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as [number, CompiledComponentGateInputFromGate]);
   const allNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [gate.net, makeGateInput(index + gates.length)] as [number, CompiledComponentGateInputFromGate])), gateNets);
 
   const netToIndexMap = new Map<number, CompiledComponentGateInput>([...inputNets, ...allNets, [0, makeGroundInput()]]);
 
   const layout = layoutPins(
-    forestSources.map(({top: y, left: x, data: {dx, dy}}) => ({x, y, dx, dy})),
+    forestButtons.map(({top: y, left: x, data: {direction}}) => ({x, y, dx: directionToDx(direction), dy: directionToDy(direction)})),
     forestDrains.map(({top: y, left: x, data: {dx, dy}}) => ({x, y, dx, dy})));
 
   const inputs = layout.inputs

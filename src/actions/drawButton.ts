@@ -2,18 +2,27 @@ import * as ennea from 'ennea-tree';
 import {allocate} from 'buddy-tree';
 
 import {
-  BUTTON
+  BUTTON,
+  RIGHTWARDS,
+  GROUND
 } from '../constants';
 
 import {getButtonNeighbouringNets} from '../query/getNeighbouringNets';
 import floodFill from '../flooding/floodFill';
 
-import { Forest, Button } from '../types';
+import { Forest, Button, Direction } from '../types';
 
-export default function drawButton(forest : Forest, x : number, y : number){
-  const neighbouringNets = getButtonNeighbouringNets(forest.enneaTree, x, y);
+import {
+  directionToDx,
+  directionToDy
+} from '../utils';
 
-  if(neighbouringNets.length === 1){
+export default function drawButton(forest : Forest, x : number, y : number, direction : Direction = RIGHTWARDS){
+  const dx = directionToDx(direction);
+  const dy = directionToDy(direction);
+  const neighbouringNet = getButtonNeighbouringNets(forest.enneaTree, x, y, dx, dy);
+
+  if(neighbouringNet !== GROUND){
     return forest;
   }
 
@@ -21,9 +30,11 @@ export default function drawButton(forest : Forest, x : number, y : number){
   const data = {
     type: BUTTON,
     net,
+    direction: direction,
+    name: '',
     state: false
   };
-  const box = {left:x-2, top:y-1, width:3, height:3};
+  const box = {left:x-1, top:y-1, width:3, height:3};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
 
   if(forest.enneaTree === enneaTree){
@@ -31,10 +42,12 @@ export default function drawButton(forest : Forest, x : number, y : number){
   }
 
   enneaTree = floodFill(enneaTree, {
-    left: box.left,
-    top: box.top,
+    left: x + dx,
+    top: y + dy,
     type: data.type,
-    net: data.net
+    net: data.net,
+    dx,
+    dy
   });
 
   return {
