@@ -6,6 +6,7 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
+  LIGHT,
   GROUND
 } from '../constants';
 
@@ -15,7 +16,8 @@ import {
   Gate,
   Underpass,
   Button,
-  Component
+  Component,
+  Light
 } from '../types';
 
 export default function getNetAt(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
@@ -55,10 +57,24 @@ export function getUnderpassNet(underpass : Underpass, dx : number, dy : number,
 }
 
 export function getButtonNet(button : Button, x : number, y : number, dx : number, dy : number){
-  if(x === 2 && y === 1 && dx === -1 && dy === 0){
-    return button.net;
-  }else{
-    return GROUND;
+  switch(button.direction){
+    case 'upwards':
+      return (x === 1 && y === 0 && dx === 0 && dy === 1)
+        ? button.net
+        : GROUND;
+    case 'downwards':
+      return (x === 1 && y === 2 && dx === 0 && dy === -1)
+        ? button.net
+        : GROUND;
+    case 'leftwards':
+      return (x === 0 && y === 1 && dx === 1 && dy === 0)
+        ? button.net
+        : GROUND;
+    case 'rightwards':
+    default:
+      return (x === 2 && y === 1 && dx === -1 && dy === 0)
+        ? button.net
+        : GROUND;
   }
 }
 

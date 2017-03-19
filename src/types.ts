@@ -1,6 +1,8 @@
 import { Node } from 'ennea-tree';
 import { Node as BuddyNode } from 'buddy-tree';
 
+export type Direction = 'rightwards' | 'downwards' | 'leftwards' | 'upwards';
+
 export interface Forest {
   buddyTree : BuddyNode,
   enneaTree : TreeNode
@@ -28,15 +30,38 @@ export interface Underpass{
 export interface Button{
   type : 'button',
   net : number,
+  name? : string,
+  direction : Direction,
   state : boolean
 }
 
 export interface Component{
   type : 'component',
-  inputs : {x : number, y : number, net : number, pointsTo : ComponentInputPointer[]}[],
-  outputs : {x : number, y : number, net : number, dx : number, dy : number}[],
-  gates : {net : number, inputA : number, inputB : number}[],
+  inputs : ComponentInput[],
+  outputs : ComponentOutput[],
+  gates : ComponentGate[],
   nets : number[]
+}
+
+export interface ComponentInput{
+  x : number,
+  y : number,
+  net : number,
+  pointsTo : ComponentInputPointer[]
+}
+
+export interface ComponentOutput{
+  x : number,
+  y : number,
+  net : number,
+  dx : number,
+  dy : number
+}
+
+export interface ComponentGate{
+  net : number,
+  inputA : number,
+  inputB : number
 }
 
 export interface ComponentInputPointer {
@@ -44,12 +69,11 @@ export interface ComponentInputPointer {
   net : number
 }
 
-export interface Input{
-  type : 'input'
-}
-
-export interface Output{
-  type : 'output'
+export interface Light {
+  type : 'light',
+  net : number,
+  name? : string,
+  direction : Direction
 }
 
 export type Item = Wire
@@ -57,8 +81,7 @@ export type Item = Wire
   | Underpass
   | Button
   | Component
-  | Input
-  | Output;
+  | Light;
 
 
 export interface Context{
@@ -72,32 +95,62 @@ export interface Texture {
   set(x : number, y : number, net : number) : void
 }
 
-export interface ComponentSource {
+export interface IHaveDirection {
+  dx : number,
+  dy : number
+}
+
+export interface IHavePosition {
+  x : number,
+  y : number
+}
+
+export interface CompiledComponent {
   width : number,
   height : number,
-  gates : ComponentSourceGate[],
-  inputs : {
-    x : number,
-    y : number,
-    dx : number,
-    dy : number
-  }[]
-  outputs : {
-    x : number,
-    y : number,
-    dx : number,
-    dy : number,
-    gate : number
-  }[]
+  gates : CompiledComponentGate[],
+  inputs : CompiledComponentInput[],
+  outputs : CompiledComponentOutput[],
+  name? : string
 }
 
-export interface ComponentSourceGate {
-  net : number,
-  inputA : ComponentSourceGateInput,
-  inputB : ComponentSourceGateInput
+export interface CompiledComponentPin extends IHaveDirection, IHavePosition {
+  name? : string
 }
 
-export interface ComponentSourceGateInput{
-  type : 'gate' | 'input',
+export interface CompiledComponentInput extends CompiledComponentPin {
+}
+
+export interface CompiledComponentOutput extends CompiledComponentPin {
+  gate : number
+}
+
+export interface CompiledComponentGate {
+  inputA : CompiledComponentGateInput,
+  inputB : CompiledComponentGateInput
+}
+
+export type CompiledComponentGateInput =
+  CompiledComponentGateInputFromGate
+  | CompiledComponentGateInputFromInput
+  | CompiledComponentGateInputFromGround;
+
+export interface CompiledComponentGateInputFromGate{
+  type : 'gate',
   index : number
+}
+
+export interface CompiledComponentGateInputFromInput{
+  type : 'input',
+  index : number
+}
+
+export interface CompiledComponentGateInputFromGround{
+  type : 'ground'
+}
+
+declare global{
+  interface Array<T> {
+    filter<U extends T>(pred: (a: T) => a is U): U[];
+  }
 }

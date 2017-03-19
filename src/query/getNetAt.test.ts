@@ -15,7 +15,7 @@ test('wire - ground', t => {
 
 test('wire - ground', t => {
   let forest = createForest();
-  forest = drawButton(forest, 63, 64);
+  forest = drawButton(forest, 62, 64);
   forest = drawWire(forest, 64, 64);
   const net = getNetAt(forest.enneaTree, 64, 64, 0, 0);
   t.is(net, 2);
@@ -23,14 +23,14 @@ test('wire - ground', t => {
 
 test('button - output', t => {
   let forest = createForest();
-  forest = drawButton(forest, 64, 64);
+  forest = drawButton(forest, 63, 64);
   const net = getNetAt(forest.enneaTree, 64, 64, -1, 0);
   t.is(net, 2);
 });
 
 test('button - ground', t => {
   let forest = createForest();
-  forest = drawButton(forest, 64, 64);
+  forest = drawButton(forest, 63, 64);
   const net = getNetAt(forest.enneaTree, 62, 64, 1, 0);
   t.is(net, 0);
 });

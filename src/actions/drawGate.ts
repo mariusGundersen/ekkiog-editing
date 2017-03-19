@@ -25,7 +25,8 @@ export default function drawGate(forest : Forest, x : number, y : number){
     net,
     inputA: getNetAt(forest.enneaTree, x-4, y-1, -1, 0),
     inputB: getNetAt(forest.enneaTree, x-4, y+1, -1, 0)
-  } as Gate;
+  };
+
   const box = {left:x-3, top:y-1, width:4, height:3};
   let enneaTree = ennea.set(forest.enneaTree, data, box);
 

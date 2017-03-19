@@ -23,15 +23,19 @@ export function getUnderpassNeighbouringNets(enneaTree : TreeNode, x : number, y
   };
 }
 
-export function getButtonNeighbouringNets(enneaTree : TreeNode, x : number, y : number){
-  return unique(getRightNet(enneaTree, x, y));
+export function getButtonNeighbouringNets(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
+  return getNetAt(enneaTree, x+dx*2, y+dy*2, dx, dy);
+}
+
+export function getLightNeighbouringNet(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
+  return getNetAt(enneaTree, x-dx*2, y-dy*2, -dx, -dy);
 }
 
 function unique(...iteratorA : IterableIterator<number>[]){
   return iteratorA
     .reduce((a, b) => a.concat(...b), [] as number[])
     .filter(net => net != GROUND)
-    .filter((net, index, nets) => nets.indexOf(net) === index);
+    .filter((net : number, index : number, nets : number[]) => nets.indexOf(net) === index);
 }
 
 function* getNetAroundWire(enneaTree : TreeNode, x : number, y : number){

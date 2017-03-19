@@ -11,6 +11,7 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
+  LIGHT,
   GROUND
 } from '../constants';
 import makePos from './makePos';
@@ -20,6 +21,7 @@ import gate from './gate';
 import underpass from './underpass';
 import button from './button';
 import component from './component';
+import light from './light';
 
 import {
   TreeNode
@@ -50,6 +52,8 @@ export default function floodFill(enneaTree : TreeNode, ...floodSources : FloodS
         return button(old, pos, ctx, queue);
       case COMPONENT:
         return component(old, pos, ctx, queue);
+      case LIGHT:
+        return light(old, pos, ctx, queue);
       default:
         return old;
     }
@@ -77,7 +81,7 @@ export function* make(floodSources : FloodSource[]) : IterableIterator<BoxContex
         yield makePos({top: floodSource.top, left: floodSource.left}, GROUND, 0, -1);
         break;
       case BUTTON:
-        yield makePos({top: floodSource.top+1, left: floodSource.left+2}, floodSource.net, 1, 0);
+        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);
         break;
       case COMPONENT:
         yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);

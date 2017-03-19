@@ -20,10 +20,11 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
+  LIGHT,
   GROUND
 } from '../constants';
 
-import { Item, Wire, Gate, Underpass, Button, Component, Context } from '../types';
+import { Item, Wire, Gate, Underpass, Button, Light, Component, Context } from '../types';
 
 export default function update(context : Context, change : ChangeUpdate<Item>){
   switch(change.after.type){
@@ -35,6 +36,8 @@ export default function update(context : Context, change : ChangeUpdate<Item>){
       return updateUnderpassNet(context, change, change.after);
     case BUTTON:
       return updateButtonState(context, change, change.after);
+    case LIGHT:
+      return updateLightNet(context, change, change.after);
     case COMPONENT:
       return updateComponent(context, change, change.after);
   }
@@ -59,6 +62,14 @@ export function updateUnderpassNet(context : Context, {top:y, left:x} : Area, un
 export function updateButtonState(context : Context, {top:y, left:x} : Area, button : Button){
   const state = button.state ? 0 : 1;
   setGate(context, button.net, state, state);
+}
+
+export function updateLightNet(context : Context, {top:y, left:x, width, height} : Area, light : Light){
+  for(let ty=0; ty<height; ty++){
+    for(let tx=0; tx<width; tx++){
+      setNetMap(context, tx+x, ty+y, light.net);
+    }
+  }
 }
 
 export function updateComponent(context : Context, {top:y, left:x} : Area, component : Component){

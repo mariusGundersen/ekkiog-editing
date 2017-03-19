@@ -14,7 +14,10 @@ import {
   UNDERPASS_TILE,
   GATE_TILE,
   BUTTON_TILE,
+  BUTTON_OUTPUT_TILE,
   COMPONENT_TILE,
+  LIGHT_TILE,
+  LIGHT_INPUT_TILE,
   tile
 } from './tileConstants';
 
@@ -24,10 +27,30 @@ import {
   UNDERPASS,
   BUTTON,
   GROUND,
-  COMPONENT
+  COMPONENT,
+  LIGHT,
+  UPWARDS,
+  LEFTWARDS,
+  RIGHTWARDS,
+  DOWNWARDS
 } from '../constants';
 
-import { Item, Wire, Gate, Underpass, Button, Component, Context } from '../types';
+import {
+  Item,
+  Wire,
+  Gate,
+  Underpass,
+  Button,
+  Component,
+  Light,
+  Context,
+  Direction
+} from '../types';
+
+import {
+  directionToDx,
+  directionToDy
+} from '../utils';
 
 export default function set(context : Context, change : ChangeSet<Item>){
   switch(change.after.type){
@@ -41,6 +64,8 @@ export default function set(context : Context, change : ChangeSet<Item>){
       return button(context, change, change.after);
     case COMPONENT:
       return component(context, change, change.after);
+    case LIGHT:
+      return light(context, change, change.after);
   }
 }
 
@@ -67,13 +92,18 @@ export function underpass(context : Context, {top:y, left:x} : Area, underpass :
 }
 
 export function button(context : Context, {top:y, left:x, width, height} : Area, button : Button){
+  const dx = directionToDx(button.direction);
+  const dy = directionToDy(button.direction);
   for(let ty=0; ty<height; ty++){
     for(let tx=0; tx<width; tx++){
-      setMap(context, tx+x, ty+y, buttonTile(tx, ty));
+      if(tx-1 === dx && ty-1 === dy){
+        setMap(context, tx+x, ty+y, buttonOutputTile(dx, dy));
+      }else{
+        setMap(context, tx+x, ty+y, buttonTile(tx, ty));
+      }
+      setNetMap(context, tx+x, ty+y, button.net);
     }
   }
-  setNetMap(context, x+2, y+1, button.net);
-  setNetMap(context, x+1, y+1, button.net);
   const state = button.state ? 0 : 1;
   setGate(context, button.net, state, state);
 }
@@ -107,12 +137,31 @@ export function component(context : Context, {top:y, left:x, width, height} : Ar
   }
 }
 
+export function light(context : Context, {top:y, left:x, width, height} : Area, light : Light){
+  const dx = directionToDx(light.direction);
+  const dy = directionToDy(light.direction);
+  for(let ty=0; ty<height; ty++){
+    for(let tx=0; tx<width; tx++){
+      if(tx-1 === -dx && ty-1 === -dy){
+        setMap(context, tx+x, ty+y, lightInputTile(dx, dy));
+      }else{
+        setMap(context, tx+x, ty+y, lightTile(tx, ty));
+      }
+      setNetMap(context, tx+x, ty+y, light.net);
+    }
+  }
+}
+
 export function gateTile(x : number, y : number){
   return GATE_TILE + tile(x, y);
 }
 
 export function buttonTile(x : number, y : number){
   return BUTTON_TILE + tile(x, y);
+}
+
+export function lightTile(x : number, y : number){
+  return LIGHT_TILE + tile(x, y);
 }
 
 export function componentTile(x : number, y : number, w : number, h : number, ports : {x : number, y : number}[]){
@@ -151,6 +200,38 @@ export function componentTile(x : number, y : number, w : number, h : number, po
       }
     }else{
       return COMPONENT_TILE + tile(1, 1);
+    }
+  }
+}
+
+function buttonOutputTile(dx : number, dy : number){
+  if(dx === 0){
+    if(dy === 1){
+      return BUTTON_OUTPUT_TILE + tile(3, 0);
+    }else{
+      return BUTTON_OUTPUT_TILE + tile(1, 0);
+    }
+  }else{
+    if(dx === 1){
+      return BUTTON_OUTPUT_TILE + tile(0, 0);
+    }else{
+      return BUTTON_OUTPUT_TILE + tile(2, 0);
+    }
+  }
+}
+
+function lightInputTile(dx : number, dy : number){
+  if(dx === 0){
+    if(dy === 1){
+      return LIGHT_INPUT_TILE + tile(1, 0);
+    }else{
+      return LIGHT_INPUT_TILE + tile(3, 0);
+    }
+  }else{
+    if(dx === 1){
+      return LIGHT_INPUT_TILE + tile(2, 0);
+    }else{
+      return LIGHT_INPUT_TILE + tile(0, 0);
     }
   }
 }
