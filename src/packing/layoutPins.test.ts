@@ -232,3 +232,50 @@ test('input and output on all sides', t => {
   t.deepEqual(layout.inputs, inputs);
   t.deepEqual(layout.outputs, outputs);
 });
+
+
+test('3 input and 2 output ', t => {
+
+  const inputs = [
+    {
+      x: 0,
+      y: 1,
+      dx: 1,
+      dy: 0,
+    },
+    {
+      x: 0,
+      y: 3,
+      dx: 1,
+      dy: 0,
+    },
+    {
+      x: 0,
+      y: 5,
+      dx: 1,
+      dy: 0,
+    }
+  ];
+
+  const outputs = [
+    {
+      x: 2,
+      y: 2,
+      dx: 1,
+      dy: 0,
+    },
+    {
+      x: 2,
+      y: 4,
+      dx: 1,
+      dy: 0,
+    }
+  ];
+
+  const layout = layoutPins(inputs, outputs);
+
+  t.is(layout.width, 3);
+  t.is(layout.height, 7);
+  t.deepEqual(layout.inputs, inputs);
+  t.deepEqual(layout.outputs, outputs);
+});
