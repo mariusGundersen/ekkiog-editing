@@ -387,6 +387,71 @@ test('xor inside xor', t => {
   t.is(compiled.outputs.length, 2);
 });
 
+
+
+test.only('tripple xor', t => {
+  const xorComponent = compile(xorForest());
+  let forest = createForest();
+
+  forest = drawComponent(forest, 66, 64, xorComponent);
+  forest = drawComponent(forest, 62, 62, xorComponent);
+
+  forest = drawButton(forest, 58, 60);
+  forest = drawWire(forest, 60, 60);
+  forest = drawWire(forest, 60, 61);
+
+  forest = drawButton(forest, 58, 64);
+  forest = drawWire(forest, 60, 64);
+  forest = drawWire(forest, 60, 63);
+  forest = drawWire(forest, 64, 62);
+  forest = drawWire(forest, 64, 63);
+
+  forest = drawButton(forest, 62, 66);
+  forest = drawWire(forest, 64, 66);
+  forest = drawWire(forest, 64, 65);
+
+
+  forest = drawLight(forest, 69, 64);
+
+  const compiled = compile(forest);
+
+  t.deepEqual(compiled.gates, [
+    {
+      inputA: { type: INPUT, index: 0 },
+      inputB: { type: GATE, index: 2 }
+    },
+    {
+      inputA: { type: GATE, index: 2 },
+      inputB: { type: INPUT, index: 2 }
+    },
+    {
+      inputA: { type: INPUT, index: 0 },
+      inputB: { type: INPUT, index: 2 }
+    },
+    {
+      inputA: { type: GATE, index: 0 },
+      inputB: { type: GATE, index: 1 }
+    },
+    {
+      inputA: { type: GATE, index: 3 },
+      inputB: { type: GATE, index: 6 }
+    },
+    {
+      inputA: { type: GATE, index: 6 },
+      inputB: { type: INPUT, index: 1 }
+    },
+    {
+      inputA: { type: GATE, index: 3 },
+      inputB: { type: INPUT, index: 1 }
+    },
+    {
+      inputA: { type: GATE, index: 4 },
+      inputB: { type: GATE, index: 5 }
+    }
+  ]);
+});
+
+
 function andForest(forest = createForest()){
   forest = drawButton(forest, 58, 62);
   forest = drawWire(forest, 60, 62);

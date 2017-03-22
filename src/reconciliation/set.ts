@@ -3,9 +3,7 @@ import { ChangeSet, Area } from 'ennea-tree';
 import {
   setMap,
   setNetMap,
-  setGate,
-  setGateA,
-  setGateB
+  setGate
 } from './mutateContext';
 
 import {
@@ -123,13 +121,6 @@ export function component(context : Context, {top:y, left:x, width, height} : Ar
 
   for(const input of component.inputs){
     setNetMap(context, x+input.x, y+input.y, input.net);
-    for(const pointer of input.pointsTo){
-      if(pointer.input === 'A'){
-        setGateA(context, pointer.net, input.net);
-      }else{
-        setGateB(context, pointer.net, input.net);
-      }
-    }
   }
 
   for(const output of component.outputs){

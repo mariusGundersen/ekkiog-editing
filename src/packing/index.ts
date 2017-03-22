@@ -30,6 +30,8 @@ import {
 
 import layoutPins from './layoutPins';
 
+type NetAndInput = [number, CompiledComponentGateInput];
+
 export default function compile(forest : Forest) : CompiledComponent {
   const enneaTree = forest.enneaTree;
   const forestContet = ennea.getAll(enneaTree, {
@@ -59,11 +61,12 @@ export default function compile(forest : Forest) : CompiledComponent {
 
   const componentsInputs = forestComponents.reduce((inputs, component) => inputs.concat(component.data.gates), [] as ComponentGate[]);
 
-  const inputNets = forestButtons.map((input, index) => [input.data.net, makeInputInput(index)] as [number, CompiledComponentGateInputFromInput]);
-  const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as [number, CompiledComponentGateInputFromGate]);
-  const allNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [gate.net, makeGateInput(index + gates.length)] as [number, CompiledComponentGateInputFromGate])), gateNets);
+  const groundNet = [0, makeGroundInput()] as NetAndInput;
+  const inputNets = forestButtons.map((input, index) => [input.data.net, makeInputInput(index)] as NetAndInput);
+  const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as NetAndInput);
+  const gateAndComponentNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [gate.net, makeGateInput(index + gates.length)] as NetAndInput)), gateNets);
 
-  const netToIndexMap = new Map<number, CompiledComponentGateInput>([...inputNets, ...allNets, [0, makeGroundInput()]]);
+  const netToIndexMap = new Map([groundNet, ...inputNets, ...gateAndComponentNets]);
 
   const layout = layoutPins(
     forestButtons.map(({top: y, left: x, data: {direction}}) => ({x, y, dx: directionToDx(direction), dy: directionToDy(direction)})),

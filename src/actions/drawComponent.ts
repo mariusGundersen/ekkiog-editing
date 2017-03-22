@@ -86,10 +86,10 @@ export function getNetAtPos(tree : TreeNode, sx : number, sy : number, x : numbe
 export function* makePointsTo(gates : MappedCompiledComponentGate[], index : number){
   yield* gates
     .filter(g => g.inputA.type === 'input' && g.inputA.index === index)
-    .map(g => ({net: g.net, input: 'A'} as ComponentInputPointer));
+    .map(g => ({index: gates.indexOf(g), input: 'A' as 'A'}));
   yield* gates
     .filter(g => g.inputB.type === 'input' && g.inputB.index === index)
-    .map(g => ({net: g.net, input: 'B'} as ComponentInputPointer));
+    .map(g => ({index: gates.indexOf(g), input: 'B' as 'B'}));
 }
 
 export function makeGate(gate : CompiledComponentGate, index : number, gateNets : number[], inputNets : number[]){

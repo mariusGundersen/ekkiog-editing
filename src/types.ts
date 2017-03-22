@@ -66,7 +66,7 @@ export interface ComponentGate{
 
 export interface ComponentInputPointer {
   input : 'A' | 'B',
-  net : number
+  index : number
 }
 
 export interface Light {
@@ -151,6 +151,6 @@ export interface CompiledComponentGateInputFromGround{
 
 declare global{
   interface Array<T> {
-    filter<U extends T>(pred: (a: T) => a is U): U[];
+    filter<U extends T>(pred: (e : T, i : number, c : T[]) => e is U): U[];
   }
 }

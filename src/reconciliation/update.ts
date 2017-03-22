@@ -3,9 +3,7 @@ import { ChangeUpdate, Area } from 'ennea-tree';
 import {
   setMap,
   setNetMap,
-  setGate,
-  setGateA,
-  setGateB
+  setGate
 } from './mutateContext';
 
 import {
@@ -39,7 +37,7 @@ export default function update(context : Context, change : ChangeUpdate<Item>){
     case LIGHT:
       return updateLightNet(context, change, change.after);
     case COMPONENT:
-      return updateComponent(context, change, change.after);
+      return updateComponent(context, change, change.before as Component, change.after);
   }
 }
 
@@ -72,16 +70,12 @@ export function updateLightNet(context : Context, {top:y, left:x, width, height}
   }
 }
 
-export function updateComponent(context : Context, {top:y, left:x} : Area, component : Component){
-  for(const input of component.inputs){
+export function updateComponent(context : Context, {top:y, left:x} : Area, oldComponent : Component, newComponent : Component){
+  for(const input of newComponent.inputs.filter((newInput, index) => newInput !== oldComponent.inputs[index])){
     setNetMap(context, x+input.x, y+input.y, input.net);
-    for(const pointer of input.pointsTo){
-      if(pointer.input === 'A'){
-        setGateA(context, pointer.net, input.net);
-      }else{
-        setGateB(context, pointer.net, input.net);
-      }
-    }
   }
 
+  for(const gate of newComponent.gates.filter((newGate, index) => newGate !== oldComponent.gates[index])){
+    setGate(context, gate.net, gate.inputA, gate.inputB);
+  }
 }
