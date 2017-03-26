@@ -97,7 +97,7 @@ export function* make(isGround : boolean, sources: [Item, BoxArea][]) : Iterable
         break;
       case COMPONENT:
         for(const output of item.outputs){
-          yield makePos({top: pos.top + output.y, left: pos.left + output.y}, isGround ? GROUND : output.net, output.dx, output.dy);
+          yield makePos({top: pos.top + output.y, left: pos.left + output.x}, isGround ? GROUND : output.net, output.dx, output.dy);
         }
         break;
     }
