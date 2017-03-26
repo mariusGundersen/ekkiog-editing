@@ -25,9 +25,9 @@ export function directionToDx(direction : Direction){
 export function directionToDy(direction : Direction){
   switch(direction){
     case DOWNWARDS:
-      return -1;
-    case UPWARDS:
       return 1;
+    case UPWARDS:
+      return -1;
     case LEFTWARDS:
     case RIGHTWARDS:
     default:

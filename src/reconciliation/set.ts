@@ -198,9 +198,9 @@ export function componentTile(x : number, y : number, w : number, h : number, po
 function buttonOutputTile(dx : number, dy : number){
   if(dx === 0){
     if(dy === 1){
-      return BUTTON_OUTPUT_TILE + tile(3, 0);
-    }else{
       return BUTTON_OUTPUT_TILE + tile(1, 0);
+    }else{
+      return BUTTON_OUTPUT_TILE + tile(3, 0);
     }
   }else{
     if(dx === 1){
@@ -214,9 +214,9 @@ function buttonOutputTile(dx : number, dy : number){
 function lightInputTile(dx : number, dy : number){
   if(dx === 0){
     if(dy === 1){
-      return LIGHT_INPUT_TILE + tile(1, 0);
-    }else{
       return LIGHT_INPUT_TILE + tile(3, 0);
+    }else{
+      return LIGHT_INPUT_TILE + tile(1, 0);
     }
   }else{
     if(dx === 1){
