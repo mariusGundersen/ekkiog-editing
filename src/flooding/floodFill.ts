@@ -2,7 +2,8 @@ import {
   update,
   Node,
   BoxContext,
-  Pos
+  Pos,
+  BoxArea
 } from 'ennea-tree';
 
 import {
@@ -14,6 +15,7 @@ import {
   LIGHT,
   GROUND
 } from '../constants';
+
 import makePos from './makePos';
 
 import wire from './wire';
@@ -24,22 +26,30 @@ import component from './component';
 import light from './light';
 
 import {
-  TreeNode
+  TreeNode,
+  Item
 } from '../types';
 
 import {
-  Context,
-  FloodSource,
-  FloodSourceButton,
-  FloodSourceComponent,
-  FloodSourceGate,
-  FloodSourceUnderpass,
-  FloodSourceWire
+  Context
 } from './types';
 
-export default function floodFill(enneaTree : TreeNode, ...floodSources : FloodSource[]) : TreeNode {
+import {
+  directionToDx,
+  directionToDy
+} from '../utils';
 
-  const queue = [...make(floodSources)];
+export default function floodFill(enneaTree : TreeNode, item : Item, pos : BoxArea) : TreeNode {
+  return floodFillInternal(enneaTree, false, [item, pos]);
+}
+
+export function floodClear(enenaTree : TreeNode, floodSources : [Item, BoxArea][]){
+  return floodFillInternal(enenaTree, true, ...floodSources);
+}
+
+function floodFillInternal(enneaTree : TreeNode, isGround = false, ...floodSources : [Item, BoxArea][]) : TreeNode {
+
+  const queue = [...make(isGround, floodSources)];
   const updater = update(enneaTree, (old, ctx : Context, pos) => {
     switch(old.type){
       case WIRE:
@@ -62,29 +72,33 @@ export default function floodFill(enneaTree : TreeNode, ...floodSources : FloodS
   return updater.result(queue);
 }
 
-export function* make(floodSources : FloodSource[]) : IterableIterator<BoxContext<Context>>{
-  for(const floodSource of floodSources){
-    switch(floodSource.type){
+export function* make(isGround : boolean, sources: [Item, BoxArea][]) : IterableIterator<BoxContext<Context>>{
+  for(const [item, pos] of sources){
+    switch(item.type){
       case WIRE:
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, 0, 1);
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, 1, 0);
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, 0, -1);
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, -1, 0);
+        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 0, 1);
+        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 1, 0);
+        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 0, -1);
+        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, -1, 0);
         break;
       case GATE:
-        yield makePos({top: floodSource.top+1, left: floodSource.left+3}, floodSource.net, 1, 0);
+        yield makePos({top: pos.top+1, left: pos.left+3}, isGround ? GROUND : item.net, 1, 0);
         break;
       case UNDERPASS:
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, 1, 0);
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, -1, 0);
-        yield makePos({top: floodSource.top, left: floodSource.left}, GROUND, 0, 1);
-        yield makePos({top: floodSource.top, left: floodSource.left}, GROUND, 0, -1);
+        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 1, 0);
+        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, -1, 0);
+        yield makePos({top: pos.top, left: pos.left}, GROUND, 0, 1);
+        yield makePos({top: pos.top, left: pos.left}, GROUND, 0, -1);
         break;
       case BUTTON:
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);
+        const dx = directionToDx(item.direction);
+        const dy = directionToDy(item.direction);
+        yield makePos({top: pos.top + 1 + dy, left: pos.left + 1 + dx}, isGround ? GROUND : item.net, dx, dy);
         break;
       case COMPONENT:
-        yield makePos({top: floodSource.top, left: floodSource.left}, floodSource.net, floodSource.dx, floodSource.dy);
+        for(const output of item.outputs){
+          yield makePos({top: pos.top + output.y, left: pos.left + output.y}, isGround ? GROUND : output.net, output.dx, output.dy);
+        }
         break;
     }
   }

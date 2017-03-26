@@ -9,7 +9,7 @@ import {
   GROUND
 } from '../constants';
 
-import floodFill from '../flooding/floodFill';
+import {floodClear} from '../flooding/floodFill';
 
 import { Forest, Item } from '../types';
 
@@ -18,12 +18,10 @@ import {
   directionToDy
 } from '../utils';
 
-import { FloodSource, FloodSourceComponent, FloodSourceButton } from '../flooding/types';
-
 export default function clear(forest : Forest, x : number, y : number) : Forest {
   let {tree : enneaTree, cleared} = ennea.clear(forest.enneaTree, {left:x, top:y});
 
-  enneaTree = floodFill(enneaTree, ...cleared.reduce((a, b) => a.concat(...clearBox(b)), [] as FloodSource[]));
+  enneaTree = floodClear(enneaTree, cleared.map(c => [c.data, c] as [Item, ennea.BoxArea]));
 
   const buddyTree = cleared.map(getNetSource)
     .filter(net => net > 1)
@@ -33,39 +31,6 @@ export default function clear(forest : Forest, x : number, y : number) : Forest 
     enneaTree,
     buddyTree
   };
-}
-
-function* clearBox(box : ennea.AreaData<Item>){
-  if(!box.data){
-    return;
-  }else if(box.data.type === COMPONENT){
-    for(const output of box.data.outputs){
-      yield {
-        left: box.left + output.x,
-        top: box.top + output.y,
-        type: box.data.type,
-        net: GROUND
-      } as FloodSourceComponent;
-    }
-  }else if(box.data.type === BUTTON){
-    const dx = directionToDx(box.data.direction);
-    const dy = directionToDy(box.data.direction);
-    return yield {
-      left: box.left + 1 + dx,
-      top: box.top + 1 + dy,
-      type: box.data.type,
-      net: GROUND,
-      dx,
-      dy
-    } as FloodSourceButton;
-  }else{
-    return yield {
-      left: box.left,
-      top: box.top,
-      type: box.data.type,
-      net: GROUND
-    } as FloodSource;
-  }
 }
 
 function getNetSource(box : ennea.AreaData<Item>){

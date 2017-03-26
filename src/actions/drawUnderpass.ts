@@ -31,12 +31,7 @@ export default function drawUnderpass(forest : Forest, x : number, y : number){
     return forest;
   }
 
-  enneaTree = floodFill(enneaTree, {
-    left: box.left,
-    top: box.top,
-    type: data.type,
-    net: data.net
-  });
+  enneaTree = floodFill(enneaTree, data, box);
 
   return {
     buddyTree,

@@ -41,14 +41,7 @@ export default function drawButton(forest : Forest, x : number, y : number, dire
     return forest;
   }
 
-  enneaTree = floodFill(enneaTree, {
-    left: x + dx,
-    top: y + dy,
-    type: data.type,
-    net: data.net,
-    dx,
-    dy
-  });
+  enneaTree = floodFill(enneaTree, data, box);
 
   return {
     enneaTree,

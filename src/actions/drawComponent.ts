@@ -18,8 +18,6 @@ import {
   ComponentInputPointer
 } from '../types';
 
-import { FloodSourceComponent } from '../flooding/types';
-
 export interface MappedCompiledComponentGate extends CompiledComponentGate {
   net : number
 }
@@ -64,14 +62,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
     return forest;
   }
 
-  enneaTree = floodFill(enneaTree, ...outputs.map(output => ({
-    left: box.left + output.x,
-    top: box.top + output.y,
-    dx: output.dx,
-    dy: output.dy,
-    type: COMPONENT,
-    net: output.net
-  })));
+  enneaTree = floodFill(enneaTree, data, box);
 
   return {
     enneaTree,
