@@ -27,6 +27,11 @@ export function reconcileChange(context : Context, change : Change<Item>){
     case CLEAR:
       return clear(context, change);
     case UPDATE:
-      return update(context, change);
+      if(change.before.type === change.after.type){
+        return update(context, change);
+      }else{
+        clear(context, {...change, type: CLEAR});
+        set(context, {...change, type: SET});
+      }
   }
 }
