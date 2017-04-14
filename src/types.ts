@@ -1,4 +1,4 @@
-import { Node } from 'ennea-tree';
+import { Node, Area } from 'ennea-tree';
 import { Node as BuddyNode } from 'buddy-tree';
 
 export type Direction = 'rightwards' | 'downwards' | 'leftwards' | 'upwards';
@@ -9,6 +9,8 @@ export interface Forest {
 }
 
 export type TreeNode = Node<Item>;
+
+export { Area };
 
 export interface Wire{
   type: 'wire',
@@ -41,7 +43,8 @@ export interface Component{
   outputs : ComponentOutput[],
   gates : ComponentGate[],
   nets : number[],
-  source? : CompiledComponent
+  source? : CompiledComponent,
+  name? : string
 }
 
 export interface ComponentInput{
@@ -90,6 +93,9 @@ export interface MutableContext{
   setMap(x : number, y : number, tile : number) : void;
   setNet(x : number, y : number, net : number) : void;
   setGate(gate : number, inputA : number, inputB : number) : void;
+  insertText(item : Item, area : Area) : void;
+  removeText(item : Item) : void;
+  udpateText(before : Item, after : Item) : void;
 }
 
 export interface IHaveDirection {
@@ -108,7 +114,7 @@ export interface CompiledComponent {
   gates : CompiledComponentGate[],
   inputs : CompiledComponentInput[],
   outputs : CompiledComponentOutput[],
-  name? : string
+  name : string
 }
 
 export interface CompiledComponentPin extends IHaveDirection, IHavePosition {

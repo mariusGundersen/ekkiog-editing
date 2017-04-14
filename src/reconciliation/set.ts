@@ -108,6 +108,8 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
   for(const gate of component.gates){
     context.setGate(gate.net, gate.inputA, gate.inputB);
   }
+
+  context.insertText(component, {top:y, left:x, width, height});
 }
 
 export function light(context : MutableContext, {top:y, left:x, width, height} : Area, light : Light){

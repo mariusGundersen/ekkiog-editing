@@ -24,8 +24,9 @@ import compile from './index';
 
 test('compile single gate', t => {
   const forest = drawGate(createForest(), 64, 64);
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'x');
   t.deepEqual(compiled, {
+    name: 'x',
     width: 3,
     height: 3,
     inputs: [] as CompiledComponentInput[],
@@ -45,7 +46,7 @@ test('compile single gate', t => {
 
 test('compile lightbulb with ground net', t => {
   const forest = drawLight(createForest(), 64, 64);
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'x');
   t.deepEqual(compiled, {
     width: 3,
     height: 3,
@@ -59,7 +60,7 @@ test('compile two gates', t => {
   let forest = createForest();
   forest = drawGate(forest, 64, 64);
   forest = drawGate(forest, 60, 65);
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'x');
   t.deepEqual(compiled.gates, [
     {
       inputA: {
@@ -90,7 +91,7 @@ test('compile three gates', t => {
   forest = drawWire(forest, 60, 63);
   forest = drawWire(forest, 60, 65);
   forest = drawWire(forest, 60, 66);
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'a');
   t.deepEqual(compiled.gates, [
     {
       inputA: {
@@ -130,8 +131,9 @@ test('compile NOT gate', t => {
   forest = drawWire(forest, 60, 64);
   forest = drawWire(forest, 60, 65);
   forest = drawLight(forest, 66, 64);
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'not');
   t.deepEqual(compiled, {
+    name: 'not',
     width: 3,
     height: 3,
     inputs: [
@@ -168,8 +170,9 @@ test('compile NOT gate', t => {
 
 test('compile AND gate', t => {
   const forest = andForest();
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'and');
   t.deepEqual(compiled, {
+    name: 'and',
     width: 3,
     height: 5,
     inputs: [
@@ -222,8 +225,9 @@ test('compile AND gate', t => {
 
 test('compile XOR gate', t => {
   const forest = xorForest();
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'xor');
   t.deepEqual(compiled, {
+    name : 'xor',
     width: 3,
     height: 5,
     inputs: [
@@ -295,8 +299,8 @@ test('compile XOR gate', t => {
 });
 
 test('half adder', t => {
-  const andComponent = compile(andForest());
-  const xorComponent = compile(xorForest());
+  const andComponent = compile(andForest(), 'and');
+  const xorComponent = compile(xorForest(), 'xor');
   let forest = createForest();
   forest = drawButton(forest, 58, 60);
   forest = drawWire(forest, 60, 60);
@@ -324,8 +328,9 @@ test('half adder', t => {
   forest = drawComponent(forest, 64, 66, xorComponent);
   forest = drawLight(forest, 67, 61);
   forest = drawLight(forest, 67, 66);
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'half-adder');
   t.deepEqual(compiled, {
+    name: 'half-adder',
     width: 3,
     height: 5,
     inputs: [
@@ -368,7 +373,7 @@ test('half adder', t => {
 
 test('xor inside xor', t => {
   let forest = xorForest();
-  const xorComponent = compile(forest);
+  const xorComponent = compile(forest, 'xor');
   forest = drawButton(forest, 58, 40);
   forest = drawWire(forest, 60, 40);
   forest = drawWire(forest, 60, 41);
@@ -380,7 +385,7 @@ test('xor inside xor', t => {
   forest = drawComponent(forest, 64, 42, xorComponent);
   forest = drawLight(forest, 67, 42);
 
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'xor');
 
   t.is(compiled.gates.length, 8);
   t.is(compiled.inputs.length, 4);
@@ -390,7 +395,7 @@ test('xor inside xor', t => {
 
 
 test.only('tripple xor', t => {
-  const xorComponent = compile(xorForest());
+  const xorComponent = compile(xorForest(), 'xor');
   let forest = createForest();
 
   forest = drawComponent(forest, 66, 64, xorComponent);
@@ -413,7 +418,7 @@ test.only('tripple xor', t => {
 
   forest = drawLight(forest, 69, 64);
 
-  const compiled = compile(forest);
+  const compiled = compile(forest, 'xor');
 
   t.deepEqual(compiled.gates, [
     {

@@ -32,7 +32,7 @@ import layoutPins from './layoutPins';
 
 type NetAndInput = [number, CompiledComponentGateInput];
 
-export default function compile(forest : Forest) : CompiledComponent {
+export default function compile(forest : Forest, name : string) : CompiledComponent {
   const enneaTree = forest.enneaTree;
   const forestContet = ennea.getAll(enneaTree, {
     top: 0,
@@ -96,6 +96,7 @@ export default function compile(forest : Forest) : CompiledComponent {
     }));
 
   return {
+    name,
     width: layout.width,
     height: layout.height,
     inputs: inputs,
