@@ -9,9 +9,9 @@ import set from './set';
 import update from './update';
 import clear from './clear';
 
-import { Item, Context } from '../types';
+import { Item, MutableContext } from '../types';
 
-export default function reconcile(context : Context, changes : IterableIterator<Change<Item>>){
+export default function reconcile(context : MutableContext, changes : IterableIterator<Change<Item>>){
   let changed = false;
   for(const change of changes){
     changed = true;
@@ -20,7 +20,7 @@ export default function reconcile(context : Context, changes : IterableIterator<
   return changed;
 }
 
-export function reconcileChange(context : Context, change : Change<Item>){
+export function reconcileChange(context : MutableContext, change : Change<Item>){
   switch(change.type){
     case SET:
       return set(context, change);

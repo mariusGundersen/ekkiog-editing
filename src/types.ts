@@ -86,16 +86,10 @@ export type Item = Wire
   | Component
   | Light;
 
-
-export interface Context{
-  mapTexture : Texture,
-  netMapTexture : Texture,
-  gatesTexture : Texture
-}
-
-export interface Texture {
-  get(x : number, y : number) : number,
-  set(x : number, y : number, net : number) : void
+export interface MutableContext{
+  setMap(x : number, y : number, tile : number) : void;
+  setNet(x : number, y : number, net : number) : void;
+  setGate(gate : number, inputA : number, inputB : number) : void;
 }
 
 export interface IHaveDirection {
