@@ -95,7 +95,7 @@ export interface MutableContext{
   setGate(gate : number, inputA : number, inputB : number) : void;
   insertText(item : Item, area : Area) : void;
   removeText(item : Item) : void;
-  udpateText(before : Item, after : Item) : void;
+  updateText(before : Item, after : Item) : void;
 }
 
 export interface IHaveDirection {

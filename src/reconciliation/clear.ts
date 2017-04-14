@@ -44,4 +44,6 @@ export function clearComponent(context : MutableContext, component : Component){
   for(const gate of component.gates){
     context.setGate(gate.net, GROUND, GROUND);
   }
+
+  context.removeText(component);
 }

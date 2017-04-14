@@ -146,6 +146,8 @@ export function updateComponent(context : MutableContext, {top:y, left:x, width,
       context.setGate(newGate.net, newGate.inputA, newGate.inputB);
     }
   }
+
+  context.updateText(oldComponent, newComponent);
 }
 
 function* zip<T>(before : T[], after : T[]){
