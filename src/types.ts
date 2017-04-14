@@ -40,14 +40,16 @@ export interface Component{
   inputs : ComponentInput[],
   outputs : ComponentOutput[],
   gates : ComponentGate[],
-  nets : number[]
+  nets : number[],
+  source? : CompiledComponent
 }
 
 export interface ComponentInput{
   x : number,
   y : number,
   net : number,
-  pointsTo : ComponentInputPointer[]
+  pointsTo : ComponentInputPointer[],
+  name? : string
 }
 
 export interface ComponentOutput{
@@ -55,7 +57,8 @@ export interface ComponentOutput{
   y : number,
   net : number,
   dx : number,
-  dy : number
+  dy : number,
+  name? : string
 }
 
 export interface ComponentGate{

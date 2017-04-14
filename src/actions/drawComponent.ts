@@ -36,7 +36,8 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
     dx: input.dx,
     dy: input.dy,
     net: getNetAtPos(forest.enneaTree, x, y, input.x, input.y, input.dx, input.dy),
-    pointsTo: [...makePointsTo(gates, index)]
+    pointsTo: [...makePointsTo(gates, index)],
+    name: input.name
   }));
 
   const outputs = packagedComponent.outputs.map(output => ({
@@ -44,7 +45,8 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
     y: output.y,
     dx: output.dx,
     dy: output.dy,
-    net: nets[output.gate]
+    net: nets[output.gate],
+    name: output.name
   }));
 
   const data = {
@@ -52,7 +54,8 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
     nets,
     inputs,
     outputs,
-    gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net)))
+    gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net))),
+    source: packagedComponent
   };
 
   const box = {left:x, top:y, width:packagedComponent.width, height:packagedComponent.height};
