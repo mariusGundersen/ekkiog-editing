@@ -1,7 +1,9 @@
-import { Node, Area } from 'ennea-tree';
+import { Node, Area, Box, BoxArea } from 'ennea-tree';
 import { Node as BuddyNode } from 'buddy-tree';
 
 export type Direction = 'rightwards' | 'downwards' | 'leftwards' | 'upwards';
+
+export type Tool = 'wire' | 'gate' | 'underpass' | 'button' | 'light' | 'component';
 
 export interface Forest {
   buddyTree : BuddyNode,
@@ -10,7 +12,7 @@ export interface Forest {
 
 export type TreeNode = Node<Item>;
 
-export { Area };
+export { Area, Box, BoxArea };
 
 export interface Wire{
   type: 'wire',
