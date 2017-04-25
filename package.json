@@ -3,13 +3,14 @@
   "version": "3.0.2",
   "description": "Editor for ekkiog",
   "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "types": "lib/main.d.ts",
+  "module": "lib/main.js",
   "scripts": {
     "clean": "rm -rf ./lib ./dist",
     "test": "ava",
-    "typescript": "tsc",
-    "compile": "npm run typescript && npm run babel",
-    "babel": "babel --source-maps --copy-files -d dist lib",
+    "tsc": "tsc",
+    "compile": "npm run tsc && npm run babel",
+    "babel": "babel --source-maps -d dist lib",
     "watch": "tsc -w & ava -w",
     "prepublish": "npm run clean && npm run compile && npm test"
   },
@@ -43,7 +44,7 @@
     "babel-runtime": "^6.22.0"
   },
   "dependencies": {
-    "buddy-tree": "^2.0.3",
-    "ennea-tree": "^2.0.4"
+    "buddy-tree": "^2.0.4",
+    "ennea-tree": "^2.0.5"
   }
 }
