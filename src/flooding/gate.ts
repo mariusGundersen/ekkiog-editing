@@ -19,7 +19,7 @@ export default function gate(oldGate : Gate, pos : Pos, ctx : Context, queue : B
     pos.top,
     ctx.pos.left - ctx.prev.left,
     ctx.pos.top - ctx.prev.top);
-  if(net != GROUND){
+  if(net != GROUND && ctx.net === GROUND){
     queue.push(makePos(ctx.pos, net, 1, 0));
   }
 

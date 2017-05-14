@@ -19,7 +19,7 @@ export default function button(oldButton : Button, pos : Pos, ctx : Context, que
     pos.top,
     ctx.pos.left - ctx.prev.left,
     ctx.pos.top - ctx.prev.top);
-  if(net != GROUND){
+  if(net !== GROUND && ctx.net === GROUND){
     queue.push(makePos(ctx.pos, net, ctx.prev.left - ctx.pos.left, ctx.prev.top - ctx.pos.top));
   }
 
