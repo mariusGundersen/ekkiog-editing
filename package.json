@@ -34,17 +34,17 @@
   },
   "ava": {
     "files": [
-      "lib/**/*.test.js"
+      "dist/**/*.test.js"
     ],
     "source": [
-      "lib/**/*.js"
+      "dist/**/*.js"
     ]
   },
   "peerDependencies": {
     "babel-runtime": "^6.22.0"
   },
   "dependencies": {
-    "buddy-tree": "^2.1.0",
+    "buddy-tree": "^2.1.1",
     "ennea-tree": "^2.0.5"
   }
 }
