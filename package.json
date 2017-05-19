@@ -1,6 +1,6 @@
 {
   "name": "ekkiog-editing",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "Editor for ekkiog",
   "main": "dist/main.js",
   "types": "lib/main.d.ts",
@@ -40,7 +40,9 @@
     "source": [
       "lib/**/*.js"
     ],
-    "require": ["babel-register"]
+    "require": [
+      "babel-register"
+    ]
   },
   "peerDependencies": {
     "babel-runtime": "^6.22.0"
