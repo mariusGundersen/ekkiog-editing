@@ -30,15 +30,17 @@
     "ava": "^0.16.0",
     "babel-cli": "^6.22.2",
     "babel-preset-es2015": "^6.22.0",
+    "babel-register": "^6.24.1",
     "typescript": "^2.1.5"
   },
   "ava": {
     "files": [
-      "dist/**/*.test.js"
+      "lib/**/*.test.js"
     ],
     "source": [
-      "dist/**/*.js"
-    ]
+      "lib/**/*.js"
+    ],
+    "require": ["babel-register"]
   },
   "peerDependencies": {
     "babel-runtime": "^6.22.0"

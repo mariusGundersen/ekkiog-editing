@@ -48,6 +48,7 @@ test('compile lightbulb with ground net', t => {
   const forest = drawLight(createForest(), 64, 64);
   const compiled = compile(forest, 'x');
   t.deepEqual(compiled, {
+    name: 'x',
     width: 3,
     height: 3,
     inputs: [] as CompiledComponentInput[],
@@ -394,7 +395,7 @@ test('xor inside xor', t => {
 
 
 
-test.only('tripple xor', t => {
+test('tripple xor', t => {
   const xorComponent = compile(xorForest(), 'xor');
   let forest = createForest();
 
