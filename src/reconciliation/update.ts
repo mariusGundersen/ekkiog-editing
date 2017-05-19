@@ -93,7 +93,7 @@ export function updateButton(context : MutableContext, {top:y, left:x, width, he
     const newDx = directionToDx(newButton.direction);
     const newDy = directionToDy(newButton.direction);
 
-    context.setMap(x + oldDx + 1, y + oldDy + 1, tile.button(oldDx, oldDy));
+    context.setMap(x + oldDx + 1, y + oldDy + 1, tile.button(oldDx + 1, oldDy + 1));
     context.setMap(x + newDx + 1, y + newDy + 1, tile.buttonOutput(newDx, newDy));
   }
 
