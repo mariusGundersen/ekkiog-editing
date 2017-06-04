@@ -1,6 +1,6 @@
 {
   "name": "ekkiog-editing",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Editor for ekkiog",
   "main": "dist/main.js",
   "types": "lib/main.d.ts",
