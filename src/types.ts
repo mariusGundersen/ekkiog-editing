@@ -12,7 +12,7 @@ export interface Forest {
 
 export type TreeNode = Node<Item>;
 
-export { Area, Box, BoxArea };
+export { Area, Box, BoxArea, BuddyNode };
 
 export interface Wire{
   type: 'wire',
