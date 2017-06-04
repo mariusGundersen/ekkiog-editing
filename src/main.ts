@@ -9,7 +9,6 @@ export { default as drawGate } from './actions/drawGate';
 export { default as drawUnderpass } from './actions/drawUnderpass';
 export { default as drawWire } from './actions/drawWire';
 export { default as drawLight } from './actions/drawLight';
-export { default as toggleButton } from './actions/toggleButton';
 
 export { default as floodFill } from './flooding/floodFill';
 

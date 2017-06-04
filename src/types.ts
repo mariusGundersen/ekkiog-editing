@@ -36,7 +36,6 @@ export interface Button{
   net : number,
   name? : string,
   direction : Direction,
-  state : boolean
 }
 
 export interface Component{

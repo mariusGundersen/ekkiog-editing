@@ -88,8 +88,7 @@ export function button(context : MutableContext, {top:y, left:x, width, height} 
       context.setNet(tx+x, ty+y, button.net);
     }
   }
-  const state = button.state ? 0 : 1;
-  context.setGate(button.net, state, state);
+  context.setGate(button.net, 1, 1);
 }
 
 export function component(context : MutableContext, {top:y, left:x, width, height} : Area, component : Component){

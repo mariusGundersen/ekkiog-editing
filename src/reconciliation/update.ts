@@ -105,8 +105,7 @@ export function updateButton(context : MutableContext, {top:y, left:x, width, he
     }
   }
 
-  const state = newButton.state ? 0 : 1;
-  context.setGate(newButton.net, state, state);
+  context.setGate(newButton.net, 1, 1);
 }
 
 export function updateLight(context : MutableContext, {top:y, left:x, width, height} : Area, oldLight : Light, newLight : Light){
