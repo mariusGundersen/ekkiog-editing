@@ -24,6 +24,7 @@ import underpass from './underpass';
 import button from './button';
 import component from './component';
 import light from './light';
+import unchanged from './unchanged';
 
 import {
   TreeNode,
@@ -67,8 +68,7 @@ function floodFillInternal(enneaTree : TreeNode, isGround = false, ...floodSourc
       default:
         return old;
     }
-  });
-
+  }, unchanged);
   return updater.result(queue);
 }
 

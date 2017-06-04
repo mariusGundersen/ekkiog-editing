@@ -1176,9 +1176,9 @@ empower-core@^0.6.1:
     call-signature "0.0.2"
     core-js "^2.0.0"
 
-ennea-tree@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/ennea-tree/-/ennea-tree-2.0.5.tgz#c52002754ca9bb8b608d8199abb8984adc0bf65b"
+ennea-tree@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/ennea-tree/-/ennea-tree-2.1.0.tgz#df36d06e190e2ea7ab8734c828837e5481657dfd"
 
 equal-length@^1.0.0:
   version "1.0.1"

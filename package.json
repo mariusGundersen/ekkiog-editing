@@ -50,6 +50,6 @@
   },
   "dependencies": {
     "buddy-tree": "^2.1.1",
-    "ennea-tree": "^2.0.5"
+    "ennea-tree": "^2.1.0"
   }
 }
