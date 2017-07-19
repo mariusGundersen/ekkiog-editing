@@ -4,9 +4,9 @@ import {
   EMPTY
 } from '../constants';
 
-import { TreeNode } from '../types';
+import { TreeNode, TileType } from '../types';
 
-export default function getTypeAt(enneaTree : TreeNode, x : number, y : number){
+export default function getTypeAt(enneaTree : TreeNode, x : number, y : number) : TileType {
   const tile = get(enneaTree, y, x);
 
   return tile && tile.data && tile.data.type || EMPTY;

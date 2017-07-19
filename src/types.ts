@@ -5,6 +5,8 @@ export type Direction = 'rightwards' | 'downwards' | 'leftwards' | 'upwards';
 
 export type Tool = 'wire' | 'gate' | 'underpass' | 'button' | 'light' | 'component';
 
+export type TileType = Tool | 'empty';
+
 export interface Forest {
   buddyTree : BuddyNode,
   enneaTree : TreeNode
@@ -123,6 +125,7 @@ export interface CompiledComponentPin extends IHaveDirection, IHavePosition {
 }
 
 export interface CompiledComponentInput extends CompiledComponentPin {
+  group? : number
 }
 
 export interface CompiledComponentOutput extends CompiledComponentPin {
