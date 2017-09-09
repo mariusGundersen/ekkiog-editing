@@ -44,11 +44,12 @@ export default function update(context : MutableContext, change : ChangeUpdate<I
     case LIGHT:
       return updateLight(context, change, change.before as Light, change.after);
     case COMPONENT:
-      if((change.before as Component).source === change.after.source){
+      if((change.before as Component).hash === change.after.hash){
         return updateComponent(context, change, change.before as Component, change.after);
       }else{
-        clear(context, {...change, type: CLEAR});
-        set(context, {...change, type: SET});
+        const {top, left, width, height} = change;
+        clear(context, {before: change.before, top, left, width, height, type: CLEAR});
+        set(context, {after: change.after, top, left, width, height, type: SET});
       }
   }
 }

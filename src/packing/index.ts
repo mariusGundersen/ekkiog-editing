@@ -32,7 +32,7 @@ import layoutPins from './layoutPins';
 
 type NetAndInput = [number, CompiledComponentGateInput];
 
-export default function compile(forest : Forest, name : string) : CompiledComponent {
+export default function compile(forest : Forest, repo : string, name : string, version : string, hash : string) : CompiledComponent {
   const enneaTree = forest.enneaTree;
   const forestContet = ennea.getAll(enneaTree, {
     top: 0,
@@ -42,16 +42,16 @@ export default function compile(forest : Forest, name : string) : CompiledCompon
   });
 
   const forestButtons = forestContet
-    .filter((node) : node is ennea.AreaData<Button> => node.data.type === BUTTON);
+    .filter(node => node.data.type === BUTTON) as ennea.AreaData<Button>[];
 
   const forestGates = forestContet
-    .filter((node) : node is ennea.AreaData<Gate> => node.data.type === GATE);
+    .filter(node => node.data.type === GATE) as ennea.AreaData<Gate>[];
 
   const forestComponents = forestContet
-    .filter((node) : node is ennea.AreaData<Component> => node.data.type === COMPONENT);
+    .filter(node => node.data.type === COMPONENT) as ennea.AreaData<Component>[];
 
   const forestLights = forestContet
-    .filter((node) : node is ennea.AreaData<Light> => node.data.type === LIGHT && node.data.net !== GROUND);
+    .filter(node => node.data.type === LIGHT && node.data.net !== GROUND) as ennea.AreaData<Light>[];
 
   const gatesInputs = forestGates
     .map(node => ({
@@ -101,7 +101,10 @@ export default function compile(forest : Forest, name : string) : CompiledCompon
     height: layout.height,
     inputs: inputs,
     outputs,
-    gates
+    gates,
+    hash,
+    repo,
+    version
   };
 }
 

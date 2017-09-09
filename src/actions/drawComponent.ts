@@ -49,14 +49,16 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
     name: output.name
   }));
 
-  const data = {
+  const data : Component = {
     type: COMPONENT,
     nets,
     inputs,
     outputs,
     gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net))),
-    source: packagedComponent,
-    name: packagedComponent.name
+    repo: packagedComponent.repo,
+    hash: packagedComponent.hash,
+    name: packagedComponent.name,
+    version: packagedComponent.version
   };
 
   const box = {left:x, top:y, width:packagedComponent.width, height:packagedComponent.height};

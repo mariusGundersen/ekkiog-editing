@@ -46,8 +46,10 @@ export interface Component{
   outputs : ComponentOutput[],
   gates : ComponentGate[],
   nets : number[],
-  source? : CompiledComponent,
-  name? : string
+  hash : string,
+  repo : string,
+  name : string,
+  version : string
 }
 
 export interface ComponentInput{
@@ -117,7 +119,10 @@ export interface CompiledComponent {
   gates : CompiledComponentGate[],
   inputs : CompiledComponentInput[],
   outputs : CompiledComponentOutput[],
-  name : string
+  repo : string,
+  name : string,
+  hash : string,
+  version : string
 }
 
 export interface CompiledComponentPin extends IHaveDirection, IHavePosition {
