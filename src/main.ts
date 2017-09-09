@@ -21,4 +21,4 @@ export { default as diffAndReconcile } from './diffAndReconcile';
 
 export { default as packageComponent } from './packing';
 
-export { default as upgradeComponent } from './upgrade/component';
+export { default as upgradeItem } from './upgrade';
