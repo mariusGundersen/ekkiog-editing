@@ -26,10 +26,8 @@ export default function drawLight(forest : Forest, x : number, y : number, direc
   const neighbouringNet = getLightNeighbouringNet(forest.enneaTree, x, y, dx, dy);
 
   const net = neighbouringNet || GROUND;
-  const data = {
+  const data : Light = {
     type: LIGHT,
-    dx,
-    dy,
     net,
     name: '',
     direction

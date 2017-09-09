@@ -27,12 +27,11 @@ export default function drawButton(forest : Forest, x : number, y : number, dire
   }
 
   const {tree: buddyTree, address: net} = allocate(forest.buddyTree);
-  const data = {
+  const data : Button = {
     type: BUTTON,
     net,
     direction,
-    name: '',
-    state: false
+    name: ''
   };
   const box = {left:x-1, top:y-1, width:3, height:3};
   let enneaTree = ennea.set(forest.enneaTree, data, box);

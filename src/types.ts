@@ -36,7 +36,7 @@ export interface Underpass{
 export interface Button{
   type : 'button',
   net : number,
-  name? : string,
+  name : string,
   direction : Direction,
 }
 
@@ -84,7 +84,7 @@ export interface ComponentInputPointer {
 export interface Light {
   type : 'light',
   net : number,
-  name? : string,
+  name : string,
   direction : Direction
 }
 
