@@ -13,6 +13,7 @@ import {
 } from '../constants';
 
 import { getLightNeighbouringNet } from '../query/getNeighbouringNets';
+import insertItem from './insertItem';
 
 import {
   directionToDx,
@@ -33,14 +34,5 @@ export default function drawLight(forest : Forest, x : number, y : number, direc
     direction
   };
   const box = {left: x-1, top: y-1, width: 3, height: 3};
-  let enneaTree = ennea.set(forest.enneaTree, data, box);
-
-  if(forest.enneaTree === enneaTree){
-    return forest;
-  }
-
-  return {
-    buddyTree,
-    enneaTree
-  };
+  return insertItem(forest, buddyTree, data, box);
 }

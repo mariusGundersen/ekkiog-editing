@@ -6,7 +6,7 @@ import {
 } from '../constants';
 
 import {getUnderpassNeighbouringNets} from '../query/getNeighbouringNets';
-import floodFill from '../flooding/floodFill';
+import insertItem from './insertItem';
 
 import { Forest, Underpass } from '../types';
 
@@ -19,22 +19,10 @@ export default function drawUnderpass(forest : Forest, x : number, y : number){
   }
 
   const net = neighbouringNets.horizontal[0] || GROUND;
-  const data = {
+  const data : Underpass = {
     type: UNDERPASS,
     net
   };
   const box = {left:x, top:y};
-
-  let enneaTree = ennea.set(forest.enneaTree, data, box);
-
-  if(forest.enneaTree === enneaTree){
-    return forest;
-  }
-
-  enneaTree = floodFill(enneaTree, data, box);
-
-  return {
-    buddyTree,
-    enneaTree
-  };
+  return insertItem(forest, buddyTree, data, box);
 }

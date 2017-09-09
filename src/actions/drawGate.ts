@@ -8,7 +8,7 @@ import {
 
 import getNetAt from '../query/getNetAt';
 import {getGateNeighbouringNets} from '../query/getNeighbouringNets';
-import floodFill from '../flooding/floodFill';
+import insertItem from './insertItem';
 
 import { Forest, TreeNode, Gate } from '../types';
 
@@ -20,7 +20,7 @@ export default function drawGate(forest : Forest, x : number, y : number){
   }
 
   const {tree: buddyTree, address: net} = allocate(forest.buddyTree);
-  const data = {
+  const data : Gate = {
     type: GATE,
     net,
     inputA: getNetAt(forest.enneaTree, x-4, y-1, -1, 0),
@@ -28,16 +28,5 @@ export default function drawGate(forest : Forest, x : number, y : number){
   };
 
   const box = {left:x-3, top:y-1, width:4, height:3};
-  let enneaTree = ennea.set(forest.enneaTree, data, box);
-
-  if(forest.enneaTree === enneaTree){
-    return forest;
-  }
-
-  enneaTree = floodFill(enneaTree, data, box);
-
-  return {
-    enneaTree,
-    buddyTree
-  };
+  return insertItem(forest, buddyTree, data, box);
 }

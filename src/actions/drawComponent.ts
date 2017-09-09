@@ -7,7 +7,7 @@ import {
 } from '../constants';
 
 import getNetAt from '../query/getNetAt';
-import floodFill from '../flooding/floodFill';
+import insertItem from './insertItem';
 
 import {
   Forest,
@@ -65,18 +65,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
   };
 
   const box = {left:x, top:y, width:packagedComponent.width, height:packagedComponent.height};
-  let enneaTree = ennea.set(forest.enneaTree, data, box);
-
-  if(forest.enneaTree === enneaTree){
-    return forest;
-  }
-
-  enneaTree = floodFill(enneaTree, data, box);
-
-  return {
-    enneaTree,
-    buddyTree
-  };
+  return insertItem(forest, buddyTree, data, box);
 }
 
 export function getNetAtPos(tree : TreeNode, sx : number, sy : number, x : number, y : number, dx : number, dy : number){

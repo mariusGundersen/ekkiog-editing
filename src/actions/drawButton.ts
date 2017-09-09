@@ -8,7 +8,7 @@ import {
 } from '../constants';
 
 import {getButtonNeighbouringNets} from '../query/getNeighbouringNets';
-import floodFill from '../flooding/floodFill';
+import insertItem from './insertItem';
 
 import { Forest, Button, Direction } from '../types';
 
@@ -34,16 +34,5 @@ export default function drawButton(forest : Forest, x : number, y : number, dire
     name: ''
   };
   const box = {left:x-1, top:y-1, width:3, height:3};
-  let enneaTree = ennea.set(forest.enneaTree, data, box);
-
-  if(forest.enneaTree === enneaTree){
-    return forest;
-  }
-
-  enneaTree = floodFill(enneaTree, data, box);
-
-  return {
-    enneaTree,
-    buddyTree
-  };
+  return insertItem(forest, buddyTree, data, box);
 }
