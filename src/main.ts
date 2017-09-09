@@ -20,3 +20,5 @@ export { default as reconcile } from './reconciliation/reconcile';
 export { default as diffAndReconcile } from './diffAndReconcile';
 
 export { default as packageComponent } from './packing';
+
+export { default as upgradeComponent } from './upgrade/component';

@@ -42,6 +42,7 @@ export interface Button{
 
 export interface Component{
   type : 'component',
+  schema? : number,
   inputs : ComponentInput[],
   outputs : ComponentOutput[],
   gates : ComponentGate[],
