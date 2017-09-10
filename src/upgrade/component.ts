@@ -15,8 +15,8 @@ export default function upgradeComponent(component : Partial<Component>) : Compo
         gates: component.gates,
         nets: component.nets,
         name: component.name || 'unknown',
-        repo: 'unknown',
-        version: '1',
+        repo: '',
+        version: '0',
         hash: '0000000000000000000000000000000000000000'
       } as Component;
     default:
