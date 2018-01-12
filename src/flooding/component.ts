@@ -7,7 +7,10 @@ import {
 } from './types';
 
 import {
-  Component
+  Component,
+  ComponentInputPointerToSegment,
+  ComponentInputPointerToGate,
+  ComponentInputPointer
 } from '../types';
 
 import {
@@ -24,8 +27,9 @@ export default function component(oldComponent : Component, pos : Pos, ctx : Con
         net: ctx.net
       }
       : input);
+    const gatePointers = targetInput.pointsTo.filter(isGatePointer);
     const gates = oldComponent.gates.map((gate, index) => {
-      const points = targetInput.pointsTo.filter(p => p.index === index);
+      const points = gatePointers.filter(p => p.index === index);
       if(points.length === 0){
         return gate;
       }
@@ -38,7 +42,25 @@ export default function component(oldComponent : Component, pos : Pos, ctx : Con
         inputA: pointA ? ctx.net : gate.inputA,
         inputB: pointB ? ctx.net : gate.inputB,
       }
-    })
+    });
+
+    const displayPointers = targetInput.pointsTo.filter(isDisplayPointer);
+    const displays = oldComponent.displays.map((display, index) => {
+      const points = displayPointers
+        .filter(p => p.display === index)
+        .map(p => p.segment);
+
+      if(points.length === 0){
+        return display;
+      }
+
+      return {
+        ...display,
+        segments: display.segments.map((segment, index) => {
+          return points.indexOf(index) >= 0 ? ctx.net : segment
+        })
+      }
+    });
 
     return {
       ...oldComponent,
@@ -53,4 +75,12 @@ export default function component(oldComponent : Component, pos : Pos, ctx : Con
   }
 
   return oldComponent;
+}
+
+function isGatePointer(p : ComponentInputPointer) : p is ComponentInputPointerToGate {
+  return p.input === 'A' || p.input === 'B';
+}
+
+function isDisplayPointer(p : ComponentInputPointer) : p is ComponentInputPointerToSegment {
+  return p.input === 'S';
 }

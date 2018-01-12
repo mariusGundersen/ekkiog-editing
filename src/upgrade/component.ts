@@ -6,8 +6,9 @@ export default function upgradeComponent(component : Partial<Component>) : Compo
   const schema : number = component.schema || 0;
 
   switch(schema){
+    //@ts-ignore
     case 0:
-      return {
+      component = {
         type: 'component',
         schema: 1,
         inputs: component.inputs,
@@ -19,6 +20,12 @@ export default function upgradeComponent(component : Partial<Component>) : Compo
         version: '0',
         hash: '0000000000000000000000000000000000000000'
       } as Component;
+    //@ts-ignore
+    case 1:
+      component = {
+        ...component,
+        displays: []
+      };
     default:
       return component as Component;
   }

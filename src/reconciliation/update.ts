@@ -30,6 +30,7 @@ import {
 } from '../utils';
 
 import * as tile from './tile';
+import { segmentPos } from './tile';
 
 export default function update(context : MutableContext, change : ChangeUpdate<Item>){
   switch(change.after.type){
@@ -147,11 +148,21 @@ export function updateComponent(context : MutableContext, {top:y, left:x, width,
     }
   }
 
+  for(const [oldDisplay, newDisplay] of zip(oldComponent.displays, newComponent.displays)){
+    for(const [oldSegment, newSegment, index] of zip(oldDisplay.segments, newDisplay.segments)){
+      const [tx, ty] = segmentPos(x+newDisplay.x, y+newDisplay.y, index);
+      context.setNet(tx, ty, newSegment);
+    }
+  }
+
   context.updateText(oldComponent, newComponent);
 }
 
 function* zip<T>(before : T[], after : T[]){
   for(let i=0; i<before.length; i++){
-    yield [before[i], after[i]] as [T, T];
+    if(before[i] !== after[i]){
+      yield [before[i], after[i], i] as [T, T, number];
+    }
   }
 }
+

@@ -8,84 +8,110 @@ export type Tool = 'wire' | 'gate' | 'underpass' | 'button' | 'light' | 'compone
 export type TileType = Tool | 'empty';
 
 export interface Forest {
-  buddyTree : BuddyNode,
-  enneaTree : TreeNode
+  readonly buddyTree : BuddyNode,
+  readonly enneaTree : TreeNode
 }
 
 export type TreeNode = Node<Item>;
 
 export { Area, Box, BoxArea, BuddyNode };
 
-export interface Wire{
-  type: 'wire',
-  net: number
+export interface Wire {
+  readonly type: 'wire',
+  readonly net: number
 }
 
-export interface Gate{
-  type : 'gate',
-  net : number,
-  inputA : number,
-  inputB : number
+export interface Gate {
+  readonly type : 'gate',
+  readonly net : number,
+  readonly inputA : number,
+  readonly inputB : number
 }
 
-export interface Underpass{
-  type : 'underpass',
-  net : number
+export interface Underpass {
+  readonly type : 'underpass',
+  readonly net : number
 }
 
-export interface Button{
-  type : 'button',
-  net : number,
-  name : string,
-  direction : Direction,
+export interface Button {
+  readonly type : 'button',
+  readonly net : number,
+  readonly name : string,
+  readonly direction : Direction,
 }
 
-export interface Component{
-  type : 'component',
-  schema? : number,
-  inputs : ComponentInput[],
-  outputs : ComponentOutput[],
-  gates : ComponentGate[],
-  nets : number[],
-  hash : string,
-  repo : string,
-  name : string,
-  version : string
+export interface Component {
+  readonly type : 'component',
+  readonly schema? : number,
+  readonly inputs : ComponentInput[],
+  readonly outputs : ComponentOutput[],
+  readonly gates : ComponentGate[],
+  readonly displays : ComponentDisplay[]
+  readonly nets : number[],
+  readonly hash : string,
+  readonly repo : string,
+  readonly name : string,
+  readonly version : string
 }
 
-export interface ComponentInput{
-  x : number,
-  y : number,
-  net : number,
-  pointsTo : ComponentInputPointer[],
-  name? : string
+export interface ComponentInput {
+  readonly x : number,
+  readonly y : number,
+  readonly net : number,
+  readonly pointsTo : ComponentInputPointer[],
+  readonly name? : string
 }
 
-export interface ComponentOutput{
-  x : number,
-  y : number,
-  net : number,
-  dx : number,
-  dy : number,
-  name? : string
+export interface ComponentOutput {
+  readonly x : number,
+  readonly y : number,
+  readonly net : number,
+  readonly dx : number,
+  readonly dy : number,
+  readonly name? : string
 }
 
-export interface ComponentGate{
-  net : number,
-  inputA : number,
-  inputB : number
+export interface ComponentGate {
+  readonly net : number,
+  readonly inputA : number,
+  readonly inputB : number
 }
 
-export interface ComponentInputPointer {
-  input : 'A' | 'B',
-  index : number
+export interface ComponentDisplay {
+  readonly x : number,
+  readonly y: number,
+  readonly segments : [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
+}
+
+export type ComponentInputPointer =
+  ComponentInputPointerToGate |
+  ComponentInputPointerToSegment;
+
+export interface ComponentInputPointerToGate {
+  readonly input : 'A' | 'B',
+  readonly index : number
+}
+
+export interface ComponentInputPointerToSegment {
+  readonly input : 'S',
+  readonly display : number,
+  readonly segment : number,
 }
 
 export interface Light {
-  type : 'light',
-  net : number,
-  name : string,
-  direction : Direction
+  readonly type : 'light',
+  readonly net : number,
+  readonly name : string,
+  readonly direction : Direction
 }
 
 export type Item = Wire
@@ -104,43 +130,63 @@ export interface MutableContext{
   updateText(before : Item, after : Item) : void;
 }
 
+export interface IDirection {
+  readonly direction : Direction
+}
+
 export interface IHaveDirection {
-  dx : number,
-  dy : number
+  readonly dx : number,
+  readonly dy : number
 }
 
 export interface IHavePosition {
-  x : number,
-  y : number
+  readonly x : number,
+  readonly y : number
 }
 
 export interface CompiledComponent {
-  width : number,
-  height : number,
-  gates : CompiledComponentGate[],
-  inputs : CompiledComponentInput[],
-  outputs : CompiledComponentOutput[],
-  repo : string,
-  name : string,
-  hash : string,
-  version : string
+  readonly width : number,
+  readonly height : number,
+  readonly gates : CompiledComponentGate[],
+  readonly inputs : CompiledComponentInput[],
+  readonly outputs : CompiledComponentOutput[],
+  readonly displays : CompiledComponentDisplay[],
+  readonly repo : string,
+  readonly name : string,
+  readonly hash : string,
+  readonly version : string
+}
+
+export interface CompiledComponentDisplay {
+  readonly x : number,
+  readonly y: number,
+  readonly segments : [
+    CompiledComponentGateInput,
+    CompiledComponentGateInput,
+    CompiledComponentGateInput,
+    CompiledComponentGateInput,
+    CompiledComponentGateInput,
+    CompiledComponentGateInput,
+    CompiledComponentGateInput,
+    CompiledComponentGateInput
+  ];
 }
 
 export interface CompiledComponentPin extends IHaveDirection, IHavePosition {
-  name? : string
+  readonly name? : string
 }
 
 export interface CompiledComponentInput extends CompiledComponentPin {
-  group? : number
+  readonly group? : number
 }
 
 export interface CompiledComponentOutput extends CompiledComponentPin {
-  gate : number
+  readonly gate : number
 }
 
 export interface CompiledComponentGate {
-  inputA : CompiledComponentGateInput,
-  inputB : CompiledComponentGateInput
+  readonly inputA : CompiledComponentGateInput,
+  readonly inputB : CompiledComponentGateInput
 }
 
 export type CompiledComponentGateInput =
@@ -149,21 +195,15 @@ export type CompiledComponentGateInput =
   | CompiledComponentGateInputFromGround;
 
 export interface CompiledComponentGateInputFromGate{
-  type : 'gate',
-  index : number
+  readonly type : 'gate',
+  readonly index : number
 }
 
 export interface CompiledComponentGateInputFromInput{
-  type : 'input',
-  index : number
+  readonly type : 'input',
+  readonly index : number
 }
 
 export interface CompiledComponentGateInputFromGround{
-  type : 'ground'
-}
-
-declare global{
-  interface Array<T> {
-    filter<U extends T>(pred: (e : T, i : number, c : T[]) => e is U): U[];
-  }
+  readonly type : 'ground'
 }

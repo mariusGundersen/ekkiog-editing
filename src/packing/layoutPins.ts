@@ -20,7 +20,8 @@ export type PinLayout = {
 
 export default function layoutPins(
   sources : Pin[],
-  drains : Pin[])
+  drains : Pin[],
+  displayCount : number = 0)
   : PinLayout {
   const sourcesUps = sources.filter(toDown);
   const sourcesLefts = sources.filter(toRight);
@@ -37,8 +38,8 @@ export default function layoutPins(
   const rights = [...sourcesRights, ...drainsRights].sort(byY);
   const downs = [...sourcesDowns, ...drainsDowns].sort(byX);
 
-  const width = Math.max(3, ups.length*2 + 1, downs.length*2 + 1);
-  const height = Math.max(3, lefts.length*2 + 1, rights.length*2 + 1);
+  const width = Math.max(3, ups.length*2 + 1, downs.length*2 + 1, displayCount*3 + 2);
+  const height = Math.max(3, lefts.length*2 + 1, rights.length*2 + 1, displayCount > 0 ? 7 : 0);
 
   const inputs = sources
   .map(pin => ({

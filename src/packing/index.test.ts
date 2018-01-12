@@ -32,8 +32,8 @@ test('compile single gate', t => {
     hash: 'hash',
     width: 3,
     height: 3,
-    inputs: [] as CompiledComponentInput[],
-    outputs: [] as CompiledComponentOutput[],
+    inputs: [],
+    outputs: [],
     gates: [
       {
         inputA: {
@@ -43,7 +43,8 @@ test('compile single gate', t => {
           type: 'ground'
         }
       }
-    ]
+    ],
+    displays: []
   });
 });
 
@@ -57,9 +58,10 @@ test('compile lightbulb with ground net', t => {
     hash: 'hash',
     width: 3,
     height: 3,
-    inputs: [] as CompiledComponentInput[],
-    outputs: [] as CompiledComponentOutput[],
-    gates: [] as CompiledComponentGate[]
+    inputs: [],
+    outputs: [],
+    gates: [],
+    displays: []
   });
 });
 
@@ -174,7 +176,8 @@ test('compile NOT gate', t => {
           index: 0
         }
       }
-    ]
+    ],
+    displays: []
   });
 });
 
@@ -232,7 +235,8 @@ test('compile AND gate', t => {
           index: 0
         }
       }
-    ]
+    ],
+    displays: []
   });
 });
 
@@ -310,7 +314,8 @@ test('compile XOR gate', t => {
           index: 1
         }
       }
-    ]
+    ],
+    displays: []
   });
 });
 
@@ -385,7 +390,8 @@ test('half adder', t => {
         inputA: { type: GATE, index: 2 },
         inputB: { type: GATE, index: 3 }
       }
-    ]
+    ],
+    displays: []
   });
 });
 

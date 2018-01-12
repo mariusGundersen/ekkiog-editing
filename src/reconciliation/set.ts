@@ -35,6 +35,8 @@ import {
 } from '../utils';
 
 import * as tile from './tile';
+import { disconnect } from 'cluster';
+import { segmentPos } from './tile';
 
 export default function set(context : MutableContext, change : ChangeSet<Item>){
   switch(change.after.type){
@@ -96,12 +98,24 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
 
   for(let ty=0; ty<height; ty++){
     for(let tx=0; tx<width; tx++){
-      context.setMap(tx+x, ty+y, tile.component(tx, ty, width-1, height-1, ports));
+      const display = component.displays.filter(d => d.x >= tx && d.x+2 <= tx && d.y >= ty && d.y+5 <= ty)[0];
+      if(display){
+        context.setMap(tx+x, ty+y, tile.segments(tx-display.x, ty-display.y));
+      }else{
+        context.setMap(tx+x, ty+y, tile.component(tx, ty, width-1, height-1, ports));
+      }
     }
   }
 
   for(const port of ports){
     context.setNet(x+port.x, y+port.y, port.net);
+  }
+
+  for(const display of component.displays){
+    for(let i=0; i<8; i++){
+      const [tx, ty] = segmentPos(display.x, display.y, i);
+      context.setNet(tx, ty, display.segments[i]);
+    }
   }
 
   for(const gate of component.gates){

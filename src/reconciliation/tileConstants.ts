@@ -7,6 +7,7 @@ export const BUTTON_OUTPUT_TILE = tile(9, 3);
 export const COMPONENT_TILE = tile(1, 8);
 export const LIGHT_TILE = tile(12, 0);
 export const LIGHT_INPUT_TILE = tile(9, 7);
+export const SEGMENT_TILE = tile(13, 3);
 
 export function tile(x : number, y : number) : number{
   return x|(y<<8);

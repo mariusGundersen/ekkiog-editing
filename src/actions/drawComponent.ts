@@ -15,7 +15,10 @@ import {
   Component,
   CompiledComponent,
   CompiledComponentGate,
-  ComponentInputPointer
+  ComponentInputPointer,
+  CompiledComponentDisplay,
+  CompiledComponentGateInput,
+  ComponentDisplay
 } from '../types';
 
 export interface MappedCompiledComponentGate extends CompiledComponentGate {
@@ -58,6 +61,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
     inputs,
     outputs,
     gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net))),
+    displays: packagedComponent.displays.map((display, index) => makeDisplay(display, index, nets, inputs.map(i => i.net))),
     repo: packagedComponent.repo,
     hash: packagedComponent.hash,
     name: packagedComponent.name,
@@ -84,15 +88,23 @@ export function* makePointsTo(gates : MappedCompiledComponentGate[], index : num
 export function makeGate(gate : CompiledComponentGate, index : number, gateNets : number[], inputNets : number[]){
   return {
     net: gateNets[index],
-    inputA: gate.inputA.type === 'gate'
-      ? gateNets[gate.inputA.index]
-      : gate.inputA.type === 'input'
-      ? inputNets[gate.inputA.index]
-      : GROUND,
-    inputB: gate.inputB.type === 'gate'
-      ? gateNets[gate.inputB.index]
-      : gate.inputB.type === 'input'
-      ? inputNets[gate.inputB.index]
-      : GROUND
+    inputA: getNet(gate.inputA, gateNets, inputNets),
+    inputB: getNet(gate.inputB, gateNets, inputNets)
   };
+}
+
+export function makeDisplay(display : CompiledComponentDisplay, index : number, gateNets : number[], inputNets : number[]){
+  return {
+    x : display.x,
+    y : display.y,
+    segments: display.segments.map(s => getNet(s, gateNets, inputNets))
+  } as ComponentDisplay;
+}
+
+function getNet(input : CompiledComponentGateInput, gateNets : number[], inputNets : number[]){
+  return input.type === 'gate'
+  ? gateNets[input.index]
+  : input.type === 'input'
+  ? inputNets[input.index]
+  : GROUND
 }

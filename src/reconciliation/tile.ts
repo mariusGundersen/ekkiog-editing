@@ -9,6 +9,7 @@ import {
   COMPONENT_TILE,
   LIGHT_TILE,
   LIGHT_INPUT_TILE,
+  SEGMENT_TILE,
   tile
 } from './tileConstants';
 
@@ -101,5 +102,23 @@ export function lightInput(dx : number, dy : number){
     }else{
       return LIGHT_INPUT_TILE + tile(0, 0);
     }
+  }
+}
+
+export function segments(x : number, y : number){
+  return SEGMENT_TILE + tile(x, y);
+}
+
+export function segmentPos(x : number, y : number, index : number){
+  switch(index){
+    case 0 : return [x+1, y+0];
+    case 1 : return [x+0, y+1];
+    case 2 : return [x+2, y+1];
+    case 3 : return [x+1, y+2];
+    case 4 : return [x+0, y+3];
+    case 5 : return [x+2, y+3];
+    case 6 : return [x+1, y+4];
+    case 7 : return [x+2, y+4];
+    default: return [x+1, y+1];
   }
 }

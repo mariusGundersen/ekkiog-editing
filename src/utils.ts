@@ -34,3 +34,8 @@ export function directionToDy(direction : Direction){
       return 0;
   }
 }
+
+export function flatten<T>(list : T[] = [], items : T[]){
+  list.push(...items);
+  return list;
+}
