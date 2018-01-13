@@ -98,7 +98,7 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
 
   for(let ty=0; ty<height; ty++){
     for(let tx=0; tx<width; tx++){
-      const display = component.displays.filter(d => d.x >= tx && d.x+2 <= tx && d.y >= ty && d.y+5 <= ty)[0];
+      const display = component.displays.filter(d => tx-d.x >= 0 && tx-d.x <= 2 && ty-d.y >= 0 && ty-d.y <= 4)[0];
       if(display){
         context.setMap(tx+x, ty+y, tile.segments(tx-display.x, ty-display.y));
       }else{
@@ -113,7 +113,7 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
 
   for(const display of component.displays){
     for(let i=0; i<8; i++){
-      const [tx, ty] = segmentPos(display.x, display.y, i);
+      const [tx, ty] = segmentPos(display.x+x, display.y+y, i);
       context.setNet(tx, ty, display.segments[i]);
     }
   }

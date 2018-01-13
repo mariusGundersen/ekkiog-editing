@@ -25,7 +25,7 @@ export interface MappedCompiledComponentGate extends CompiledComponentGate {
   net : number
 }
 
-const COMPONENT_SCHEMA = 1;
+const COMPONENT_SCHEMA = 2;
 
 export default function drawComponent(forest : Forest, x : number, y : number, packagedComponent : CompiledComponent){
   x -= packagedComponent.width>>1;

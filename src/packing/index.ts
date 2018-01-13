@@ -61,7 +61,7 @@ export default function compile(forest : Forest, repo : string, name : string, v
   const forestDisplays = forestComponents
     .sort((a, b) => a.left - b.left)
     .map(component => component.data.displays)
-    .reduce(flatten);
+    .reduce(flatten, []);
 
   const gatesInputs = forestGates
     .map(node => ({
@@ -71,7 +71,7 @@ export default function compile(forest : Forest, repo : string, name : string, v
 
   const componentsInputs = forestComponents
     .map(c => c.data.gates)
-    .reduce(flatten);
+    .reduce(flatten, []);
 
   const groundNet = makeGroundInputPair();
   const inputNets = forestButtons
@@ -113,7 +113,7 @@ export default function compile(forest : Forest, repo : string, name : string, v
     }));
 
   const displays = forestDisplays.map((display, i) => ({
-    x: (layout.width - forestDisplays.length*3)>>1,
+    x: ((layout.width - forestDisplays.length*3)>>1) + i*3,
     y: (layout.height>>1) - 2,
     segments: display.segments.map(s => netToIndexMap.get(s) || makeGroundInput())
   } as CompiledComponentDisplay))

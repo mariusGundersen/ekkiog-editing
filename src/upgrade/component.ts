@@ -24,6 +24,7 @@ export default function upgradeComponent(component : Partial<Component>) : Compo
     case 1:
       component = {
         ...component,
+        schema: 2,
         displays: []
       };
     default:

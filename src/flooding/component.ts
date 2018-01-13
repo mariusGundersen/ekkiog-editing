@@ -8,6 +8,7 @@ import {
 
 import {
   Component,
+  ComponentDisplay,
   ComponentInputPointerToSegment,
   ComponentInputPointerToGate,
   ComponentInputPointer
@@ -17,10 +18,9 @@ import {
   GROUND
 } from '../constants';
 
-export default function component(oldComponent : Component, pos : Pos, ctx : Context, queue : BoxContext<Context>[]){
-  const hitsInput = oldComponent.inputs.some(input => input.x === pos.left && input.y === pos.top);
-  if(hitsInput){
-    const targetInput = oldComponent.inputs.filter(input => input.x === pos.left && input.y === pos.top)[0];
+export default function component(oldComponent : Component, pos : Pos, ctx : Context, queue : BoxContext<Context>[]) : Component {
+  const targetInput = oldComponent.inputs.filter(input => input.x === pos.left && input.y === pos.top)[0];
+  if(targetInput){
     const inputs = oldComponent.inputs.map(input => input === targetInput
       ? {
         ...input,
@@ -56,14 +56,13 @@ export default function component(oldComponent : Component, pos : Pos, ctx : Con
 
       return {
         ...display,
-        segments: display.segments.map((segment, index) => {
-          return points.indexOf(index) >= 0 ? ctx.net : segment
-        })
-      }
+        segments: display.segments.map((segment, index) => points.indexOf(index) >= 0 ? ctx.net : segment)
+      } as ComponentDisplay;
     });
 
     return {
       ...oldComponent,
+      displays,
       inputs,
       gates
     };
