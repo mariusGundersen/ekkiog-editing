@@ -74,14 +74,14 @@ export default function compile(forest : Forest, repo : string, name : string, v
     .reduce(flatten, []);
 
   const groundNet = makeGroundInputPair();
-  const inputNets = forestButtons
-    .map(makeInputInputPair);
+  const buttonNets = forestButtons
+    .map(makeButtonInputPair);
   const gateNets = forestGates
     .map(makeGateInputPair);
   const gateAndComponentNets = forestComponents
     .reduce((gates, component) => gates.concat(component.data.gates.map(makeMakeGateInputPair(gates.length))), gateNets);
 
-  const netToIndexMap = new Map([groundNet, ...inputNets, ...gateAndComponentNets]);
+  const netToIndexMap = new Map([groundNet, ...buttonNets, ...gateAndComponentNets]);
 
   const layout = layoutPins(
     forestButtons.map(getDirections),
@@ -159,11 +159,11 @@ export function makeGateInput(index : number) : CompiledComponentGateInputFromGa
   };
 }
 
-function makeInputInputPair(input : AreaData<Button>, index : number) : NetAndInput {
-  return [input.data.net, makeInputInput(index)];
+function makeButtonInputPair(input : AreaData<Button>, index : number) : NetAndInput {
+  return [input.data.net, makeButtonInput(index)];
 }
 
-export function makeInputInput(index : number) : CompiledComponentGateInputFromInput{
+export function makeButtonInput(index : number) : CompiledComponentGateInputFromInput{
   return {
     type: INPUT,
     index

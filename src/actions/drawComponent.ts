@@ -20,10 +20,8 @@ import {
   CompiledComponentGateInput,
   ComponentDisplay
 } from '../types';
-
-export interface MappedCompiledComponentGate extends CompiledComponentGate {
-  net : number
-}
+import { ComponentInput } from '../main';
+import { flatten } from '../utils';
 
 const COMPONENT_SCHEMA = 2;
 
@@ -33,17 +31,17 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
   const {tree: buddyTree, ...addresses} = buddy.allocate(forest.buddyTree, packagedComponent.gates.length);
   const nets = [...buddy.range(addresses)];
 
-  const gates = packagedComponent.gates.map((gate, index) => ({...gate, net: nets[index]}));
-
   const inputs = packagedComponent.inputs.map((input, index) => ({
     x: input.x,
     y: input.y,
     dx: input.dx,
     dy: input.dy,
     net: getNetAtPos(forest.enneaTree, x, y, input.x, input.y, input.dx, input.dy),
-    pointsTo: [...makePointsTo(gates, index)],
+    pointsTo: [...makePointsTo(packagedComponent.gates, packagedComponent.displays, index)],
     name: input.name
   }));
+
+  const inputNets = inputs.map(i => i.net);
 
   const outputs = packagedComponent.outputs.map(output => ({
     x: output.x,
@@ -60,8 +58,8 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
     nets,
     inputs,
     outputs,
-    gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net))),
-    displays: packagedComponent.displays.map((display, index) => makeDisplay(display, index, nets, inputs.map(i => i.net))),
+    gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputNets)),
+    displays: packagedComponent.displays.map((display, index) => makeDisplay(display, index, nets, inputNets)),
     repo: packagedComponent.repo,
     hash: packagedComponent.hash,
     name: packagedComponent.name,
@@ -76,13 +74,18 @@ export function getNetAtPos(tree : TreeNode, sx : number, sy : number, x : numbe
   return getNetAt(tree, sx+x+dx, sy+y+dy, dx, dy);
 }
 
-export function* makePointsTo(gates : MappedCompiledComponentGate[], index : number){
+export function* makePointsTo(gates : CompiledComponentGate[], displays : CompiledComponentDisplay[], index : number) : IterableIterator<ComponentInputPointer> {
   yield* gates
     .filter(g => g.inputA.type === 'input' && g.inputA.index === index)
     .map(g => ({index: gates.indexOf(g), input: 'A' as 'A'}));
   yield* gates
     .filter(g => g.inputB.type === 'input' && g.inputB.index === index)
     .map(g => ({index: gates.indexOf(g), input: 'B' as 'B'}));
+  yield* displays
+    .map((d, i) => d.segments
+      .filter(s => s.type === 'input' && s.index === index)
+      .map(s => ({input: 'S' as 'S', display: i, segment: d.segments.indexOf(s) })))
+    .reduce(flatten, [])
 }
 
 export function makeGate(gate : CompiledComponentGate, index : number, gateNets : number[], inputNets : number[]){
