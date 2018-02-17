@@ -2,7 +2,9 @@ import {
   SET,
   UPDATE,
   CLEAR,
-  Change
+  Change,
+  ChangeClear,
+  ChangeSet
 } from 'ennea-tree';
 
 import set from './set';
@@ -30,8 +32,8 @@ export function reconcileChange(context : MutableContext, change : Change<Item>)
       if(change.before.type === change.after.type){
         return update(context, change);
       }else{
-        clear(context, {...change, type: CLEAR});
-        set(context, {...change, type: SET});
+        clear(context, {...change, type: CLEAR} as ChangeClear<Item>);
+        set(context, {...change, type: SET} as ChangeSet<Item>);
       }
   }
 }

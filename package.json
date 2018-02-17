@@ -49,7 +49,7 @@
     "babel-runtime": "^6.22.0"
   },
   "dependencies": {
-    "buddy-tree": "^2.1.1",
+    "buddy-tree": "^2.2.1",
     "ennea-tree": "^2.1.0"
   }
 }
