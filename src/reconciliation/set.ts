@@ -88,6 +88,11 @@ export function button(context : MutableContext, {top:y, left:x, width, height} 
       context.setNet(tx+x, ty+y, button.net);
     }
   }
+
+  if(button.name){
+    context.insertText(button, {top:y, left:x, width, height});
+  }
+
   context.setGate(button.net, 1, 1);
 }
 
@@ -123,5 +128,9 @@ export function light(context : MutableContext, {top:y, left:x, width, height} :
       }
       context.setNet(tx+x, ty+y, light.net);
     }
+  }
+
+  if(light.name){
+    context.insertText(light, {top:y, left:x, width, height});
   }
 }

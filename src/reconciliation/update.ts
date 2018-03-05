@@ -106,6 +106,14 @@ export function updateButton(context : MutableContext, {top:y, left:x, width, he
     }
   }
 
+  if(oldButton.name !== newButton.name){
+    if(oldButton.name){
+      context.updateText(oldButton, newButton);
+    }else{
+      context.insertText(newButton, {top:y, left:x, width, height});
+    }
+  }
+
   context.setGate(newButton.net, 1, 1);
 }
 
@@ -125,6 +133,14 @@ export function updateLight(context : MutableContext, {top:y, left:x, width, hei
       for(let tx=0; tx<width; tx++){
         context.setNet(tx+x, ty+y, newLight.net);
       }
+    }
+  }
+
+  if(oldLight.name !== newLight.name){
+    if(oldLight.name){
+      context.updateText(oldLight, newLight);
+    }else{
+      context.insertText(newLight, {top:y, left:x, width, height});
     }
   }
 }
