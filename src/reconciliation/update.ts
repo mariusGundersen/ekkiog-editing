@@ -107,11 +107,10 @@ export function updateButton(context : MutableContext, {top:y, left:x, width, he
   }
 
   if(oldButton.name !== newButton.name){
-    if(oldButton.name){
-      context.updateText(oldButton, newButton);
-    }else{
-      context.insertText(newButton, {top:y, left:x, width, height});
-    }
+    context.removeText(oldButton);
+    context.insertText(newButton, {top:y, left:x, width, height});
+  }else{
+    context.updateText(oldButton, newButton);
   }
 
   context.setGate(newButton.net, 1, 1);
@@ -137,11 +136,10 @@ export function updateLight(context : MutableContext, {top:y, left:x, width, hei
   }
 
   if(oldLight.name !== newLight.name){
-    if(oldLight.name){
-      context.updateText(oldLight, newLight);
-    }else{
-      context.insertText(newLight, {top:y, left:x, width, height});
-    }
+    context.removeText(oldLight);
+    context.insertText(newLight, {top:y, left:x, width, height});
+  }else{
+    context.updateText(oldLight, newLight);
   }
 }
 
