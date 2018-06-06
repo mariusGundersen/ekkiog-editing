@@ -149,7 +149,7 @@ test('compile NOT gate', t => {
     inputs: [
       {
         dx: -1,
-        dy: 0,
+        dy: -0,
         x: 0,
         y: 1
       }
@@ -191,13 +191,13 @@ test('compile AND gate', t => {
     inputs: [
       {
         dx: -1,
-        dy: 0,
+        dy: -0,
         x: 0,
         y: 1
       },
       {
         dx: -1,
-        dy: 0,
+        dy: -0,
         x: 0,
         y: 3
       }
@@ -249,13 +249,13 @@ test('compile XOR gate', t => {
     inputs: [
       {
         dx: -1,
-        dy: 0,
+        dy: -0,
         x: 0,
         y: 1
       },
       {
         dx: -1,
-        dy: 0,
+        dy: -0,
         x: 0,
         y: 3
       }
@@ -353,8 +353,8 @@ test('half adder', t => {
     width: 3,
     height: 5,
     inputs: [
-      { x: 0, y: 1, dx: -1, dy: 0 },
-      { x: 0, y: 3, dx: -1, dy: 0 }
+      { x: 0, y: 1, dx: -1, dy: -0 },
+      { x: 0, y: 3, dx: -1, dy: -0 }
     ],
     outputs: [
       { gate: 1, x: 2, y: 1, dx: 1, dy: 0 },

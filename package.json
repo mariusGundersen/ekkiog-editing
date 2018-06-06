@@ -2,15 +2,15 @@
   "name": "ekkiog-editing",
   "version": "5.1.2",
   "description": "Editor for ekkiog",
-  "main": "dist/main.js",
-  "types": "lib/main.d.ts",
-  "module": "lib/main.js",
+  "main": "js/main.js",
+  "types": "es/main.d.ts",
+  "module": "es/main.js",
   "scripts": {
-    "clean": "rm -rf ./lib ./dist",
+    "clean": "rm -rf ./es ./js",
     "test": "ava",
     "tsc": "tsc",
     "compile": "npm run tsc && npm run babel",
-    "babel": "babel --source-maps -d dist lib",
+    "babel": "babel --source-maps -d js es",
     "watch": "tsc -w & ava -w",
     "prepublish": "npm run clean && npm run compile && npm test"
   },
@@ -26,20 +26,20 @@
   },
   "homepage": "https://github.com/mariusGundersen/ekkiog-editing#readme",
   "devDependencies": {
-    "@types/node": "^7.0.5",
-    "ava": "^0.19.1",
+    "@types/node": "^7.0.65",
+    "ava": "^0.25.0",
     "babel-cli": "^6.22.2",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.24.1",
-    "typescript": "^2.1.5"
+    "typescript": "^2.9.1"
   },
   "ava": {
     "files": [
-      "lib/**/*.test.js"
+      "es/**/*.test.js"
     ],
     "source": [
-      "lib/**/*.js"
+      "es/**/*.js"
     ],
     "require": [
       "babel-register"
@@ -49,7 +49,7 @@
     "babel-runtime": "^6.22.0"
   },
   "dependencies": {
-    "buddy-tree": "^2.2.1",
-    "ennea-tree": "^2.1.0"
+    "buddy-tree": "^2.3.0",
+    "ennea-tree": "^2.2.0"
   }
 }
