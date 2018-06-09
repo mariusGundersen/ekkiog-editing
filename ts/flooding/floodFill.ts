@@ -27,7 +27,7 @@ import light from './light';
 import unchanged from './unchanged';
 
 import {
-  TreeNode,
+  EnneaTree,
   Item
 } from '../types';
 
@@ -40,15 +40,15 @@ import {
   directionToDy
 } from '../utils';
 
-export default function floodFill(enneaTree : TreeNode, item : Item, pos : BoxArea) : TreeNode {
+export default function floodFill(enneaTree : EnneaTree, item : Item, pos : BoxArea) : EnneaTree {
   return floodFillInternal(enneaTree, false, [item, pos]);
 }
 
-export function floodClear(enenaTree : TreeNode, floodSources : [Item, BoxArea][]){
+export function floodClear(enenaTree : EnneaTree, floodSources : [Item, BoxArea][]){
   return floodFillInternal(enenaTree, true, ...floodSources);
 }
 
-function floodFillInternal(enneaTree : TreeNode, isGround = false, ...floodSources : [Item, BoxArea][]) : TreeNode {
+function floodFillInternal(enneaTree : EnneaTree, isGround = false, ...floodSources : [Item, BoxArea][]) : EnneaTree {
 
   const queue = [...make(isGround, floodSources)];
   const updater = update(enneaTree, (old, ctx : Context, pos) => {

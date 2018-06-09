@@ -10,7 +10,7 @@ import getNetAt from '../query/getNetAt';
 import {getGateNeighbouringNets} from '../query/getNeighbouringNets';
 import insertItem from './insertItem';
 
-import { Forest, TreeNode, Gate } from '../types';
+import { Forest, EnneaTree, Gate } from '../types';
 
 export default function drawGate(forest : Forest, x : number, y : number){
   const neighbouringNets = getGateNeighbouringNets(forest.enneaTree, x, y);

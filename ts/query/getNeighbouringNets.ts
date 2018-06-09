@@ -4,30 +4,30 @@ import {GROUND} from '../constants';
 
 import getNetAt from './getNetAt';
 
-import { TreeNode } from '../types';
+import { EnneaTree } from '../types';
 
-export function getWireNeighbouringNets(enneaTree : TreeNode, x : number, y : number){
+export function getWireNeighbouringNets(enneaTree : EnneaTree, x : number, y : number){
   return unique(
     getLeftRightNet(enneaTree, x, y),
     getAboveBelowNet(enneaTree, x, y));
 }
 
-export function getGateNeighbouringNets(enneaTree : TreeNode, x : number, y : number){
+export function getGateNeighbouringNets(enneaTree : EnneaTree, x : number, y : number){
   return unique(getRightNet(enneaTree, x, y));
 }
 
-export function getUnderpassNeighbouringNets(enneaTree : TreeNode, x : number, y : number){
+export function getUnderpassNeighbouringNets(enneaTree : EnneaTree, x : number, y : number){
   return {
     horizontal: unique(getLeftRightNet(enneaTree, x, y)),
     vertical: unique(getAboveBelowNet(enneaTree, x, y))
   };
 }
 
-export function getButtonNeighbouringNets(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
+export function getButtonNeighbouringNets(enneaTree : EnneaTree, x : number, y : number, dx : number, dy : number){
   return getNetAt(enneaTree, x+dx*2, y+dy*2, dx, dy);
 }
 
-export function getLightNeighbouringNet(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
+export function getLightNeighbouringNet(enneaTree : EnneaTree, x : number, y : number, dx : number, dy : number){
   return getNetAt(enneaTree, x-dx*2, y-dy*2, -dx, -dy);
 }
 
@@ -38,21 +38,21 @@ function unique(...iteratorA : IterableIterator<number>[]){
     .filter((net : number, index : number, nets : number[]) => nets.indexOf(net) === index);
 }
 
-function* getNetAroundWire(enneaTree : TreeNode, x : number, y : number){
+function* getNetAroundWire(enneaTree : EnneaTree, x : number, y : number){
   yield* getLeftRightNet(enneaTree, x, y);
   yield* getAboveBelowNet(enneaTree, x, y);
 }
 
-function* getLeftRightNet(enneaTree : TreeNode, x : number, y : number){
+function* getLeftRightNet(enneaTree : EnneaTree, x : number, y : number){
   yield getNetAt(enneaTree, x-1, y+0, -1, 0);
   yield getNetAt(enneaTree, x+1, y+0, +1, 0);
 }
 
-function* getAboveBelowNet(enneaTree : TreeNode, x : number, y : number){
+function* getAboveBelowNet(enneaTree : EnneaTree, x : number, y : number){
   yield getNetAt(enneaTree, x+0, y-1, 0, -1);
   yield getNetAt(enneaTree, x+0, y+1, 0, +1);
 }
 
-function* getRightNet(enneaTree : TreeNode, x : number, y : number){
+function* getRightNet(enneaTree : EnneaTree, x : number, y : number){
   yield getNetAt(enneaTree, x+1, y+0, +1, 0);
 }

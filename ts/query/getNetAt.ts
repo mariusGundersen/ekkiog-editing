@@ -11,7 +11,7 @@ import {
 } from '../constants';
 
 import {
-  TreeNode,
+  EnneaTree,
   Wire,
   Gate,
   Underpass,
@@ -20,7 +20,7 @@ import {
   Light
 } from '../types';
 
-export default function getNetAt(enneaTree : TreeNode, x : number, y : number, dx : number, dy : number){
+export default function getNetAt(enneaTree : EnneaTree, x : number, y : number, dx : number, dy : number){
   const tile = get(enneaTree, y, x);
   if(!tile || !tile.data) return GROUND;
 
@@ -48,7 +48,7 @@ export function getGateNet(gate : Gate, x : number, y : number, dx : number, dy 
   }
 }
 
-export function getUnderpassNet(underpass : Underpass, dx : number, dy : number, enneaTree : TreeNode, x : number, y : number) : number{
+export function getUnderpassNet(underpass : Underpass, dx : number, dy : number, enneaTree : EnneaTree, x : number, y : number) : number{
   if(dx !== 0 && dy === 0){
     return underpass.net;
   }else{

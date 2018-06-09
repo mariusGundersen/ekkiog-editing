@@ -2,7 +2,7 @@ export * from './types';
 export * from './constants';
 
 export { default as clear } from './actions/clear';
-export { default as createForest } from './actions/createForest';
+export { default as createForest, createEnneaTree, createBuddyTree } from './actions/createForest';
 export { default as drawButton } from './actions/drawButton';
 export { default as drawComponent } from './actions/drawComponent';
 export { default as drawGate } from './actions/drawGate';

@@ -1,5 +1,5 @@
 import { Node, Area, Box, BoxArea } from 'ennea-tree';
-import { Node as BuddyNode } from 'buddy-tree';
+import { Node as BuddyTree } from 'buddy-tree';
 
 export type Direction = 'rightwards' | 'downwards' | 'leftwards' | 'upwards';
 
@@ -8,13 +8,13 @@ export type Tool = 'wire' | 'gate' | 'underpass' | 'button' | 'light' | 'compone
 export type TileType = Tool | 'empty';
 
 export interface Forest {
-  readonly buddyTree : BuddyNode,
-  readonly enneaTree : TreeNode
+  readonly buddyTree : BuddyTree,
+  readonly enneaTree : EnneaTree
 }
 
-export type TreeNode = Node<Item>;
+export type EnneaTree = Node<Item>;
 
-export { Area, Box, BoxArea, BuddyNode };
+export { Area, Box, BoxArea, BuddyTree };
 
 export interface Wire{
   readonly type: 'wire',

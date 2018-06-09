@@ -1,10 +1,19 @@
-import {createTree as createEnneaTree} from 'ennea-tree';
-import {createTree as createBuddyTree, allocate, Node} from 'buddy-tree';
+import * as ennea from 'ennea-tree';
+import * as buddy from 'buddy-tree';
 
-import { Forest, TreeNode } from '../types';
-export default function createForest(buddyTree = allocate(createBuddyTree(256*256), 2).tree) : Forest {
+import { Forest, EnneaTree } from '../types';
+export default function createForest(buddyTree = createBuddyTree(), enneaTree = createEnneaTree()) : Forest {
   return {
-    enneaTree: createEnneaTree(128) as TreeNode,
+    enneaTree,
     buddyTree
   };
+}
+
+export function createEnneaTree() {
+  return ennea.createTree(128) as EnneaTree;
+}
+
+export function createBuddyTree() {
+  const tree = buddy.createTree(256 * 256);
+  return buddy.allocate(tree, 2).tree;
 }

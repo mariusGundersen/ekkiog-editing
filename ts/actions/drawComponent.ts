@@ -11,7 +11,7 @@ import insertItem from './insertItem';
 
 import {
   Forest,
-  TreeNode,
+  EnneaTree,
   Component,
   CompiledComponent,
   CompiledComponentGate,
@@ -63,7 +63,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
   return insertItem(forest, buddyTree, data, box);
 }
 
-export function getNetAtPos(tree : TreeNode, sx : number, sy : number, x : number, y : number, dx : number, dy : number){
+export function getNetAtPos(tree : EnneaTree, sx : number, sy : number, x : number, y : number, dx : number, dy : number){
   return getNetAt(tree, sx+x+dx, sy+y+dy, dx, dy);
 }
 
