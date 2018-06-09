@@ -64,7 +64,7 @@ export default function compile(forest : Forest, repo : string, name : string, v
   const groundNet = [0, makeGroundInput()] as NetAndInput;
   const inputNets = forestButtons.map((input, index) => [input.data.net, makeInputInput(index)] as NetAndInput);
   const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as NetAndInput);
-  const gateAndComponentNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [gate.net, makeGateInput(index + gates.length)] as NetAndInput)), gateNets);
+  const gateAndComponentNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [component.data.nets[0]+index, makeGateInput(index + gates.length)] as NetAndInput)), gateNets);
 
   const netToIndexMap = new Map([groundNet, ...inputNets, ...gateAndComponentNets]);
 

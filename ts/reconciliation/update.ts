@@ -139,11 +139,10 @@ export function updateComponent(context : MutableContext, {top:y, left:x, width,
     }
   }
 
-  for(const [oldGate, newGate] of zip(oldComponent.gates, newComponent.gates)){
+  for(const [oldGate, newGate, index] of zip(oldComponent.gates, newComponent.gates)){
     if(oldGate.inputA !== newGate.inputA
-    || oldGate.inputB !== newGate.inputB
-    || oldGate.net !== newGate.net){
-      context.setGate(newGate.net, newGate.inputA, newGate.inputB);
+    || oldGate.inputB !== newGate.inputB){
+      context.setGate(oldComponent.nets[0]+index, newGate.inputA, newGate.inputB);
     }
   }
 
@@ -152,6 +151,6 @@ export function updateComponent(context : MutableContext, {top:y, left:x, width,
 
 function* zip<T>(before : T[], after : T[]){
   for(let i=0; i<before.length; i++){
-    yield [before[i], after[i]] as [T, T];
+    yield [before[i], after[i], i] as [T, T, number];
   }
 }

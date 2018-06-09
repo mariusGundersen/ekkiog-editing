@@ -104,8 +104,8 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
     context.setNet(x+port.x, y+port.y, port.net);
   }
 
-  for(const gate of component.gates){
-    context.setGate(gate.net, gate.inputA, gate.inputB);
+  for(const {gate, index} of component.gates.map((gate, index) => ({gate, index}))){
+    context.setGate(component.nets[0]+index, gate.inputA, gate.inputB);
   }
 
   context.insertText(component, {top:y, left:x, width, height});
