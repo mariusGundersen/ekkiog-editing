@@ -95,6 +95,7 @@ export interface MutableContext{
   setMap(x : number, y : number, tile : number) : void;
   setNet(x : number, y : number, net : number) : void;
   setGate(gate : number, inputA : number, inputB : number) : void;
+  clearGate(gate : number) : void;
   insertText(item : Item, area : Area) : void;
   removeText(item : Item) : void;
   updateText(before : Item, after : Item) : void;

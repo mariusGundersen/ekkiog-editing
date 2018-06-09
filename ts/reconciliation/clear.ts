@@ -39,13 +39,13 @@ export function clearArea(context : MutableContext, {top, left, width, height} :
 }
 
 export function clearGate(context : MutableContext, item : Button | Gate){
-  context.setGate(item.net, 0, 0);
+  context.clearGate(item.net);
 }
 
 export function clearComponent(context : MutableContext, component : Component){
   context.removeText(component);
 
   for(const index of component.gates.map((gate, index) => index)){
-    context.setGate(component.net + index, 0, 0);
+    context.clearGate(component.net + index);
   }
 }
