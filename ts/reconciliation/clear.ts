@@ -13,16 +13,17 @@ import {
   GROUND
 } from '../constants';
 
-import { Item, Component, MutableContext } from '../types';
+import { Item, Component, MutableContext, Button, Gate } from '../types';
 
 export default function clear(context : MutableContext, change : ChangeClear<Item>){
   clearArea(context, change);
   switch(change.before.type){
     case WIRE:
-    case GATE:
     case UNDERPASS:
-    case BUTTON:
       return;
+    case GATE:
+    case BUTTON:
+      return clearGate(context, change.before);
     case COMPONENT:
       return clearComponent(context, change.before);
   }
@@ -37,6 +38,14 @@ export function clearArea(context : MutableContext, {top, left, width, height} :
   }
 }
 
+export function clearGate(context : MutableContext, item : Button | Gate){
+  context.setGate(item.net, 0, 0);
+}
+
 export function clearComponent(context : MutableContext, component : Component){
   context.removeText(component);
+
+  for(const index of component.gates.map((gate, index) => index)){
+    context.setGate(component.net + index, 0, 0);
+  }
 }
