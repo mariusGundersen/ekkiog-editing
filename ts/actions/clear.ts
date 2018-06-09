@@ -43,7 +43,7 @@ function getNetSource(box : ennea.AreaData<Item>){
     case BUTTON:
       return box.data.net;
     case COMPONENT:
-      return box.data.nets[0]
+      return box.data.net
     default:
       return -1;
   }

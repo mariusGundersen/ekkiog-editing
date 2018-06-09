@@ -54,17 +54,17 @@ export default function compile(forest : Forest, repo : string, name : string, v
     .filter(node => node.data.type === LIGHT && node.data.net !== GROUND) as ennea.AreaData<Light>[];
 
   const gatesInputs = forestGates
-    .map(node => ({
-      inputA: node.data.inputA,
-      inputB: node.data.inputB
-    }));
+    .map(node => ([
+      node.data.inputA,
+      node.data.inputB
+    ]));
 
   const componentsInputs = forestComponents.reduce((inputs, component) => inputs.concat(component.data.gates), [] as ComponentGate[]);
 
   const groundNet = [0, makeGroundInput()] as NetAndInput;
   const inputNets = forestButtons.map((input, index) => [input.data.net, makeInputInput(index)] as NetAndInput);
   const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as NetAndInput);
-  const gateAndComponentNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [component.data.nets[0]+index, makeGateInput(index + gates.length)] as NetAndInput)), gateNets);
+  const gateAndComponentNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [component.data.net + index, makeGateInput(index + gates.length)] as NetAndInput)), gateNets);
 
   const netToIndexMap = new Map([groundNet, ...inputNets, ...gateAndComponentNets]);
 
@@ -82,8 +82,8 @@ export default function compile(forest : Forest, repo : string, name : string, v
 
   const gates = [...gatesInputs, ...componentsInputs]
     .map(gate => ({
-      inputA: netToIndexMap.get(gate.inputA) || makeGroundInput(),
-      inputB: netToIndexMap.get(gate.inputB) || makeGroundInput()
+      inputA: netToIndexMap.get(gate[0]) || makeGroundInput(),
+      inputB: netToIndexMap.get(gate[1]) || makeGroundInput()
     }));
 
   const outputs = layout.outputs

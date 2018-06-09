@@ -19,7 +19,7 @@ import {
   ComponentGate
 } from '../types';
 
-const COMPONENT_SCHEMA = 1;
+const COMPONENT_SCHEMA = 2;
 
 export default function drawComponent(forest : Forest, x : number, y : number, packagedComponent : CompiledComponent){
   x -= packagedComponent.width>>1;
@@ -49,10 +49,10 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
   const data : Component = {
     type: COMPONENT,
     schema: COMPONENT_SCHEMA,
-    nets: [nets[0]],
+    net: nets[0],
     inputs,
     outputs,
-    gates: packagedComponent.gates.map((gate, index) => makeGate(gate, index, nets, inputs.map(i => i.net))),
+    gates: packagedComponent.gates.map(gate => makeGate(gate, nets, inputs.map(i => i.net))),
     repo: packagedComponent.repo,
     hash: packagedComponent.hash,
     name: packagedComponent.name,
@@ -76,18 +76,17 @@ export function* makePointsTo(gates : CompiledComponentGate[], index : number){
     .map(g => ({index: gates.indexOf(g), input: 'B' as 'B'}));
 }
 
-export function makeGate(gate : CompiledComponentGate, index : number, gateNets : number[], inputNets : number[]) : ComponentGate {
-  return {
-    net: gateNets[index],
-    inputA: gate.inputA.type === 'gate'
+export function makeGate(gate : CompiledComponentGate, gateNets : number[], inputNets : number[]) : ComponentGate {
+  return [
+    gate.inputA.type === 'gate'
       ? gateNets[gate.inputA.index]
       : gate.inputA.type === 'input'
       ? inputNets[gate.inputA.index]
       : GROUND,
-    inputB: gate.inputB.type === 'gate'
+    gate.inputB.type === 'gate'
       ? gateNets[gate.inputB.index]
       : gate.inputB.type === 'input'
       ? inputNets[gate.inputB.index]
       : GROUND
-  };
+  ];
 }

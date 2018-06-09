@@ -33,11 +33,10 @@ export default function component(oldComponent : Component, pos : Pos, ctx : Con
       const pointA = points.filter(p => p.input === 'A')[0];
       const pointB = points.filter(p => p.input === 'B')[0];
 
-      return {
-        ...gate,
-        inputA: pointA ? ctx.net : gate.inputA,
-        inputB: pointB ? ctx.net : gate.inputB,
-      }
+      return [
+        pointA ? ctx.net : gate[0],
+        pointB ? ctx.net : gate[1],
+      ] as [number, number];
     })
 
     return {

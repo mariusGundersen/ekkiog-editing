@@ -140,9 +140,9 @@ export function updateComponent(context : MutableContext, {top:y, left:x, width,
   }
 
   for(const [oldGate, newGate, index] of zip(oldComponent.gates, newComponent.gates)){
-    if(oldGate.inputA !== newGate.inputA
-    || oldGate.inputB !== newGate.inputB){
-      context.setGate(oldComponent.nets[0]+index, newGate.inputA, newGate.inputB);
+    if(oldGate[0] !== newGate[0]
+    || oldGate[1] !== newGate[1]){
+      context.setGate(oldComponent.net + index, newGate[0], newGate[1]);
     }
   }
 
