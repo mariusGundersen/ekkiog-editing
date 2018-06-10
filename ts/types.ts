@@ -103,7 +103,7 @@ export interface Package {
 }
 
 export interface PackagePin extends IHaveDirection, IHavePosition {
-  readonly name? : string
+  readonly name : string
 }
 
 export interface PackageInput extends PackagePin {

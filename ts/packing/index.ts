@@ -93,7 +93,8 @@ function createPackage(
       x: pin.x,
       y: pin.y,
       dx: -pin.dx,
-      dy: -pin.dy
+      dy: -pin.dy,
+      name: pin.name
     }));
 
   const gates: PackageGate[] = gateAddresses
@@ -108,7 +109,8 @@ function createPackage(
       x: pin.x,
       y: pin.y,
       dx: pin.dx,
-      dy: pin.dy
+      dy: pin.dy,
+      name: pin.name
     }))
     .filter((node) : node is PackageOutput => node.gate !== undefined);
 

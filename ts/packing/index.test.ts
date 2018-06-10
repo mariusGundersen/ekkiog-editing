@@ -136,7 +136,8 @@ test('compile NOT gate', t => {
             gate: 0,
             input: 'B'
           }
-        ]
+        ],
+        name: ''
       }
     ],
     outputs: [
@@ -145,7 +146,8 @@ test('compile NOT gate', t => {
         dy: 0,
         x: 2,
         y: 1,
-        gate: 0
+        gate: 0,
+        name: ''
       }
     ],
     gates: [
@@ -175,7 +177,8 @@ test('compile AND gate', t => {
             gate: 0,
             input: 'A'
           }
-        ]
+        ],
+        name: ''
       },
       {
         dx: -1,
@@ -187,7 +190,8 @@ test('compile AND gate', t => {
             gate: 0,
             input: 'B'
           }
-        ]
+        ],
+        name: ''
       }
     ],
     outputs: [
@@ -196,7 +200,8 @@ test('compile AND gate', t => {
         dy: 0,
         x: 2,
         y: 2,
-        gate: 1
+        gate: 1,
+        name: ''
       }
     ],
     gates: [
@@ -231,7 +236,8 @@ test('compile XOR gate', t => {
             gate: 2,
             input: 'A'
           }
-        ]
+        ],
+        name: ''
       },
       {
         dx: -1,
@@ -247,7 +253,8 @@ test('compile XOR gate', t => {
             gate: 2,
             input: 'B'
           }
-        ]
+        ],
+        name: ''
       }
     ],
     outputs: [
@@ -256,7 +263,8 @@ test('compile XOR gate', t => {
         dy: 0,
         x: 2,
         y: 2,
-        gate: 3
+        gate: 3,
+        name: ''
       }
     ],
     gates: [
@@ -307,20 +315,20 @@ test('half adder', t => {
     width: 3,
     height: 5,
     inputs: [
-      { x: 0, y: 1, dx: -1, dy: -0, pointsTo: [
+      { x: 0, y: 1, dx: -1, dy: -0, name: '', pointsTo: [
         { gate: 0, input: 'A'},
         { gate: 2, input: 'A'},
         { gate: 4, input: 'A'}
       ] },
-      { x: 0, y: 3, dx: -1, dy: -0, pointsTo: [
+      { x: 0, y: 3, dx: -1, dy: -0, name: '', pointsTo: [
         { gate: 0, input: 'B'},
         { gate: 3, input: 'B'},
         { gate: 4, input: 'B'}
       ] }
     ],
     outputs: [
-      { gate: 1, x: 2, y: 1, dx: 1, dy: 0 },
-      { gate: 5, x: 2, y: 3, dx: 1, dy: 0 }
+      { gate: 1, x: 2, y: 1, dx: 1, dy: 0, name: '' },
+      { gate: 5, x: 2, y: 3, dx: 1, dy: 0, name: '' }
     ],
     gates: [
       ['GROUND', 'GROUND'],

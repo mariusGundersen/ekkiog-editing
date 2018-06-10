@@ -143,7 +143,7 @@ function from2to3(component: Component2 | Component, width : number, height : nu
           y: input.y,
           dx: input.dx,
           dy: input.dy,
-          name: input.name,
+          name: input.name || '',
           pointsTo: input.pointsTo.map(point => ({
             gate: point.index,
             input: point.input
@@ -154,7 +154,7 @@ function from2to3(component: Component2 | Component, width : number, height : nu
           y: output.y,
           dx: output.dx,
           dy: output.dy,
-          name: output.name,
+          name: output.name || '',
           gate: output.net-component.net
         })),
         gates: component.gates.map(gate => [
