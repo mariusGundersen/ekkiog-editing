@@ -56,6 +56,26 @@ test('compile lightbulb with ground net', t => {
   });
 });
 
+test('compile lightbulb connected to button', t => {
+  let forest = createForest();
+  forest = drawLight(forest, 64, 64);
+  forest = drawButton(forest, 61, 64);
+  const compiled = compile(forest, 'repo', 'name', 'version', 'hash');
+  t.deepEqual(compiled, {
+    repo: 'repo',
+    name: 'name',
+    version: 'version',
+    hash: 'hash',
+    width: 3,
+    height: 3,
+    inputs: [
+      { x: 0, y: 1, dx: -1, dy: -0, pointsTo: [], name: '' }
+    ],
+    outputs: [] as PackageOutput[],
+    gates: [] as PackageGate[]
+  });
+});
+
 test('compile two gates', t => {
   let forest = createForest();
   forest = drawGate(forest, 64, 64);
