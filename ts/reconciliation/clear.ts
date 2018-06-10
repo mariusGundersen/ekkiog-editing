@@ -45,7 +45,7 @@ export function clearGate(context : MutableContext, item : Button | Gate){
 export function clearComponent(context : MutableContext, component : Component){
   context.removeText(component);
 
-  for(const index of component.gates.map((gate, index) => index)){
+  for(const index of component.package.gates.map((_, index) => index)){
     context.clearGate(component.net + index);
   }
 }

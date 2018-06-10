@@ -14,41 +14,27 @@ import {
   GROUND
 } from '../constants';
 
-export default function component(oldComponent : Component, pos : Pos, ctx : Context, queue : BoxContext<Context>[]){
-  const hitsInput = oldComponent.inputs.some(input => input.x === pos.left && input.y === pos.top);
-  if(hitsInput){
-    const targetInput = oldComponent.inputs.filter(input => input.x === pos.left && input.y === pos.top)[0];
-    const inputs = oldComponent.inputs.map(input => input === targetInput
+export default function component(oldComponent : Component, pos : Pos, ctx : Context, queue : BoxContext<Context>[]) : Component{
+  const inputIndex = oldComponent.package.inputs.findIndex(pin => pin.x === pos.left && pin.y === pos.top);
+  if(inputIndex >= 0){
+    const inputs = oldComponent.inputs.map((pin, index) => index === inputIndex
       ? {
-        ...input,
+        ...pin,
         net: ctx.net
       }
-      : input);
-    const gates = oldComponent.gates.map((gate, index) => {
-      const points = targetInput.pointsTo.filter(p => p.index === index);
-      if(points.length === 0){
-        return gate;
-      }
-
-      const pointA = points.filter(p => p.input === 'A')[0];
-      const pointB = points.filter(p => p.input === 'B')[0];
-
-      return [
-        pointA ? ctx.net : gate[0],
-        pointB ? ctx.net : gate[1],
-      ] as [number, number];
-    })
+      : pin);
 
     return {
       ...oldComponent,
-      inputs,
-      gates
+      inputs
     };
   }
 
-  const output = oldComponent.outputs.filter(output => output.x === pos.left && output.y === pos.top)[0];
-  if(output && ctx.net === GROUND){
-    queue.push(makePos(ctx.pos, output.net, output.dx, output.dy));
+  const outputIndex = oldComponent.package.outputs.findIndex(pin => pin.x === pos.left && pin.y === pos.top);
+  if(outputIndex >= 0 && ctx.net === GROUND){
+    const pin = oldComponent.package.outputs[outputIndex];
+    const output = oldComponent.outputs[outputIndex];
+    queue.push(makePos(ctx.pos, output.net, pin.dx, pin.dy));
   }
 
   return oldComponent;

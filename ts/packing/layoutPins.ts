@@ -1,21 +1,22 @@
 import {
-  Light,
-  CompiledComponentPin,
+  PackagePin,
   IHavePosition
 } from '../types';
 
 export type Pin = {
-  x : number,
-  y : number,
-  dx : number,
-  dy : number
+  readonly x : number,
+  readonly y : number,
+  readonly dx : number,
+  readonly dy : number,
+  readonly net : number,
+  readonly name : string
 };
 
 export type PinLayout = {
-  width : number,
-  height : number,
-  inputs : CompiledComponentPin[],
-  outputs : CompiledComponentPin[]
+  readonly width : number,
+  readonly height : number,
+  readonly inputs : Pin[],
+  readonly outputs : Pin[]
 }
 
 export default function layoutPins(
@@ -41,18 +42,16 @@ export default function layoutPins(
   const height = Math.max(3, lefts.length*2 + 1, rights.length*2 + 1);
 
   const inputs = sources
-  .map(pin => ({
-    ...getPos(pin),
-    dx: pin.dx,
-    dy: pin.dy,
-  }));
+    .map(pin => ({
+      ...pin,
+      ...getPos(pin)
+    }));
 
   const outputs = drains
-  .map(pin => ({
-    ...getPos(pin),
-    dx: pin.dx,
-    dy: pin.dy,
-  }));
+    .map(pin => ({
+      ...pin,
+      ...getPos(pin)
+    }));
 
   return {
     width,

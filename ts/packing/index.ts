@@ -6,12 +6,10 @@ import {
   Component,
   Button,
   Light,
-  CompiledComponent,
-  CompiledComponentGateInput,
-  CompiledComponentGateInputFromGate,
-  CompiledComponentGateInputFromInput,
-  CompiledComponentGateInputFromGround,
-  ComponentGate
+  Package,
+  PackageGate,
+  PackageOutput,
+  PackageInput
 } from '../types';
 
 import {
@@ -19,20 +17,24 @@ import {
  COMPONENT,
  BUTTON,
  LIGHT,
- INPUT,
  GROUND
 } from '../constants';
 
 import {
   directionToDx,
-  directionToDy
+  directionToDy,
+  flatten
 } from '../utils';
 
-import layoutPins from './layoutPins';
+import layoutPins, { Pin } from './layoutPins';
 
-type NetAndInput = [number, CompiledComponentGateInput];
+type GateAddress = {
+  readonly net: number,
+  readonly a: number,
+  readonly b: number
+};
 
-export default function compile(forest : Forest, repo : string, name : string, version : string, hash : string) : CompiledComponent {
+export default function compile(forest : Forest, repo : string, name : string, version : string, hash : string) : Package {
   const enneaTree = forest.enneaTree;
   const forestContet = ennea.getAll(enneaTree, {
     top: 0,
@@ -42,100 +44,130 @@ export default function compile(forest : Forest, repo : string, name : string, v
   });
 
   const forestButtons = forestContet
-    .filter(node => node.data.type === BUTTON) as ennea.AreaData<Button>[];
+    .filter((node) : node is ennea.AreaData<Button> => node.data.type === BUTTON);
 
   const forestGates = forestContet
-    .filter(node => node.data.type === GATE) as ennea.AreaData<Gate>[];
+    .filter((node) : node is ennea.AreaData<Gate> => node.data.type === GATE)
+    .map(node => node.data);
 
   const forestComponents = forestContet
-    .filter(node => node.data.type === COMPONENT) as ennea.AreaData<Component>[];
+    .filter((node) : node is ennea.AreaData<Component> => node.data.type === COMPONENT)
+    .map(node => node.data);
 
   const forestLights = forestContet
-    .filter(node => node.data.type === LIGHT && node.data.net !== GROUND) as ennea.AreaData<Light>[];
-
-  const gatesInputs = forestGates
-    .map(node => ([
-      node.data.inputA,
-      node.data.inputB
-    ]));
-
-  const componentsInputs = forestComponents.reduce((inputs, component) => inputs.concat(component.data.gates), [] as ComponentGate[]);
-
-  const groundNet = [0, makeGroundInput()] as NetAndInput;
-  const inputNets = forestButtons.map((input, index) => [input.data.net, makeInputInput(index)] as NetAndInput);
-  const gateNets = forestGates.map((gate, index) => [gate.data.net, makeGateInput(index)] as NetAndInput);
-  const gateAndComponentNets = forestComponents.reduce((gates, component) => gates.concat(component.data.gates.map((gate, index) => [component.data.net + index, makeGateInput(index + gates.length)] as NetAndInput)), gateNets);
-
-  const netToIndexMap = new Map([groundNet, ...inputNets, ...gateAndComponentNets]);
-
-  const layout = layoutPins(
-    forestButtons.map(({top: y, left: x, data: {direction}}) => ({x, y, dx: directionToDx(direction), dy: directionToDy(direction)})),
-    forestLights.map(({top: y, left: x, data: {direction}}) => ({x, y, dx: directionToDx(direction), dy: directionToDy(direction)})));
-
-  const inputs = layout.inputs
-    .map(input => ({
-      x: input.x,
-      y: input.y,
-      dx: -input.dx,
-      dy: -input.dy
-    }))
-
-  const gates = [...gatesInputs, ...componentsInputs]
-    .map(gate => ({
-      inputA: netToIndexMap.get(gate[0]) || makeGroundInput(),
-      inputB: netToIndexMap.get(gate[1]) || makeGroundInput()
-    }));
-
-  const outputs = layout.outputs
-    .map((node, index) => ({
-      gate: getGateNet(netToIndexMap.get(forestLights[index].data.net), index),
-      x: node.x,
-      y: node.y,
-      dx: node.dx,
-      dy: node.dy
-    }));
+    .filter((node) : node is ennea.AreaData<Light> => node.data.type === LIGHT && node.data.net !== GROUND);
 
   return {
+    ...createPackage(forestGates, forestComponents, forestButtons, forestLights),
     name,
-    width: layout.width,
-    height: layout.height,
-    inputs: inputs,
-    outputs,
-    gates,
     hash,
     repo,
     version
   };
 }
 
-export function getGateNet(input : CompiledComponentGateInput | undefined, index : number){
+function createPackage(
+  forestGates: Gate[],
+  forestComponents: Component[],
+  forestButtons: ennea.AreaData<Button>[],
+  forestLights: ennea.AreaData<Light>[]) {
+
+  const gateAddresses = [
+    ...forestGates.map(makeGate),
+    ...forestComponents.map(makeGatesFromComponent).reduce(flatten, [])
+  ];
+
+  const netToIndexMap = new Map(gateAddresses.map((gate, index) => [gate.net, index] as [number, number]));
+
+  const layout = layoutPins(
+    forestButtons.map(toPin),
+    forestLights.map(toPin).filter(pin => netToIndexMap.has(pin.net))
+  );
+
+  const inputs: PackageInput[] = layout.inputs
+    .map(pin => ({
+      pointsTo: [
+        ...gateAddresses.filter(g => g.a === pin.net).map(makeInput('A', netToIndexMap)),
+        ...gateAddresses.filter(g => g.b === pin.net).map(makeInput('B', netToIndexMap))
+      ],
+      x: pin.x,
+      y: pin.y,
+      dx: -pin.dx,
+      dy: -pin.dy
+    }));
+
+  const gates: PackageGate[] = gateAddresses
+    .map(gate => [
+      groundIfUndefined(netToIndexMap.get(gate.a)),
+      groundIfUndefined(netToIndexMap.get(gate.b))
+    ] as PackageGate);
+
+  const outputs: PackageOutput[] = layout.outputs
+    .map(pin => ({
+      gate: netToIndexMap.get(pin.net),
+      x: pin.x,
+      y: pin.y,
+      dx: pin.dx,
+      dy: pin.dy
+    }))
+    .filter((node) : node is PackageOutput => node.gate !== undefined);
+
+  return {
+    width: layout.width,
+    height: layout.height,
+    inputs,
+    outputs,
+    gates,
+  };
+}
+
+function makeGate({net, inputA: a, inputB: b} : Gate) : GateAddress {
+  return {
+    net,
+    a,
+    b
+  };
+}
+
+function makeGatesFromComponent(component: Component) : GateAddress[] {
+  const gates = component.package.gates;
+  const inputs = component.inputs;
+  const pins = component.package.inputs.map((input, index) => input.pointsTo.map(({gate, input}) => ({gate, net: inputs[index].net, input}))).reduce(flatten, []);
+  const pointsToA = new Map(pins.filter(p => p.input === 'A').map(p => [p.gate, p.net] as [number, number]));
+  const pointsToB = new Map(pins.filter(p => p.input === 'B').map(p => [p.gate, p.net] as [number, number]));
+  return gates.map(([a, b], index) => ({
+    net: component.net + index,
+    a: a !== 'GROUND' ? component.net + a : pointsToA.get(index) || GROUND,
+    b: b !== 'GROUND' ? component.net + b : pointsToB.get(index) || GROUND
+  }));
+}
+
+export function ensureNetExists(input : number | undefined) : number{
   if(input == undefined){
     throw new Error("could not find any net");
   }
 
-  if(input.type === GATE){
-    return input.index;
+  return input;
+}
+
+function makeInput(input : 'A' | 'B', netToIndexMap : Map<number, number>){
+  return (gate : GateAddress) => ({
+    input,
+    gate: netToIndexMap.get(gate.net) || 0
+  });
+}
+
+function toPin({ top: y, left: x, data: { direction, net, name } } : ennea.AreaData<Button | Light>) : Pin {
+  return {
+    x,
+    y,
+    dx: directionToDx(direction),
+    dy: directionToDy(direction),
+    net,
+    name
   }
+};
 
-  throw new Error(`output ${index} is of type ${input.type}`);
-}
-
-export function makeGateInput(index : number) : CompiledComponentGateInputFromGate{
-  return {
-    type: GATE,
-    index
-  };
-}
-
-export function makeInputInput(index : number) : CompiledComponentGateInputFromInput{
-  return {
-    type: INPUT,
-    index
-  };
-}
-
-export function makeGroundInput() : CompiledComponentGateInputFromGround {
-  return {
-    type: 'ground'
-  };
+function groundIfUndefined(a : number | undefined) : number | 'GROUND' {
+  return a === undefined ? 'GROUND' : a;
 }

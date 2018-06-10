@@ -56,8 +56,8 @@ function light(before : Light, after : Light){
 }
 
 function component(before : Component, after : Component){
-  if(before.name !== after.name) return false;
-  if(before.hash !== after.hash) return false;
+  if(before.package.name !== after.package.name) return false;
+  if(before.package.hash !== after.package.hash) return false;
   if(before.inputs !== after.inputs && !before.inputs.every((e, i) => e.net === after.inputs[i].net)) return false;
   return true;
 }

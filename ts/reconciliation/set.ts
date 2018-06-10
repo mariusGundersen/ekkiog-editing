@@ -31,7 +31,8 @@ import {
 
 import {
   directionToDx,
-  directionToDy
+  directionToDy,
+  zip
 } from '../utils';
 
 import * as tile from './tile';
@@ -92,20 +93,34 @@ export function button(context : MutableContext, {top:y, left:x, width, height} 
 }
 
 export function component(context : MutableContext, {top:y, left:x, width, height} : Area, component : Component){
+  const pins = [...component.package.inputs, ...component.package.outputs];
   const ports = [...component.inputs, ...component.outputs];
 
   for(let ty=0; ty<height; ty++){
     for(let tx=0; tx<width; tx++){
-      context.setMap(tx+x, ty+y, tile.component(tx, ty, width-1, height-1, ports));
+      context.setMap(tx+x, ty+y, tile.component(tx, ty, width-1, height-1, pins));
     }
   }
 
-  for(const port of ports){
-    context.setNet(x+port.x, y+port.y, port.net);
+  for(const [pin, port] of zip(pins, ports)){
+    context.setNet(x+pin.x, y+pin.y, port.net);
   }
 
-  for(const {gate, index} of component.gates.map((gate, index) => ({gate, index}))){
-    context.setGate(component.net + index, gate[0], gate[1]);
+  for(const {a, b, index} of component.package.gates.map(([a, b], index) => ({a, b, index}))){
+    context.setGate(
+      component.net + index,
+      component.net + (a === 'GROUND' ? 0 : a),
+      component.net + (b === 'GROUND' ? 0 : b));
+  }
+
+  for(const [pin, port] of zip(component.package.inputs, component.inputs)){
+    for(const point of pin.pointsTo){
+      if(point.input === 'A'){
+        context.setGateA(component.net + point.gate, port.net);
+      }else{
+        context.setGateB(component.net + point.gate, port.net);
+      }
+    }
   }
 
   context.insertText(component, {top:y, left:x, width, height});

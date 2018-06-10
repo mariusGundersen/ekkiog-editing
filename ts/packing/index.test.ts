@@ -1,10 +1,10 @@
 import test from 'ava';
 
 import {
-  CompiledComponent,
-  CompiledComponentGate,
-  CompiledComponentInput,
-  CompiledComponentOutput
+  Package,
+  PackageGate,
+  PackageInput,
+  PackageOutput
 } from '../types';
 
 import {
@@ -32,17 +32,10 @@ test('compile single gate', t => {
     hash: 'hash',
     width: 3,
     height: 3,
-    inputs: [] as CompiledComponentInput[],
-    outputs: [] as CompiledComponentOutput[],
+    inputs: [] as PackageInput[],
+    outputs: [] as PackageOutput[],
     gates: [
-      {
-        inputA: {
-          type: 'ground'
-        },
-        inputB: {
-          type: 'ground'
-        }
-      }
+      ['GROUND', 'GROUND']
     ]
   });
 });
@@ -57,9 +50,9 @@ test('compile lightbulb with ground net', t => {
     hash: 'hash',
     width: 3,
     height: 3,
-    inputs: [] as CompiledComponentInput[],
-    outputs: [] as CompiledComponentOutput[],
-    gates: [] as CompiledComponentGate[]
+    inputs: [] as PackageInput[],
+    outputs: [] as PackageOutput[],
+    gates: [] as PackageGate[]
   });
 });
 
@@ -69,23 +62,8 @@ test('compile two gates', t => {
   forest = drawGate(forest, 60, 65);
   const compiled = compile(forest, 'repo', 'name', 'version', 'hash');
   t.deepEqual(compiled.gates, [
-    {
-      inputA: {
-        type: 'ground'
-      },
-      inputB: {
-        type: 'ground'
-      }
-    },
-    {
-      inputA: {
-        type: 'ground'
-      },
-      inputB: {
-        type: GATE,
-        index: 0
-      }
-    }
+    ['GROUND', 'GROUND'],
+    ['GROUND', 0]
   ]);
 });
 
@@ -100,32 +78,9 @@ test('compile three gates', t => {
   forest = drawWire(forest, 60, 66);
   const compiled = compile(forest, 'repo', 'name', 'version', 'hash');
   t.deepEqual(compiled.gates, [
-    {
-      inputA: {
-        type: 'ground'
-      },
-      inputB: {
-        type: 'ground'
-      }
-    },
-    {
-      inputA: {
-        type: 'ground'
-      },
-      inputB: {
-        type: 'ground'
-      }
-    },
-    {
-      inputA: {
-        type: GATE,
-        index: 0
-      },
-      inputB: {
-        type: GATE,
-        index: 1
-      }
-    }
+    ['GROUND', 'GROUND'],
+    ['GROUND', 'GROUND'],
+    [0, 1]
   ]);
 });
 
@@ -151,7 +106,17 @@ test('compile NOT gate', t => {
         dx: -1,
         dy: -0,
         x: 0,
-        y: 1
+        y: 1,
+        pointsTo: [
+          {
+            gate: 0,
+            input: 'A'
+          },
+          {
+            gate: 0,
+            input: 'B'
+          }
+        ]
       }
     ],
     outputs: [
@@ -164,16 +129,7 @@ test('compile NOT gate', t => {
       }
     ],
     gates: [
-      {
-        inputA: {
-          type: INPUT,
-          index: 0
-        },
-        inputB: {
-          type: INPUT,
-          index: 0
-        }
-      }
+      ['GROUND', 'GROUND']
     ]
   });
 });
@@ -193,13 +149,25 @@ test('compile AND gate', t => {
         dx: -1,
         dy: -0,
         x: 0,
-        y: 1
+        y: 1,
+        pointsTo: [
+          {
+            gate: 0,
+            input: 'A'
+          }
+        ]
       },
       {
         dx: -1,
         dy: -0,
         x: 0,
-        y: 3
+        y: 3,
+        pointsTo: [
+          {
+            gate: 0,
+            input: 'B'
+          }
+        ]
       }
     ],
     outputs: [
@@ -212,26 +180,8 @@ test('compile AND gate', t => {
       }
     ],
     gates: [
-      {
-        inputA: {
-          type: INPUT,
-          index: 0
-        },
-        inputB: {
-          type: INPUT,
-          index: 1
-        }
-      },
-      {
-        inputA: {
-          type: GATE,
-          index: 0
-        },
-        inputB: {
-          type: GATE,
-          index: 0
-        }
-      }
+      ['GROUND', 'GROUND'],
+      [0, 0]
     ]
   });
 });
@@ -251,13 +201,33 @@ test('compile XOR gate', t => {
         dx: -1,
         dy: -0,
         x: 0,
-        y: 1
+        y: 1,
+        pointsTo: [
+          {
+            gate: 0,
+            input: 'A'
+          },
+          {
+            gate: 2,
+            input: 'A'
+          }
+        ]
       },
       {
         dx: -1,
         dy: -0,
         x: 0,
-        y: 3
+        y: 3,
+        pointsTo: [
+          {
+            gate: 1,
+            input: 'B'
+          },
+          {
+            gate: 2,
+            input: 'B'
+          }
+        ]
       }
     ],
     outputs: [
@@ -270,46 +240,10 @@ test('compile XOR gate', t => {
       }
     ],
     gates: [
-      {
-        inputA: {
-          type: INPUT,
-          index: 0
-        },
-        inputB: {
-          type: GATE,
-          index: 2
-        }
-      },
-      {
-        inputA: {
-          type: GATE,
-          index: 2
-        },
-        inputB: {
-          type: INPUT,
-          index: 1
-        }
-      },
-      {
-        inputA: {
-          type: INPUT,
-          index: 0
-        },
-        inputB: {
-          type: INPUT,
-          index: 1
-        }
-      },
-      {
-        inputA: {
-          type: GATE,
-          index: 0
-        },
-        inputB: {
-          type: GATE,
-          index: 1
-        }
-      }
+      ['GROUND', 2],
+      [2, 'GROUND'],
+      ['GROUND', 'GROUND'],
+      [0, 1]
     ]
   });
 });
@@ -353,38 +287,28 @@ test('half adder', t => {
     width: 3,
     height: 5,
     inputs: [
-      { x: 0, y: 1, dx: -1, dy: -0 },
-      { x: 0, y: 3, dx: -1, dy: -0 }
+      { x: 0, y: 1, dx: -1, dy: -0, pointsTo: [
+        { gate: 0, input: 'A'},
+        { gate: 2, input: 'A'},
+        { gate: 4, input: 'A'}
+      ] },
+      { x: 0, y: 3, dx: -1, dy: -0, pointsTo: [
+        { gate: 0, input: 'B'},
+        { gate: 3, input: 'B'},
+        { gate: 4, input: 'B'}
+      ] }
     ],
     outputs: [
       { gate: 1, x: 2, y: 1, dx: 1, dy: 0 },
       { gate: 5, x: 2, y: 3, dx: 1, dy: 0 }
     ],
     gates: [
-      {
-        inputA: { type: INPUT, index: 0 },
-        inputB: { type: INPUT, index: 1 }
-      },
-      {
-        inputA: { type: GATE, index: 0 },
-        inputB: { type: GATE, index: 0 }
-      },
-      {
-        inputA: { type: INPUT, index: 0 },
-        inputB: { type: GATE, index: 4 }
-      },
-      {
-        inputA: { type: GATE, index: 4 },
-        inputB: { type: INPUT, index: 1 }
-      },
-      {
-        inputA: { type: INPUT, index: 0 },
-        inputB: { type: INPUT, index: 1 }
-      },
-      {
-        inputA: { type: GATE, index: 2 },
-        inputB: { type: GATE, index: 3 }
-      }
+      ['GROUND', 'GROUND'],
+      [0, 0],
+      ['GROUND', 4],
+      [4, 'GROUND'],
+      ['GROUND', 'GROUND'],
+      [2, 3]
     ]
   });
 });
@@ -439,39 +363,30 @@ test('tripple XOR', t => {
 
   const compiled = compile(forest, 'repo', 'XOR', 'version', 'hash');
 
+  t.deepEqual(compiled.inputs.map(input => input.pointsTo), [
+    [
+      { gate: 0, input: 'A' },
+      { gate: 2, input: 'A' }
+    ],
+    [
+      { gate: 5, input: 'B' },
+      { gate: 6, input: 'B' }
+    ],
+    [
+      { gate: 1, input: 'B' },
+      { gate: 2, input: 'B' }
+    ]
+  ]);
+
   t.deepEqual(compiled.gates, [
-    {
-      inputA: { type: INPUT, index: 0 },
-      inputB: { type: GATE, index: 2 }
-    },
-    {
-      inputA: { type: GATE, index: 2 },
-      inputB: { type: INPUT, index: 2 }
-    },
-    {
-      inputA: { type: INPUT, index: 0 },
-      inputB: { type: INPUT, index: 2 }
-    },
-    {
-      inputA: { type: GATE, index: 0 },
-      inputB: { type: GATE, index: 1 }
-    },
-    {
-      inputA: { type: GATE, index: 3 },
-      inputB: { type: GATE, index: 6 }
-    },
-    {
-      inputA: { type: GATE, index: 6 },
-      inputB: { type: INPUT, index: 1 }
-    },
-    {
-      inputA: { type: GATE, index: 3 },
-      inputB: { type: INPUT, index: 1 }
-    },
-    {
-      inputA: { type: GATE, index: 4 },
-      inputB: { type: GATE, index: 5 }
-    }
+    ['GROUND', 2],
+    [2, 'GROUND'],
+    ['GROUND', 'GROUND'],
+    [0, 1],
+    [3, 6],
+    [6, 'GROUND'],
+    [3, 'GROUND'],
+    [4, 5]
   ]);
 });
 

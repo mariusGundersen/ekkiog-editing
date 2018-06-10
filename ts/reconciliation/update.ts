@@ -26,7 +26,8 @@ import {
 
 import {
   directionToDx,
-  directionToDy
+  directionToDy,
+  zip
 } from '../utils';
 
 import * as tile from './tile';
@@ -44,7 +45,7 @@ export default function update(context : MutableContext, change : ChangeUpdate<I
     case LIGHT:
       return updateLight(context, change, change.before as Light, change.after);
     case COMPONENT:
-      if((change.before as Component).hash === change.after.hash){
+      if((change.before as Component).package.hash === change.after.package.hash){
         return updateComponent(context, change, change.before as Component, change.after);
       }else{
         const {top, left, width, height} = change;
@@ -129,28 +130,23 @@ export function updateLight(context : MutableContext, {top:y, left:x, width, hei
   }
 }
 
-export function updateComponent(context : MutableContext, {top:y, left:x, width, height} : Area, oldComponent : Component, newComponent : Component){
+export function updateComponent(context : MutableContext, {top:y, left:x} : Area, oldComponent : Component, newComponent : Component){
   const oldInputs = oldComponent.inputs;
   const newInputs = newComponent.inputs;
 
-  for(const [oldInput, newInput] of zip(oldInputs, newInputs)){
+  for(const [oldInput, newInput, index] of zip(oldInputs, newInputs)){
     if(oldInput.net !== newInput.net){
-      context.setNet(x+newInput.x, y+newInput.y, newInput.net);
-    }
-  }
-
-  for(const [oldGate, newGate, index] of zip(oldComponent.gates, newComponent.gates)){
-    if(oldGate[0] !== newGate[0]
-    || oldGate[1] !== newGate[1]){
-      context.setGate(oldComponent.net + index, newGate[0], newGate[1]);
+      const pin = oldComponent.package.inputs[index];
+      context.setNet(x + pin.x, y + pin.y, newInput.net);
+      for(const point of pin.pointsTo){
+        if(point.input === 'A'){
+          context.setGateA(oldComponent.net + point.gate, newInput.net);
+        }else{
+          context.setGateB(oldComponent.net + point.gate, newInput.net);
+        }
+      }
     }
   }
 
   context.updateText(oldComponent, newComponent);
-}
-
-function* zip<T>(before : T[], after : T[]){
-  for(let i=0; i<before.length; i++){
-    yield [before[i], after[i], i] as [T, T, number];
-  }
 }

@@ -1,8 +1,6 @@
 import {
   update,
-  Node,
   BoxContext,
-  Pos,
   BoxArea
 } from 'ennea-tree';
 
@@ -37,7 +35,8 @@ import {
 
 import {
   directionToDx,
-  directionToDy
+  directionToDy,
+  zip
 } from '../utils';
 
 export default function floodFill(enneaTree : EnneaTree, item : Item, pos : BoxArea) : EnneaTree {
@@ -96,8 +95,8 @@ export function* make(isGround : boolean, sources: [Item, BoxArea][]) : Iterable
         yield makePos({top: pos.top + 1 + dy, left: pos.left + 1 + dx}, isGround ? GROUND : item.net, dx, dy);
         break;
       case COMPONENT:
-        for(const output of item.outputs){
-          yield makePos({top: pos.top + output.y, left: pos.left + output.x}, isGround ? GROUND : output.net, output.dx, output.dy);
+        for(const [output, pin] of zip(item.outputs, item.package.outputs)){
+          yield makePos({top: pos.top + pin.y, left: pos.left + pin.x}, isGround ? GROUND : output.net, pin.dx, pin.dy);
         }
         break;
     }

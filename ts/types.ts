@@ -16,65 +16,42 @@ export type EnneaTree = Node<Item>;
 
 export { Area, Box, BoxArea, BuddyTree };
 
-export interface Wire{
+export interface Wire {
   readonly type: 'wire',
   readonly net: number
 }
 
-export interface Gate{
+export interface Gate {
   readonly type : 'gate',
   readonly net : number,
   readonly inputA : number,
   readonly inputB : number
 }
 
-export interface Underpass{
+export interface Underpass {
   readonly type : 'underpass',
   readonly net : number
 }
 
-export interface Button{
+export interface Button {
   readonly type : 'button',
   readonly net : number,
   readonly name : string,
   readonly direction : Direction,
 }
 
-export interface Component{
+export interface Component {
   readonly type : 'component',
-  readonly schema : 2,
-  readonly inputs : ComponentInput[],
-  readonly outputs : ComponentOutput[],
-  readonly gates : ComponentGate[],
+  readonly schema : 3,
+  readonly inputs : ComponentPin[],
+  readonly outputs : ComponentPin[],
   readonly net : number,
-  readonly hash : string,
-  readonly repo : string,
-  readonly name : string,
-  readonly version : string
+  readonly package : Package
 }
 
-export interface ComponentInput{
-  readonly x : number,
-  readonly y : number,
+export interface ComponentPin {
   readonly net : number,
-  readonly pointsTo : ComponentInputPointer[],
   readonly name? : string
-}
-
-export interface ComponentOutput{
-  readonly x : number,
-  readonly y : number,
-  readonly net : number,
-  readonly dx : number,
-  readonly dy : number,
-  readonly name? : string
-}
-
-export type ComponentGate = Readonly<[number, number]>;
-
-export interface ComponentInputPointer {
-  readonly input : 'A' | 'B',
-  readonly index : number
 }
 
 export interface Light {
@@ -91,10 +68,12 @@ export type Item = Wire
   | Component
   | Light;
 
-export interface MutableContext{
+export interface MutableContext {
   setMap(x : number, y : number, tile : number) : void;
   setNet(x : number, y : number, net : number) : void;
   setGate(gate : number, inputA : number, inputB : number) : void;
+  setGateA(gate : number, inputA : number) : void;
+  setGateB(gate : number, inputB : number) : void;
   clearGate(gate : number) : void;
   insertText(item : Item, area : Area) : void;
   removeText(item : Item) : void;
@@ -111,53 +90,37 @@ export interface IHavePosition {
   readonly y : number
 }
 
-export interface CompiledComponent {
+export interface Package {
   readonly width : number,
   readonly height : number,
-  readonly gates : CompiledComponentGate[],
-  readonly inputs : CompiledComponentInput[],
-  readonly outputs : CompiledComponentOutput[],
+  readonly gates : PackageGate[],
+  readonly inputs : PackageInput[],
+  readonly outputs : PackageOutput[],
   readonly repo : string,
   readonly name : string,
   readonly hash : string,
   readonly version : string
 }
 
-export interface CompiledComponentPin extends IHaveDirection, IHavePosition {
+export interface PackagePin extends IHaveDirection, IHavePosition {
   readonly name? : string
 }
 
-export interface CompiledComponentInput extends CompiledComponentPin {
-  readonly group? : number
+export interface PackageInput extends PackagePin {
+  readonly pointsTo : PackageGatePointer[]
 }
 
-export interface CompiledComponentOutput extends CompiledComponentPin {
+export interface PackageOutput extends PackagePin {
   readonly gate : number
 }
 
-export interface CompiledComponentGate {
-  readonly inputA : CompiledComponentGateInput,
-  readonly inputB : CompiledComponentGateInput
+export type PackageGate = [number | 'GROUND', number | 'GROUND'];
+
+export interface PackageGatePointer {
+  readonly input : 'A' | 'B',
+  readonly gate : number
 }
 
-export type CompiledComponentGateInput =
-  CompiledComponentGateInputFromGate
-  | CompiledComponentGateInputFromInput
-  | CompiledComponentGateInputFromGround;
-
-export interface CompiledComponentGateInputFromGate{
-  readonly type : 'gate',
-  readonly index : number
-}
-
-export interface CompiledComponentGateInputFromInput{
-  readonly type : 'input',
-  readonly index : number
-}
-
-export interface CompiledComponentGateInputFromGround{
-  readonly type : 'ground'
-}
 
 declare global{
   interface Array<T> {

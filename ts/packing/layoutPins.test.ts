@@ -18,6 +18,8 @@ test('one input left, one output right', t => {
       y: 64,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     }
   ], [
     {
@@ -25,6 +27,8 @@ test('one input left, one output right', t => {
       y: 64,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     }]);
 
   t.is(layout.width, 3);
@@ -34,7 +38,9 @@ test('one input left, one output right', t => {
       x: 0,
       y: 1,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     }
   ]);
   t.deepEqual(layout.outputs, [
@@ -42,7 +48,9 @@ test('one input left, one output right', t => {
       x: 2,
       y: 1,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     }
   ]);
 });
@@ -54,12 +62,16 @@ test('two input left, one output right', t => {
       y: 65,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 64,
       y: 63,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     }
   ], [
     {
@@ -67,6 +79,8 @@ test('two input left, one output right', t => {
       y: 64,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     }
   ]);
 
@@ -77,13 +91,17 @@ test('two input left, one output right', t => {
       x: 0,
       y: 3,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 0,
       y: 1,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     }
   ]);
   t.deepEqual(layout.outputs, [
@@ -91,7 +109,9 @@ test('two input left, one output right', t => {
       x: 2,
       y: 2,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     }
   ]);
 });
@@ -103,18 +123,24 @@ test('full adder', t => {
       y: 63,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 64,
       y: 65,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 64,
       y: 67,
       dx: 0,
       dy: -1,
+      net: 0,
+      name: ''
     }
   ], [
     {
@@ -122,12 +148,16 @@ test('full adder', t => {
       y: 64,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 70,
       y: 62,
       dx: 0,
       dy: -1,
+      net: 0,
+      name: ''
     }
   ]);
 
@@ -138,19 +168,25 @@ test('full adder', t => {
       x: 0,
       y: 1,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 0,
       y: 3,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 1,
       y: 4,
       dx: 0,
-      dy: -1
+      dy: -1,
+      net: 0,
+      name: ''
     }
   ]);
   t.deepEqual(layout.outputs, [
@@ -158,13 +194,17 @@ test('full adder', t => {
       x: 2,
       y: 2,
       dx: 1,
-      dy: 0
+      dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 1,
       y: 0,
       dx: 0,
-      dy: -1
+      dy: -1,
+      net: 0,
+      name: ''
     }
   ]);
 });
@@ -177,24 +217,32 @@ test('input and output on all sides', t => {
       y: 1,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 4,
       y: 3,
       dx: -1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 1,
       y: 0,
       dx: 0,
       dy: 1,
+      net: 0,
+      name: ''
     },
     {
       x: 3,
       y: 4,
       dx: 0,
       dy: -1,
+      net: 0,
+      name: ''
     }
   ];
 
@@ -204,24 +252,32 @@ test('input and output on all sides', t => {
       y: 3,
       dx: -1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 4,
       y: 1,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 3,
       y: 0,
       dx: 0,
       dy: -1,
+      net: 0,
+      name: ''
     },
     {
       x: 1,
       y: 4,
       dx: 0,
       dy: 1,
+      net: 0,
+      name: ''
     }
   ];
 
@@ -242,18 +298,24 @@ test('3 input and 2 output ', t => {
       y: 1,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 0,
       y: 3,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 0,
       y: 5,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     }
   ];
 
@@ -263,12 +325,16 @@ test('3 input and 2 output ', t => {
       y: 2,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     },
     {
       x: 2,
       y: 4,
       dx: 1,
       dy: 0,
+      net: 0,
+      name: ''
     }
   ];
 

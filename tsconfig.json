@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./es",
     "allowJs": false,
-    "strictNullChecks": true,
+    "strict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,

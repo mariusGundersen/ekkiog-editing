@@ -79,9 +79,9 @@ export function getButtonNet(button : Button, x : number, y : number, dx : numbe
 }
 
 export function getComponentNet(component : Component, x : number, y : number, dx : number, dy : number){
-  const output = component.outputs.filter(output => output.x === x && output.y === y)[0];
-  if(output && output.dx === -dx && output.dy === -dy){
-    return output.net;
+  const index = component.package.outputs.findIndex(output => output.x === x && output.y === y && output.dx === -dx && output.dy === -dy);
+  if(index >= 0){
+    return component.outputs[index].net;
   }else{
     return GROUND;
   }
