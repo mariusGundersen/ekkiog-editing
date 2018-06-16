@@ -1,5 +1,4 @@
 import {
-  PackagePin,
   IHavePosition
 } from '../types';
 

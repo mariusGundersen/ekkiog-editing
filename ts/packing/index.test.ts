@@ -1,16 +1,9 @@
 import test from 'ava';
 
 import {
-  Package,
-  PackageGate,
-  PackageInput,
-  PackageOutput
+  Package
 } from '../types';
 
-import {
-  GATE,
-  INPUT
- } from '../constants';
 
 import createForest from '../actions/createForest';
 import drawGate from '../actions/drawGate';
@@ -22,6 +15,83 @@ import drawComponent from '../actions/drawComponent';
 
 import compile from './index';
 
+export const andPackage : Package = {
+  repo: 'repo',
+  name: 'AND',
+  version: 'version',
+  hash: 'hash',
+  width: 3,
+  height: 5,
+  inputs: [
+    {
+      dx: -1,
+      dy: -0,
+      x: 0,
+      y: 1,
+      group: 0
+    },
+    {
+      dx: -1,
+      dy: -0,
+      x: 0,
+      y: 3,
+      group: 1
+    }
+  ],
+  outputs: [
+    {
+      dx: 1,
+      dy: 0,
+      x: 2,
+      y: 2,
+      gate: 1,
+      name: ''
+    }
+  ],
+  gates: [
+    ['GROUND', 'GROUND'],
+    [0, 0]
+  ],
+  groups: [
+    {
+      pointsTo: [
+        {
+          gate: 0,
+          input: 'A'
+        }
+      ],
+      name: ''
+    },
+    {
+      pointsTo: [
+        {
+          gate: 0,
+          input: 'B'
+        }
+      ],
+      name: ''
+    }
+  ]
+};
+
+export const straightThroughPackage : Package = {
+  repo: 'repo',
+  name: 'name',
+  version: 'version',
+  hash: 'hash',
+  width: 3,
+  height: 3,
+  inputs: [
+    { x: 0, y: 1, dx: -1, dy: -0, group: 0 },
+    { x: 2, y: 1, dx: 1, dy: 0, group: 0 }
+  ],
+  outputs: [],
+  gates: [],
+  groups: [
+    { pointsTo: [], name: '' }
+  ]
+};
+
 test('compile single gate', t => {
   const forest = drawGate(createForest(), 64, 64);
   const compiled = compile(forest, 'repo', 'name', 'version', 'hash');
@@ -32,11 +102,12 @@ test('compile single gate', t => {
     hash: 'hash',
     width: 3,
     height: 3,
-    inputs: [] as PackageInput[],
-    outputs: [] as PackageOutput[],
+    inputs: [],
+    outputs: [],
     gates: [
       ['GROUND', 'GROUND']
-    ]
+    ],
+    groups: []
   });
 });
 
@@ -50,9 +121,10 @@ test('compile lightbulb with ground net', t => {
     hash: 'hash',
     width: 3,
     height: 3,
-    inputs: [] as PackageInput[],
-    outputs: [] as PackageOutput[],
-    gates: [] as PackageGate[]
+    inputs: [],
+    outputs: [],
+    gates: [],
+    groups: []
   });
 });
 
@@ -61,19 +133,7 @@ test('compile lightbulb connected to button', t => {
   forest = drawLight(forest, 64, 64);
   forest = drawButton(forest, 61, 64);
   const compiled = compile(forest, 'repo', 'name', 'version', 'hash');
-  t.deepEqual(compiled, {
-    repo: 'repo',
-    name: 'name',
-    version: 'version',
-    hash: 'hash',
-    width: 3,
-    height: 3,
-    inputs: [
-      { x: 0, y: 1, dx: -1, dy: -0, pointsTo: [], name: '' }
-    ],
-    outputs: [] as PackageOutput[],
-    gates: [] as PackageGate[]
-  });
+  t.deepEqual(compiled, straightThroughPackage);
 });
 
 test('compile two gates', t => {
@@ -127,17 +187,7 @@ test('compile NOT gate', t => {
         dy: -0,
         x: 0,
         y: 1,
-        pointsTo: [
-          {
-            gate: 0,
-            input: 'A'
-          },
-          {
-            gate: 0,
-            input: 'B'
-          }
-        ],
-        name: ''
+        group: 0
       }
     ],
     outputs: [
@@ -152,40 +202,14 @@ test('compile NOT gate', t => {
     ],
     gates: [
       ['GROUND', 'GROUND']
-    ]
-  });
-});
-
-test('compile AND gate', t => {
-  const forest = andForest();
-  const compiled = compile(forest, 'repo', 'AND', 'version', 'hash');
-  t.deepEqual(compiled, {
-    repo: 'repo',
-    name: 'AND',
-    version: 'version',
-    hash: 'hash',
-    width: 3,
-    height: 5,
-    inputs: [
+    ],
+    groups: [
       {
-        dx: -1,
-        dy: -0,
-        x: 0,
-        y: 1,
         pointsTo: [
           {
             gate: 0,
             input: 'A'
-          }
-        ],
-        name: ''
-      },
-      {
-        dx: -1,
-        dy: -0,
-        x: 0,
-        y: 3,
-        pointsTo: [
+          },
           {
             gate: 0,
             input: 'B'
@@ -193,22 +217,14 @@ test('compile AND gate', t => {
         ],
         name: ''
       }
-    ],
-    outputs: [
-      {
-        dx: 1,
-        dy: 0,
-        x: 2,
-        y: 2,
-        gate: 1,
-        name: ''
-      }
-    ],
-    gates: [
-      ['GROUND', 'GROUND'],
-      [0, 0]
     ]
   });
+});
+
+test('compile AND gate', t => {
+  const forest = andForest();
+  const compiled = compile(forest, 'repo', 'AND', 'version', 'hash');
+  t.deepEqual(compiled, andPackage);
 });
 
 test('compile XOR gate', t => {
@@ -227,34 +243,14 @@ test('compile XOR gate', t => {
         dy: -0,
         x: 0,
         y: 1,
-        pointsTo: [
-          {
-            gate: 0,
-            input: 'A'
-          },
-          {
-            gate: 2,
-            input: 'A'
-          }
-        ],
-        name: ''
+        group: 0
       },
       {
         dx: -1,
         dy: -0,
         x: 0,
         y: 3,
-        pointsTo: [
-          {
-            gate: 1,
-            input: 'B'
-          },
-          {
-            gate: 2,
-            input: 'B'
-          }
-        ],
-        name: ''
+        group: 1
       }
     ],
     outputs: [
@@ -272,6 +268,34 @@ test('compile XOR gate', t => {
       [2, 'GROUND'],
       ['GROUND', 'GROUND'],
       [0, 1]
+    ],
+    groups: [
+      {
+        pointsTo: [
+          {
+            gate: 0,
+            input: 'A'
+          },
+          {
+            gate: 2,
+            input: 'A'
+          }
+        ],
+        name: ''
+      },
+      {
+        pointsTo: [
+          {
+            gate: 1,
+            input: 'B'
+          },
+          {
+            gate: 2,
+            input: 'B'
+          }
+        ],
+        name: ''
+      }
     ]
   });
 });
@@ -315,16 +339,8 @@ test('half adder', t => {
     width: 3,
     height: 5,
     inputs: [
-      { x: 0, y: 1, dx: -1, dy: -0, name: '', pointsTo: [
-        { gate: 0, input: 'A'},
-        { gate: 2, input: 'A'},
-        { gate: 4, input: 'A'}
-      ] },
-      { x: 0, y: 3, dx: -1, dy: -0, name: '', pointsTo: [
-        { gate: 0, input: 'B'},
-        { gate: 3, input: 'B'},
-        { gate: 4, input: 'B'}
-      ] }
+      { x: 0, y: 1, dx: -1, dy: -0, group: 0 },
+      { x: 0, y: 3, dx: -1, dy: -0, group: 1 }
     ],
     outputs: [
       { gate: 1, x: 2, y: 1, dx: 1, dy: 0, name: '' },
@@ -337,6 +353,18 @@ test('half adder', t => {
       [4, 'GROUND'],
       ['GROUND', 'GROUND'],
       [2, 3]
+    ],
+    groups: [
+      { name: '', pointsTo: [
+        { gate: 0, input: 'A'},
+        { gate: 2, input: 'A'},
+        { gate: 4, input: 'A'}
+      ]},
+      { name: '', pointsTo: [
+        { gate: 0, input: 'B'},
+        { gate: 3, input: 'B'},
+        { gate: 4, input: 'B'}
+      ]}
     ]
   });
 });
@@ -391,7 +419,7 @@ test('tripple XOR', t => {
 
   const compiled = compile(forest, 'repo', 'XOR', 'version', 'hash');
 
-  t.deepEqual(compiled.inputs.map(input => input.pointsTo), [
+  t.deepEqual(compiled.groups.map(group => group.pointsTo), [
     [
       { gate: 0, input: 'A' },
       { gate: 2, input: 'A' }

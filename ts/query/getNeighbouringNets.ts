@@ -38,11 +38,6 @@ function unique(...iteratorA : IterableIterator<number>[]){
     .filter((net : number, index : number, nets : number[]) => nets.indexOf(net) === index);
 }
 
-function* getNetAroundWire(enneaTree : EnneaTree, x : number, y : number){
-  yield* getLeftRightNet(enneaTree, x, y);
-  yield* getAboveBelowNet(enneaTree, x, y);
-}
-
 function* getLeftRightNet(enneaTree : EnneaTree, x : number, y : number){
   yield getNetAt(enneaTree, x-1, y+0, -1, 0);
   yield getNetAt(enneaTree, x+1, y+0, +1, 0);

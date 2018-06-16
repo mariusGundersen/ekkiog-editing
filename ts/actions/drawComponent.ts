@@ -14,6 +14,7 @@ import {
   Component,
   Package,
   ComponentPin,
+  ComponentInputPin,
 } from '../types';
 
 const COMPONENT_SCHEMA = 3;
@@ -21,11 +22,29 @@ const COMPONENT_SCHEMA = 3;
 export default function drawComponent(forest : Forest, x : number, y : number, pkg : Package){
   x -= pkg.width>>1;
   y -= pkg.height>>1;
-  const {tree: buddyTree, address} = buddy.allocate(forest.buddyTree, pkg.gates.length);
+  //TODO: figure out how to allocate 0 gates...
+  //This will probably cause issues when removing the component again!
+  const {tree: buddyTree, address} = pkg.gates.length ? buddy.allocate(forest.buddyTree, pkg.gates.length) : {tree: forest.buddyTree, address: -1};
 
-  const inputs : ComponentPin[] = pkg.inputs.map(input => ({
-    net: getNetAtPos(forest.enneaTree, x, y, input.x, input.y, input.dx, input.dy),
-    name: input.name
+  const groups = pkg.groups.map((group, index) => ({
+    name: group.name,
+    index,
+    nets: pkg.inputs
+      .filter(input => input.group === index)
+      .map((input, index) => ({
+        input: index,
+        net: getNetAtPos(forest.enneaTree, x, y, input.x, input.y, input.dx, input.dy)
+      }))
+      .filter(pin => pin.net !== GROUND)
+  }));
+
+  if(groups.some(group => group.nets.length > 1)){
+    return forest;
+  }
+  const inputs : ComponentInputPin[] = groups.map(group => ({
+    net: group.nets.length === 0 ? GROUND : group.nets[0].net,
+    name: group.name,
+    input: group.nets.length === 0 ? -1 : group.nets[0].input
   }));
 
   const outputs : ComponentPin[] = pkg.outputs.map(output => ({

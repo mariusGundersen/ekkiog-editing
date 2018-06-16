@@ -14,6 +14,7 @@ export { default as insertItem } from './actions/insertItem';
 export { default as floodFill } from './flooding/floodFill';
 
 export { default as getTypeAt } from './query/getTypeAt';
+export { default as getTileAt } from './query/getTileAt';
 export { default as isEmpty } from './query/isEmpty';
 
 export { default as reconcile } from './reconciliation/reconcile';

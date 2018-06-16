@@ -9,7 +9,8 @@ import {
   Package,
   PackageGate,
   PackageOutput,
-  PackageInput
+  PackageInput,
+  PackageInputGroup
 } from '../types';
 
 import {
@@ -77,35 +78,32 @@ function createPackage(
     ...forestComponents.map(makeGatesFromComponent).reduce(flatten, [])
   ];
 
-  const netToIndexMap = new Map(gateAddresses.map((gate, index) => [gate.net, index] as [number, number]));
+  const netToGateIndex = new Map(gateAddresses.map((gate, index) => [gate.net, index] as [number, number]));
+  const netToButtonIndex = new Map(forestButtons.map((button, index) => [button.data.net, index] as [number, number]));
 
   const layout = layoutPins(
-    forestButtons.map(toPin),
-    forestLights.map(toPin).filter(pin => netToIndexMap.has(pin.net))
+    forestButtons.map(toPin).concat(forestLights.map(toPin).map(reverseDirection).filter(pin => netToButtonIndex.has(pin.net))),
+    forestLights.map(toPin).filter(pin => netToGateIndex.has(pin.net))
   );
 
   const inputs: PackageInput[] = layout.inputs
     .map(pin => ({
-      pointsTo: [
-        ...gateAddresses.filter(g => g.a === pin.net).map(makeInput('A', netToIndexMap)),
-        ...gateAddresses.filter(g => g.b === pin.net).map(makeInput('B', netToIndexMap))
-      ],
+      group: netToButtonIndex.get(pin.net) || 0,
       x: pin.x,
       y: pin.y,
       dx: -pin.dx,
-      dy: -pin.dy,
-      name: pin.name
+      dy: -pin.dy
     }));
 
   const gates: PackageGate[] = gateAddresses
     .map(gate => [
-      groundIfUndefined(netToIndexMap.get(gate.a)),
-      groundIfUndefined(netToIndexMap.get(gate.b))
+      groundIfUndefined(netToGateIndex.get(gate.a)),
+      groundIfUndefined(netToGateIndex.get(gate.b))
     ] as PackageGate);
 
   const outputs: PackageOutput[] = layout.outputs
     .map(pin => ({
-      gate: netToIndexMap.get(pin.net),
+      gate: netToGateIndex.get(pin.net),
       x: pin.x,
       y: pin.y,
       dx: pin.dx,
@@ -114,12 +112,21 @@ function createPackage(
     }))
     .filter((node) : node is PackageOutput => node.gate !== undefined);
 
+  const groups: PackageInputGroup[] = forestButtons.map(button => ({
+    name: button.data.name,
+    pointsTo: [
+      ...gateAddresses.filter(g => g.a === button.data.net).map(makeInput('A', netToGateIndex)),
+      ...gateAddresses.filter(g => g.b === button.data.net).map(makeInput('B', netToGateIndex))
+    ],
+  }))
+
   return {
     width: layout.width,
     height: layout.height,
     inputs,
     outputs,
     gates,
+    groups
   };
 }
 
@@ -134,7 +141,9 @@ function makeGate({net, inputA: a, inputB: b} : Gate) : GateAddress {
 function makeGatesFromComponent(component: Component) : GateAddress[] {
   const gates = component.package.gates;
   const inputs = component.inputs;
-  const pins = component.package.inputs.map((input, index) => input.pointsTo.map(({gate, input}) => ({gate, net: inputs[index].net, input}))).reduce(flatten, []);
+  const pins = component.package.groups
+    .map((input, index) => input.pointsTo.map(({gate, input}) => ({gate, net: inputs[index].net, input})))
+    .reduce(flatten, []);
   const pointsToA = new Map(pins.filter(p => p.input === 'A').map(p => [p.gate, p.net] as [number, number]));
   const pointsToB = new Map(pins.filter(p => p.input === 'B').map(p => [p.gate, p.net] as [number, number]));
   return gates.map(([a, b], index) => ({
@@ -169,6 +178,14 @@ function toPin({ top: y, left: x, data: { direction, net, name } } : ennea.AreaD
     name
   }
 };
+
+function reverseDirection(pin : Pin) : Pin {
+  return {
+    ...pin,
+    dx: -pin.dx,
+    dy: -pin.dy
+  };
+}
 
 function groundIfUndefined(a : number | undefined) : number | 'GROUND' {
   return a === undefined ? 'GROUND' : a;

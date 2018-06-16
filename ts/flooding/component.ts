@@ -17,12 +17,19 @@ import {
 export default function component(oldComponent : Component, pos : Pos, ctx : Context, queue : BoxContext<Context>[]) : Component{
   const inputIndex = oldComponent.package.inputs.findIndex(pin => pin.x === pos.left && pin.y === pos.top);
   if(inputIndex >= 0){
-    const inputs = oldComponent.inputs.map((pin, index) => index === inputIndex
+    const input = oldComponent.package.inputs[inputIndex];
+    const pins = oldComponent.package.inputs.filter(pin => pin.group === input.group);
+    const inputs = oldComponent.inputs.map((pin, index) => index === input.group
       ? {
         ...pin,
+        input: ctx.net === GROUND ? -1 : pins.indexOf(input),
         net: ctx.net
       }
       : pin);
+
+    queue.push(...pins
+      .filter(pin => pin !== input)
+      .map(pin => makePos({top: ctx.pos.top+(pin.y - input.y), left: ctx.pos.left+(pin.x - input.x)}, ctx.net, pin.dx, pin.dy)));
 
     return {
       ...oldComponent,

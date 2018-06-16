@@ -43,10 +43,14 @@ export interface Button {
 export interface Component {
   readonly type : 'component',
   readonly schema : 3,
-  readonly inputs : ComponentPin[],
+  readonly inputs : ComponentInputPin[],
   readonly outputs : ComponentPin[],
   readonly net : number,
   readonly package : Package
+}
+
+export interface ComponentInputPin extends ComponentPin {
+  readonly input : number | -1
 }
 
 export interface ComponentPin {
@@ -96,21 +100,24 @@ export interface Package {
   readonly gates : PackageGate[],
   readonly inputs : PackageInput[],
   readonly outputs : PackageOutput[],
+  readonly groups : PackageInputGroup[],
   readonly repo : string,
   readonly name : string,
   readonly hash : string,
   readonly version : string
 }
 
-export interface PackagePin extends IHaveDirection, IHavePosition {
+export interface PackageInputGroup {
   readonly name : string
-}
-
-export interface PackageInput extends PackagePin {
   readonly pointsTo : PackageGatePointer[]
 }
 
-export interface PackageOutput extends PackagePin {
+export interface PackageInput extends IHaveDirection, IHavePosition {
+  readonly group : number
+}
+
+export interface PackageOutput extends IHaveDirection, IHavePosition {
+  readonly name : string
   readonly gate : number
 }
 

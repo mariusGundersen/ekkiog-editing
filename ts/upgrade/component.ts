@@ -123,9 +123,10 @@ function from2to3(component: Component2 | Component, width : number, height : nu
       type: 'component',
       schema: 3,
       net: component.net,
-      inputs: component.inputs.map(input => ({
+      inputs: component.inputs.map((input, index) => ({
         name: input.name,
-        net: input.net
+        net: input.net,
+        input: index
       })),
       outputs: component.outputs.map(output => ({
         name: output.name,
@@ -142,12 +143,7 @@ function from2to3(component: Component2 | Component, width : number, height : nu
           x: input.x,
           y: input.y,
           dx: input.dx,
-          dy: input.dy,
-          name: input.name || '',
-          pointsTo: input.pointsTo.map(point => ({
-            gate: point.index,
-            input: point.input
-          }))
+          dy: input.dy
         })),
         outputs: component.outputs.map(output => ({
           x: output.x,
@@ -160,7 +156,15 @@ function from2to3(component: Component2 | Component, width : number, height : nu
         gates: component.gates.map(gate => [
           gate[0] < component.net ? 'GROUND' : gate[0] - component.net,
           gate[1] < component.net ? 'GROUND' : gate[1] - component.net
-        ])
+        ]),
+        groups: component.inputs.map(input => ({
+          name: input.name || '',
+          pointsTo: input.pointsTo.map(point => ({
+            gate: point.index,
+            input: point.input
+          }))
+
+        }))
       }
     } as Component;
   }else{

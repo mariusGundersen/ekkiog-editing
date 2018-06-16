@@ -48,9 +48,8 @@ export function floodClear(enenaTree : EnneaTree, floodSources : [Item, BoxArea]
 }
 
 function floodFillInternal(enneaTree : EnneaTree, isGround = false, ...floodSources : [Item, BoxArea][]) : EnneaTree {
-
   const queue = [...make(isGround, floodSources)];
-  const updater = update(enneaTree, (old, ctx : Context, pos) => {
+  const updater = update(enneaTree, (old : Item, ctx : Context, pos) => {
     switch(old.type){
       case WIRE:
         return wire(old, pos, ctx, queue);

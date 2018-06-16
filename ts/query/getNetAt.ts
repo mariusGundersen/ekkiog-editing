@@ -1,4 +1,4 @@
-import { get, Node } from 'ennea-tree';
+import { get } from 'ennea-tree';
 
 import {
   WIRE,
@@ -6,19 +6,15 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
-  LIGHT,
   GROUND
 } from '../constants';
 
 import {
   EnneaTree,
-  Wire,
   Gate,
   Underpass,
   Button,
-  Component,
-  Light
-} from '../types';
+  Component} from '../types';
 
 export default function getNetAt(enneaTree : EnneaTree, x : number, y : number, dx : number, dy : number){
   const tile = get(enneaTree, y, x);
@@ -82,7 +78,12 @@ export function getComponentNet(component : Component, x : number, y : number, d
   const index = component.package.outputs.findIndex(output => output.x === x && output.y === y && output.dx === -dx && output.dy === -dy);
   if(index >= 0){
     return component.outputs[index].net;
-  }else{
-    return GROUND;
   }
+
+  const input = component.package.inputs.find(input => input.x === x && input.y === y && input.dx === -dx && input.dy === -dy);
+  if(input){
+    return component.inputs[input.group].net;
+  }
+
+  return GROUND;
 }

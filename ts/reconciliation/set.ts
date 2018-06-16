@@ -114,7 +114,7 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
   }
 
   for(const [pin, port] of zip(component.package.inputs, component.inputs)){
-    for(const point of pin.pointsTo){
+    for(const point of component.package.groups[pin.group].pointsTo){
       if(point.input === 'A'){
         context.setGateA(component.net + point.gate, port.net);
       }else{
