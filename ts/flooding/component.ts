@@ -19,6 +19,14 @@ export default function component(oldComponent : Component, pos : Pos, ctx : Con
   if(inputIndex >= 0){
     const input = oldComponent.package.inputs[inputIndex];
     const pins = oldComponent.package.inputs.filter(pin => pin.group === input.group);
+
+    if(ctx.net !== GROUND){
+      const group = oldComponent.inputs.find((_, index) => index === input.group);
+      if(group && group.net !== GROUND && group.net !== ctx.net){
+        throw new Error();
+      }
+    }
+
     const inputs = oldComponent.inputs.map((pin, index) => index === input.group
       ? {
         ...pin,
@@ -38,10 +46,14 @@ export default function component(oldComponent : Component, pos : Pos, ctx : Con
   }
 
   const outputIndex = oldComponent.package.outputs.findIndex(pin => pin.x === pos.left && pin.y === pos.top);
-  if(outputIndex >= 0 && ctx.net === GROUND){
+  if(outputIndex >= 0){
     const pin = oldComponent.package.outputs[outputIndex];
     const output = oldComponent.outputs[outputIndex];
-    queue.push(makePos(ctx.pos, output.net, pin.dx, pin.dy));
+    if(output.net !== GROUND && ctx.net === GROUND){
+      queue.push(makePos(ctx.pos, output.net, pin.dx, pin.dy));
+    }else if(output.net !== GROUND && ctx.net !== GROUND && output.net !== ctx.net){
+      throw new Error();
+    }
   }
 
   return oldComponent;

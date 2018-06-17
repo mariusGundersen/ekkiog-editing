@@ -16,6 +16,7 @@ import {
   ComponentPin,
   ComponentInputPin,
 } from '../types';
+import { distinct } from '../utils';
 
 const COMPONENT_SCHEMA = 3;
 
@@ -36,7 +37,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
       .filter(pin => pin.net !== GROUND)
   }));
 
-  if(groups.some(group => group.nets.length > 1)){
+  if(groups.some(group => group.nets.map(g => g.net).filter(distinct).length > 1)){
     return forest;
   }
 

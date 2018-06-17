@@ -21,6 +21,8 @@ export default function button(oldButton : Button, pos : Pos, ctx : Context, que
     ctx.pos.top - ctx.prev.top);
   if(net !== GROUND && ctx.net === GROUND){
     queue.push(makePos(ctx.pos, net, ctx.prev.left - ctx.pos.left, ctx.prev.top - ctx.pos.top));
+  }else if(net !== GROUND && ctx.net !== GROUND && net !== ctx.net){
+    throw new Error();
   }
 
   return oldButton;

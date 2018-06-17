@@ -44,3 +44,7 @@ export function* zip<TA, TB>(a : TA[], b : TB[]){
 export function flatten<T>(a : T[] = [], b : T[]){
   return a.concat(b);
 }
+
+export function distinct<T>(e : T, i : number, c : T[]){
+  return c.indexOf(e) === i;
+}
