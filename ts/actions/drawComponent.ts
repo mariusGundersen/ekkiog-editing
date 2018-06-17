@@ -22,9 +22,7 @@ const COMPONENT_SCHEMA = 3;
 export default function drawComponent(forest : Forest, x : number, y : number, pkg : Package){
   x -= pkg.width>>1;
   y -= pkg.height>>1;
-  //TODO: figure out how to allocate 0 gates...
-  //This will probably cause issues when removing the component again!
-  const {tree: buddyTree, address} = pkg.gates.length ? buddy.allocate(forest.buddyTree, pkg.gates.length) : {tree: forest.buddyTree, address: -1};
+  const {tree: buddyTree, address} = buddy.allocate(forest.buddyTree, pkg.gates.length);
 
   const groups = pkg.groups.map((group, index) => ({
     name: group.name,
@@ -41,6 +39,7 @@ export default function drawComponent(forest : Forest, x : number, y : number, p
   if(groups.some(group => group.nets.length > 1)){
     return forest;
   }
+
   const inputs : ComponentInputPin[] = groups.map(group => ({
     net: group.nets.length === 0 ? GROUND : group.nets[0].net,
     name: group.name,
