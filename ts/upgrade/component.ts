@@ -123,10 +123,10 @@ function from2to3(component: Component2 | Component, width : number, height : nu
       type: 'component',
       schema: 3,
       net: component.net,
-      inputs: component.inputs.map((input, index) => ({
+      inputs: component.inputs.map(input => ({
         name: input.name,
         net: input.net,
-        input: index
+        input: 0
       })),
       outputs: component.outputs.map(output => ({
         name: output.name,
@@ -139,11 +139,12 @@ function from2to3(component: Component2 | Component, width : number, height : nu
         version: component.version,
         height,
         width,
-        inputs: component.inputs.map(input => ({
+        inputs: component.inputs.map((input, index) => ({
           x: input.x,
           y: input.y,
           dx: input.dx,
-          dy: input.dy
+          dy: input.dy,
+          group: index
         })),
         outputs: component.outputs.map(output => ({
           x: output.x,

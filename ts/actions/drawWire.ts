@@ -1,5 +1,3 @@
-import * as ennea from 'ennea-tree';
-
 import {
   WIRE,
   GROUND

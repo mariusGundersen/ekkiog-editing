@@ -1,16 +1,13 @@
-import * as ennea from 'ennea-tree';
 import {allocate} from 'buddy-tree';
 
 import {
-  GATE,
-  GROUND
-} from '../constants';
+  GATE} from '../constants';
 
 import getNetAt from '../query/getNetAt';
 import {getGateNeighbouringNets} from '../query/getNeighbouringNets';
 import insertItem from './insertItem';
 
-import { Forest, EnneaTree, Gate } from '../types';
+import { Forest, Gate } from '../types';
 
 export default function drawGate(forest : Forest, x : number, y : number){
   const neighbouringNets = getGateNeighbouringNets(forest.enneaTree, x, y);

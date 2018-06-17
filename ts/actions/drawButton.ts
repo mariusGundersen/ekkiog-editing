@@ -1,4 +1,3 @@
-import * as ennea from 'ennea-tree';
 import {allocate} from 'buddy-tree';
 
 import {

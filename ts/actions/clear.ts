@@ -4,19 +4,12 @@ import { deallocate } from 'buddy-tree';
 import {
   GATE,
   BUTTON,
-  COMPONENT,
-  LIGHT,
-  GROUND
-} from '../constants';
+  COMPONENT} from '../constants';
 
 import {floodClear} from '../flooding/floodFill';
 
 import { Forest, Item } from '../types';
 
-import {
-  directionToDx,
-  directionToDy
-} from '../utils';
 
 export default function clear(forest : Forest, x : number, y : number) : Forest {
   let {tree : enneaTree, cleared} = ennea.clear(forest.enneaTree, {left:x, top:y});
