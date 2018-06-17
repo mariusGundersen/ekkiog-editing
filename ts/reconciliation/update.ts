@@ -136,9 +136,10 @@ export function updateComponent(context : MutableContext, {top:y, left:x} : Area
 
   for(const [oldInput, newInput, index] of zip(oldInputs, newInputs)){
     if(oldInput.net !== newInput.net){
-      const pin = oldComponent.package.inputs[index];
-      context.setNet(x + pin.x, y + pin.y, newInput.net);
-      for(const point of oldComponent.package.groups[pin.group].pointsTo){
+      for(const pin of oldComponent.package.inputs.filter(input => input.group === index)){
+        context.setNet(x + pin.x, y + pin.y, newInput.net);
+      }
+      for(const point of oldComponent.package.groups[index].pointsTo){
         if(point.input === 'A'){
           context.setGateA(oldComponent.net + point.gate, newInput.net);
         }else{

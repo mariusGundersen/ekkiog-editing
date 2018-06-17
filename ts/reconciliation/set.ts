@@ -8,14 +8,8 @@ import {
   GATE,
   UNDERPASS,
   BUTTON,
-  GROUND,
   COMPONENT,
-  LIGHT,
-  UPWARDS,
-  LEFTWARDS,
-  RIGHTWARDS,
-  DOWNWARDS
-} from '../constants';
+  LIGHT} from '../constants';
 
 import {
   Item,
@@ -25,9 +19,7 @@ import {
   Button,
   Component,
   Light,
-  MutableContext,
-  Direction
-} from '../types';
+  MutableContext} from '../types';
 
 import {
   directionToDx,
@@ -94,7 +86,6 @@ export function button(context : MutableContext, {top:y, left:x, width, height} 
 
 export function component(context : MutableContext, {top:y, left:x, width, height} : Area, component : Component){
   const pins = [...component.package.inputs, ...component.package.outputs];
-  const ports = [...component.inputs, ...component.outputs];
 
   for(let ty=0; ty<height; ty++){
     for(let tx=0; tx<width; tx++){
@@ -102,7 +93,12 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
     }
   }
 
-  for(const [pin, port] of zip(pins, ports)){
+  for(const [pin, port] of zip(component.package.outputs, component.outputs)){
+    context.setNet(x+pin.x, y+pin.y, port.net);
+  }
+
+  for(const pin of component.package.inputs){
+    const port = component.inputs[pin.group];
     context.setNet(x+pin.x, y+pin.y, port.net);
   }
 
@@ -113,8 +109,8 @@ export function component(context : MutableContext, {top:y, left:x, width, heigh
       component.net + (b === 'GROUND' ? 0 : b));
   }
 
-  for(const [pin, port] of zip(component.package.inputs, component.inputs)){
-    for(const point of component.package.groups[pin.group].pointsTo){
+  for(const [group, port] of zip(component.package.groups, component.inputs)){
+    for(const point of group.pointsTo){
       if(point.input === 'A'){
         context.setGateA(component.net + point.gate, port.net);
       }else{

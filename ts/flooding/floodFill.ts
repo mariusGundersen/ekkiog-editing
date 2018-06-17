@@ -97,6 +97,12 @@ export function* make(isGround : boolean, sources: [Item, BoxArea][]) : Iterable
         for(const [output, pin] of zip(item.outputs, item.package.outputs)){
           yield makePos({top: pos.top + pin.y, left: pos.left + pin.x}, isGround ? GROUND : output.net, pin.dx, pin.dy);
         }
+        for(const pin of item.package.inputs){
+          const input = item.inputs[pin.group];
+          if(input.input !== item.package.inputs.filter(input => input.group === pin.group).indexOf(pin)){
+            yield makePos({top: pos.top + pin.y, left: pos.left + pin.x}, isGround ? GROUND : input.net, pin.dx, pin.dy);
+          }
+        }
         break;
     }
   }

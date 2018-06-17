@@ -41,7 +41,6 @@ function getNetSource(box : ennea.AreaData<Item>){
   switch(box.data.type){
     case GATE:
     case BUTTON:
-      return box.data.net;
     case COMPONENT:
       return box.data.net
     default:
