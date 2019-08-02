@@ -1,11 +1,11 @@
 {
   "presets": [
-    ["es2015", {"spec": true}]
+    ["@babel/preset-env", {"spec": true}]
   ],
   "plugins":[
-    ["transform-runtime", {
-      "polyfill": true,
+    ["@babel/plugin-transform-runtime", {
       "regenerator": true
-    }]
+    }],
+    "@babel/plugin-proposal-object-rest-spread"
   ]
 }

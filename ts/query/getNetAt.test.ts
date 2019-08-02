@@ -16,7 +16,7 @@ test('wire - ground', t => {
   t.is(net, 0);
 });
 
-test('wire - ground', t => {
+test('wire - not ground', t => {
   let forest = createForest();
   forest = drawButton(forest, 62, 64);
   forest = drawWire(forest, 64, 64);

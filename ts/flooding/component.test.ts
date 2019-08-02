@@ -11,7 +11,7 @@ test('into input', t => {
   let forest = createForest();
   forest = drawComponent(forest, 64, 64, andPackage);
   const queue = [] as BoxContext<Context>[];
-  const result = component(get(forest.enneaTree, 64, 64).data as Component, {left: 0, top: 1}, {net: 5, pos: {top:64, left:66}, prev: {top:64, left:63}}, queue);
+  const result = component(get(forest.enneaTree, 64, 64).data as Component, { left: 0, top: 1 }, { net: 5, pos: { top: 64, left: 66 }, prev: { top: 64, left: 63 } }, queue);
   t.deepEqual(result.inputs, [
     {
       net: 5,
@@ -31,7 +31,7 @@ test('into input straightThrough', t => {
   let forest = createForest();
   forest = drawComponent(forest, 64, 64, straightThroughPackage);
   const queue = [] as BoxContext<Context>[];
-  const result = component(get(forest.enneaTree, 64, 64).data as Component, {left: 0, top: 1}, {net: 5, pos: {top:64, left:63}, prev: {top:64, left:62}}, queue);
+  const result = component(get(forest.enneaTree, 64, 64).data as Component, { left: 0, top: 1 }, { net: 5, pos: { top: 64, left: 63 }, prev: { top: 64, left: 62 } }, queue);
   t.deepEqual(result.inputs, [
     {
       net: 5,
