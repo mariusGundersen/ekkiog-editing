@@ -1,7 +1,7 @@
 import {
   update,
-  BoxContext,
-  BoxArea
+  BoxArea,
+  clear
 } from 'ennea-tree';
 
 import {
@@ -10,11 +10,9 @@ import {
   UNDERPASS,
   BUTTON,
   COMPONENT,
-  LIGHT,
-  GROUND
+  LIGHT
 } from '../constants';
 
-import makePos from './makePos';
 
 import wire from './wire';
 import gate from './gate';
@@ -26,31 +24,31 @@ import unchanged from './unchanged';
 
 import {
   EnneaTree,
-  Item
+  Item,
+  Forest
 } from '../types';
 
 import {
   Context
 } from './types';
 
-import {
-  directionToDx,
-  directionToDy,
-  zip
-} from '../utils';
+import { makeFloodQueue } from './make';
 
-export default function floodFill(enneaTree : EnneaTree, item : Item, pos : BoxArea) : EnneaTree {
-  return floodFillInternal(enneaTree, false, [item, pos]);
+export default function floodFill({ enneaTree, buddyTree }: Forest, item: Item, pos: BoxArea): Forest {
+  return {
+    enneaTree: floodFillInternal(enneaTree, false, [item, pos]),
+    buddyTree
+  };
 }
 
-export function floodClear(enenaTree : EnneaTree, floodSources : [Item, BoxArea][]){
+export function floodFillGround(enenaTree: EnneaTree, floodSources: [Item, BoxArea][]) {
   return floodFillInternal(enenaTree, true, ...floodSources);
 }
 
-function floodFillInternal(enneaTree : EnneaTree, isGround = false, ...floodSources : [Item, BoxArea][]) : EnneaTree {
-  const queue = [...make(isGround, floodSources)];
-  const updater = update(enneaTree, (old : Item, ctx : Context, pos) => {
-    switch(old.type){
+function floodFillInternal(enneaTree: EnneaTree, isGround = false, ...floodSources: [Item, BoxArea][]): EnneaTree {
+  const queue = [...makeFloodQueue(isGround, floodSources)];
+  const updater = update(enneaTree, (old: Item, ctx: Context, pos) => {
+    switch (old.type) {
       case WIRE:
         return wire(old, pos, ctx, queue);
       case GATE:
@@ -70,40 +68,3 @@ function floodFillInternal(enneaTree : EnneaTree, isGround = false, ...floodSour
   return updater.result(queue);
 }
 
-export function* make(isGround : boolean, sources: [Item, BoxArea][]) : IterableIterator<BoxContext<Context>>{
-  for(const [item, pos] of sources){
-    switch(item.type){
-      case WIRE:
-        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 0, 1);
-        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 1, 0);
-        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 0, -1);
-        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, -1, 0);
-        break;
-      case GATE:
-        yield makePos({top: pos.top+1, left: pos.left+3}, isGround ? GROUND : item.net, 1, 0);
-        break;
-      case UNDERPASS:
-        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, 1, 0);
-        yield makePos({top: pos.top, left: pos.left}, isGround ? GROUND : item.net, -1, 0);
-        yield makePos({top: pos.top, left: pos.left}, GROUND, 0, 1);
-        yield makePos({top: pos.top, left: pos.left}, GROUND, 0, -1);
-        break;
-      case BUTTON:
-        const dx = directionToDx(item.direction);
-        const dy = directionToDy(item.direction);
-        yield makePos({top: pos.top + 1 + dy, left: pos.left + 1 + dx}, isGround ? GROUND : item.net, dx, dy);
-        break;
-      case COMPONENT:
-        for(const [output, pin] of zip(item.outputs, item.package.outputs)){
-          yield makePos({top: pos.top + pin.y, left: pos.left + pin.x}, isGround ? GROUND : output.net, pin.dx, pin.dy);
-        }
-        for(const pin of item.package.inputs){
-          const input = item.inputs[pin.group];
-          if(input.input !== item.package.inputs.filter(input => input.group === pin.group).indexOf(pin)){
-            yield makePos({top: pos.top + pin.y, left: pos.left + pin.x}, isGround ? GROUND : input.net, pin.dx, pin.dy);
-          }
-        }
-        break;
-    }
-  }
-}

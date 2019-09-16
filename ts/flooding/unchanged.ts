@@ -18,8 +18,8 @@ import {
   GROUND
 } from '../constants';
 
-export default function unchanged(before : Item, after : Item) : boolean{
-  switch(before.type){
+export default function unchanged(before: Item, after: Item): boolean {
+  switch (before.type) {
     case WIRE: return wire(before, after as Wire);
     case GATE: return gate(before, after as Gate);
     case UNDERPASS: return underpass(before, after as Underpass);
@@ -29,35 +29,35 @@ export default function unchanged(before : Item, after : Item) : boolean{
   }
 }
 
-function wire(before : Wire, after : Wire){
+function wire(before: Wire, after: Wire) {
   return before.net === after.net;
 }
 
-function gate(before : Gate, after : Gate){
+function gate(before: Gate, after: Gate) {
   return before.inputA === after.inputA
-      && before.inputB === after.inputB
-      && before.net === after.net;
+    && before.inputB === after.inputB
+    && before.net === after.net;
 }
 
-function underpass(before : Underpass, after : Underpass){
+function underpass(before: Underpass, after: Underpass) {
   return before.net === after.net;
 }
 
-function button(before : Button, after : Button){
+function button(before: Button, after: Button) {
   return before.net === after.net
-      && before.direction === after.direction
-      && before.name === after.name;
+    && before.direction === after.direction
+    && before.name === after.name;
 }
 
-function light(before : Light, after : Light){
+function light(before: Light, after: Light) {
   return before.net === after.net
-      && before.direction === after.direction
-      && before.name === after.name;
+    && before.direction === after.direction
+    && before.name === after.name;
 }
 
-function component(before : Component, after : Component){
-  if(before.package.name !== after.package.name) return false;
-  if(before.package.hash !== after.package.hash) return false;
-  if(before.inputs !== after.inputs && !before.inputs.every((e, i) => e.net === after.inputs[i].net)) return false;
+function component(before: Component, after: Component) {
+  if (before.package.name !== after.package.name) return false;
+  if (before.package.hash !== after.package.hash) return false;
+  if (before.inputs !== after.inputs && !before.inputs.every((e, i) => e.net === after.inputs[i].net)) return false;
   return true;
 }

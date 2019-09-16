@@ -10,12 +10,10 @@ import {
   Underpass
 } from '../types';
 
-export default function underpass(oldUnderpass : Underpass, pos : Pos, ctx : Context, queue : BoxContext<Context>[]){
-  const dx = ctx.pos.left - ctx.prev.left;
-  const dy = ctx.pos.top - ctx.prev.top;
-  queue.push(makePos(ctx.pos, ctx.net, dx, dy));
+export default function underpass(oldUnderpass: Underpass, pos: Pos, ctx: Context, queue: BoxContext<Context>[]) {
+  const { dx, dy } = floodUnderpass(ctx, queue);
 
-  if(dx === 0 && dy !== 0){
+  if (dx === 0 && dy !== 0) {
     return oldUnderpass;
   }
 
@@ -24,3 +22,11 @@ export default function underpass(oldUnderpass : Underpass, pos : Pos, ctx : Con
     net: ctx.net
   };
 }
+
+export function floodUnderpass(ctx: Context, queue: BoxContext<Context>[]) {
+  const dx = ctx.pos.left - ctx.prev.left;
+  const dy = ctx.pos.top - ctx.prev.top;
+  queue.push(makePos(ctx.pos, ctx.net, dx, dy));
+  return { dx, dy };
+}
+

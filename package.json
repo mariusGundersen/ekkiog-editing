@@ -6,13 +6,13 @@
   "types": "es/main.d.ts",
   "module": "es/main.js",
   "scripts": {
-    "clean": "rimraf ./es ./js",
     "test": "ava",
+    "clean": "rimraf ./es ./js",
     "tsc": "tsc",
-    "compile": "npm run tsc && npm run babel",
     "babel": "babel --source-maps -d js es",
-    "watch": "tsc -w & ava -w",
-    "prepublish": "npm run clean && npm run compile && npm test"
+    "compile": "npm run tsc && npm run babel",
+    "watch": "ava -w",
+    "prepublish": "npm run clean && npm run test && npm run compile"
   },
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/runtime": "^7.5.5",
-    "@types/node": "^7.0.66",
+    "@types/node": "^12.6.9",
     "ava": "^2.2.0",
     "esm": "^3.2.25",
     "rimraf": "^2.6.3",

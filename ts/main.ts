@@ -12,6 +12,7 @@ export { default as drawLight } from './actions/drawLight';
 export { default as insertItem } from './actions/insertItem';
 
 export { default as floodFill } from './flooding/floodFill';
+export { default as floodClear } from './flooding/floodClear';
 
 export { default as getTypeAt } from './query/getTypeAt';
 export { default as getTileAt } from './query/getTileAt';
@@ -23,4 +24,4 @@ export { default as diffAndReconcile } from './diffAndReconcile';
 
 export { default as packageComponent } from './packing';
 
-export { default as upgradeItem } from './upgrade';
+export { default as upgradeItem } from './upgrade';

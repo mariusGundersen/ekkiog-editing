@@ -4,17 +4,18 @@ import { deallocate } from 'buddy-tree';
 import {
   GATE,
   BUTTON,
-  COMPONENT} from '../constants';
+  COMPONENT
+} from '../constants';
 
-import {floodClear} from '../flooding/floodFill';
+import { floodFillGround } from '../flooding/floodFill';
 
 import { Forest, Item } from '../types';
 
 
-export default function clear(forest : Forest, x : number, y : number) : Forest {
-  let {tree : enneaTree, cleared} = ennea.clear(forest.enneaTree, {left:x, top:y});
+export default function clear(forest: Forest, x: number, y: number): Forest {
+  let { tree: enneaTree, cleared } = ennea.clear(forest.enneaTree, { left: x, top: y });
 
-  enneaTree = floodClear(enneaTree, cleared.map(c => [c.data, c] as [Item, ennea.BoxArea]));
+  enneaTree = floodFillGround(enneaTree, cleared.map(c => [c.data, c] as [Item, ennea.BoxArea]));
 
   const buddyTree = cleared.map(getNetSource)
     .filter(net => net > 1)
@@ -26,12 +27,12 @@ export default function clear(forest : Forest, x : number, y : number) : Forest 
   };
 }
 
-function getNetSource(box : ennea.AreaData<Item>){
-  if(box.data == null){
+function getNetSource(box: ennea.AreaData<Item>) {
+  if (box.data == null) {
     return -1;
   }
 
-  switch(box.data.type){
+  switch (box.data.type) {
     case GATE:
     case BUTTON:
     case COMPONENT:
